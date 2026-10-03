@@ -1,0 +1,16 @@
+# Modelos y pesos pesados
+*.pt
+weights/
+
+# Módulos Python y scripts locales
+version_portable/
+__pycache__/
+*.py
+*.pyw
+*.bat
+*.vbs
+*.log
+*.csv
+.env
+.DS_Store
+Thumbs.db
