@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KUCHE — Sala GIS de Luminarias y Alumbrado Público</title>
+  
+  <!-- PWA & Meta Tags -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#611232">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="KUCHE">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg: #090d16;
+      --panel: #0f172a;
+      --card: #1e293b;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(0, 210, 255, 0.4);
+      --cyan: #00d2ff;
+      --cyan-glow: rgba(0, 210, 255, 0.25);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.25);
+      --orange: #f59e0b;
+      --orange-glow: rgba(245, 158, 11, 0.25);
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.25);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    header h1 small {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: none;
+      letter-spacing: normal;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .badge-live {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .dot-live {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+    
+    .btn-action-report {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 210, 255, 0.1);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 210, 255, 0.35);
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-action-report:hover {
+      background: var(--cyan);
+      color: #000;
+      transform: translateY(-1px);
+    }
+
+    #btn-refresh {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    #btn-refresh:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* ── Layout principal ── */
+    main {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      width: 360px;
+      flex-shrink: 0;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .stat-box {
+      padding: 12px 8px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .stat-box:last-child { border-right: none; }
+    .stat-num { font-size: 22px; font-weight: 700; line-height: 1; font-family: 'JetBrains Mono', monospace; }
+    .stat-lbl { font-size: 10px; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* ── Filtros ── */
+    .filtros {
+      padding: 10px 12px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .filtro-btn {
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filtro-btn.active {
+      background: var(--cyan);
+      color: #000;
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+    .filtro-btn:hover:not(.active) {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .sidebar-title {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #lista-reportes {
+      overflow-y: auto;
+      flex: 1;
+      padding: 6px 0;
+    }
+    #lista-reportes::-webkit-scrollbar { width: 4px; }
+    #lista-reportes::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
+
+    .reporte-card {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .reporte-card:hover {
+      background: rgba(0, 210, 255, 0.04);
+    }
+    .reporte-card.selected {
+      background: rgba(0, 210, 255, 0.08);
+      border-left: 3px solid var(--cyan);
+    }
+
+    .cat-badge-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .dot-led        { background: #9B2247; box-shadow: 0 0 8px #9B2247; }
+    .dot-colonial   { background: #BC955C; box-shadow: 0 0 8px #BC955C; }
+    .dot-solar      { background: #10b981; box-shadow: 0 0 8px #10b981; }
+    .dot-fotocelda  { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+    .dot-otro       { background: var(--text-muted); }
+
+    .card-info { flex: 1; min-width: 0; }
+    .card-titulo {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .empty-state {
+      padding: 50px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ── Contenedor del Mapa ── */
+    #map-wrapper {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      background: #090d16;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      background: #090d16;
+    }
+
+    /* ── Filtro Dark Mode para tiles OSM (Sin marcas de agua y 100% libre) ── */
+    #map.dark-tiles .leaflet-tile-pane {
+      filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.25) brightness(0.75);
+    }
+
+    /* ── Estilos Dark Mode para Controles de Leaflet ── */
+    .leaflet-bar {
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius-sm) !important;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+    }
+    .leaflet-bar a {
+      background-color: var(--card) !important;
+      color: var(--text) !important;
+      border-bottom: 1px solid var(--border) !important;
+      transition: background 0.15s, color 0.15s;
+    }
+    .leaflet-bar a:hover {
+      background-color: var(--panel) !important;
+      color: var(--cyan) !important;
+    }
+    .leaflet-control-layers {
+      background: rgba(15, 23, 42, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius-sm) !important;
+      color: var(--text) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 11px !important;
+      padding: 8px 12px !important;
+    }
+    .leaflet-control-layers label {
+      margin: 4px 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .leaflet-control-attribution {
+      background: rgba(9, 13, 22, 0.85) !important;
+      color: var(--text-muted) !important;
+      font-size: 10px !important;
+    }
+    .leaflet-control-attribution a {
+      color: var(--cyan) !important;
+    }
+
+    /* ── Popups Leaflet ── */
+    .leaflet-popup-content-wrapper {
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      padding: 4px;
+    }
+    .leaflet-popup-tip { background: #0f172a; }
+    .popup-body {
+      padding: 8px 10px;
+      font-family: 'Inter', sans-serif;
+    }
+    .popup-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .popup-body h4 {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .popup-body p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin: 3px 0;
+      line-height: 1.4;
+    }
+    .popup-body img {
+      width: 100%;
+      max-width: 220px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      margin-top: 8px;
+      border: 1px solid var(--border);
+    }
+    .popup-coords {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--cyan);
+      margin-top: 6px;
+      display: block;
+      text-decoration: none;
+    }
+
+    /* Iconos SVG */
+    .icon-svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand-left">
+    <div>
+      <h1 style="font-family:'Montserrat', sans-serif; font-size:22px; font-weight:900; letter-spacing:2px; color:#BC955C; margin:0; line-height:1;"><span style="color:#E6D194;">KUCHE</span></h1>
+      <small style="font-size:11px; color:var(--text-muted); font-weight:600; display:block; margin-top:3px;">SISTEMA DE LUMINARIAS Y ALUMBRADO PÚBLICO</small>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge-live">
+      <div class="dot-live"></div>
+      <span>EN VIVO</span>
+    </div>
+    <a href="./index.html" class="btn-action-report" title="Abrir cámara y registrar luminaria">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="13" r="4"/>
+        <path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+      </svg>
+      <span>Inspección de Campo</span>
+    </a>
+    <button id="btn-refresh" onclick="cargarDatos()">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <polyline points="23 4 23 10 17 10"/>
+        <polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      <span>Actualizar</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <!-- Métricas Generales -->
+    <div class="stats-bar">
+      <div class="stat-box">
+        <div class="stat-num" id="stat-total" style="color:var(--text)">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-apagadas" style="color:#ef4444">0</div>
+        <div class="stat-lbl">Apagadas</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="stat-operativas" style="color:#10b981">0</div>
+        <div class="stat-lbl">Operativas</div>
+      </div>
+    </div>
+
+    <!-- Filtros por Categoría -->
+    <div class="filtros">
+      <button class="filtro-btn active" onclick="filtrar('todos', this)">Todas</button>
+      <button class="filtro-btn" onclick="filtrar('LED', this)">LED Viales</button>
+      <button class="filtro-btn" onclick="filtrar('Colonial', this)">Coloniales</button>
+      <button class="filtro-btn" onclick="filtrar('Solar', this)">Solares</button>
+    </div>
+
+    <div class="sidebar-title">
+      <span>LUMINARIAS REGISTRADAS</span>
+      <span id="count-badge" style="color:var(--cyan); font-family:'JetBrains Mono', monospace;">0</span>
+    </div>
+
+    <div id="lista-reportes">
+      <div class="empty-state">Cargando luminarias...</div>
+    </div>
+  </aside>
+
+  <!-- MAPA INTERACTIVO -->
+  <div id="map-wrapper">
+    <div id="map"></div>
+  </div>
+</main>
+
+<script src="./static/kuche-api.js"></script>
+<script>
+// ── Variables globales ────────────────────────────────────────────
+let mapaActivo, markersLayer;
+let todosReportes = [];
+let filtroActivo  = 'todos';
+
+// ── Inicializar mapa interactivo (Puebla) ────────────────────────
+function inicializarMapa() {
+  const container = document.getElementById('map');
+  if (!container) return;
+
+  mapaActivo = L.map('map', { 
+    zoomControl: false,
+    preferCanvas: true
+  }).setView([19.0414, -98.2063], 13);
+
+  // Capas base 100% libres (Sin API Keys ni marcas de agua)
+  const osmDark = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+  });
+
+  const esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: '&copy; Esri &mdash; World Imagery'
+  });
+
+  const osmStandard = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+  });
+
+  // Capa inicial por defecto: Dark Mode
+  osmDark.addTo(mapaActivo);
+  container.classList.add('dark-tiles');
+
+  // Control selector de mapas
+  const baseLayers = {
+    "Modo Oscuro": osmDark,
+    "Satelite HD": esriSat,
+    "Calles Claras": osmStandard
+  };
+
+  L.control.layers(baseLayers, null, { position: 'topright', collapsed: true }).addTo(mapaActivo);
+  L.control.zoom({ position: 'topright' }).addTo(mapaActivo);
+
+  // Ajustar filtro Dark según capa activa
+  mapaActivo.on('baselayerchange', function(e) {
+    if (e.name === 'Modo Oscuro') {
+      container.classList.add('dark-tiles');
+    } else {
+      container.classList.remove('dark-tiles');
+    }
+  });
+
+  markersLayer = L.layerGroup().addTo(mapaActivo);
+
+  // Asegurar renderizado correcto al redimensionar
+  window.addEventListener('resize', () => {
+    if (mapaActivo) mapaActivo.invalidateSize();
+  });
+  setTimeout(() => { if (mapaActivo) mapaActivo.invalidateSize(); }, 300);
+}
+
+// ── Utilidades de Categoría de Luminaria (Sin emojis) ──────────────
+function catInfo(texto) {
+  const t = (texto || '').toLowerCase();
+  if (t.includes('colonial') || t.includes('farol')) {
+    return { label:'Luminaria Colonial', dotCls:'dot-colonial', color:'#BC955C', bg:'rgba(188, 149, 92, 0.2)' };
+  }
+  if (t.includes('solar') || t.includes('bateria') || t.includes('panel')) {
+    return { label:'Luminaria Solar', dotCls:'dot-solar', color:'#10b981', bg:'rgba(16, 185, 129, 0.2)' };
+  }
+  if (t.includes('fotocelda') || t.includes('intermitente')) {
+    return { label:'Fotocelda Averiada', dotCls:'dot-fotocelda', color:'#f59e0b', bg:'rgba(245, 158, 11, 0.2)' };
+  }
+  return { label:'Luminaria LED Vial', dotCls:'dot-led', color:'#9B2247', bg:'rgba(155, 34, 71, 0.2)' };
+}
+
+// ── Icono SVG para Marcadores en Mapa ─────────────────────────────
+function iconFromCat(info) {
+  return L.divIcon({
+    className: 'custom-map-pin',
+    html: `<div style="
+      width: 28px; height: 28px; border-radius: 50%;
+      background: ${info.bg}; border: 2px solid ${info.color};
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 12px ${info.color}88;
+      cursor: pointer;
+    ">
+      <div style="width: 8px; height: 8px; border-radius: 50%; background: ${info.color};"></div>
+    </div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -16]
+  });
+}
+
+// ── Cargar datos del servidor ─────────────────────────────────────
+async function cargarDatos() {
+  try {
+    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/historial?page=0') : '/api/infraestructura/historial?page=0';
+    const resp = await fetch(targetUrl);
+    const j    = await resp.json();
+    todosReportes = (j.historial || []).filter(r => r.estado_registro !== 'Borrada');
+    actualizarEstadisticas();
+    renderLista();
+    renderMapa();
+  } catch(e) {
+    console.error('Error cargando datos:', e);
+  }
+}
+
+// ── Estadísticas ──────────────────────────────────────────────────
+function actualizarEstadisticas() {
+  document.getElementById('stat-total').textContent = todosReportes.length;
+  document.getElementById('stat-apagadas').textContent =
+    todosReportes.filter(r => {
+      const txt = (r.luminaria || r.incidencia || r.placa || '').toLowerCase();
+      return txt.includes('apagada') || txt.includes('averiada') || txt.includes('dañ') || txt.includes('falla');
+    }).length;
+  document.getElementById('stat-operativas').textContent =
+    todosReportes.filter(r => {
+      const txt = (r.luminaria || r.incidencia || r.placa || '').toLowerCase();
+      return !txt.includes('apagada') && !txt.includes('averiada') && !txt.includes('dañ');
+    }).length;
+}
+
+// ── Filtro ────────────────────────────────────────────────────────
+function filtrar(cat, btn) {
+  filtroActivo = cat;
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLista();
+  renderMapa();
+}
+
+function reportesFiltrados() {
+  if (filtroActivo === 'todos') return todosReportes;
+  return todosReportes.filter(r => {
+    const texto = (r.luminaria || r.incidencia || r.placa || '').toLowerCase();
+    return texto.includes(filtroActivo.toLowerCase());
+  });
+}
+
+// ── Lista de reportes ─────────────────────────────────────────────
+function renderLista() {
+  const lista = document.getElementById('lista-reportes');
+  const datos = reportesFiltrados();
+  document.getElementById('count-badge').textContent = datos.length;
+
+  if (!datos.length) {
+    lista.innerHTML = '<div class="empty-state">No hay luminarias registradas con este filtro.</div>';
+    return;
+  }
+
+  lista.innerHTML = datos.slice(0, 100).map((r, i) => {
+    const textoLuminaria = r.luminaria || r.incidencia || r.placa || 'Luminaria';
+    const info = catInfo(textoLuminaria);
+    const partes = textoLuminaria.split(' | ');
+    const titulo = partes[0] || 'Luminaria Registrada';
+    const desc   = partes[1] || '';
+    const hora   = (r.hora || '').substring(0, 16);
+    const ubiCorta = r.ubi ? r.ubi.substring(0, 22) : 'Sin GPS';
+
+    return `<div class="reporte-card" id="card-${r.id}" onclick="seleccionarReporte(${r.id}, '${r.ubi}')">
+      <div class="cat-badge-dot ${info.dotCls}"></div>
+      <div class="card-info">
+        <div class="card-titulo">${titulo}</div>
+        ${desc ? `<div class="card-desc">${desc}</div>` : ''}
+        <div class="card-meta">
+          <span>${hora}</span>
+          <span>&middot;</span>
+          <span>${ubiCorta}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Renderizado de Marcadores en el Mapa ──────────────────────────
+function renderMapa() {
+  if (!mapaActivo || !markersLayer) return;
+  markersLayer.clearLayers();
+  const datos = reportesFiltrados();
+  const bounds = [];
+
+  datos.forEach((r, i) => {
+    if (!r.ubi || !r.ubi.includes(',')) return;
+    const [lat, lon] = r.ubi.split(',').map(parseFloat);
+    if (isNaN(lat) || isNaN(lon)) return;
+
+    const textoLuminaria = r.luminaria || r.incidencia || r.placa || 'Luminaria';
+    const info = catInfo(textoLuminaria);
+    const partes = textoLuminaria.split(' | ');
+    const titulo = partes[0] || 'Luminaria Registrada';
+    const desc   = partes[1] || '';
+    const hora   = (r.hora || '').substring(0, 16);
+
+    const marker = L.marker([lat, lon], { icon: iconFromCat(info) });
+    const fotoTag = r.foto ? `<img src="${r.foto}" alt="Foto de luminaria">` : '';
+
+    marker.bindPopup(`<div class="popup-body">
+      <span class="popup-badge" style="background:${info.bg}; color:${info.color}; border:1px solid ${info.color}55;">${info.label}</span>
+      <h4>${titulo}</h4>
+      ${desc ? `<p>${desc}</p>` : ''}
+      <p style="font-size:10px; margin-top:4px;">${hora}</p>
+      ${fotoTag}
+      <a class="popup-coords" target="_blank" href="https://www.google.com/maps?q=${lat},${lon}">Ver coordenadas en Google Maps &rarr;</a>
+    </div>`, { maxWidth: 240 });
+
+    marker.on('click', () => {
+      document.querySelectorAll('.reporte-card').forEach(c => c.classList.remove('selected'));
+      const card = document.getElementById('card-' + r.id);
+      if (card) {
+        card.classList.add('selected');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+
+    markersLayer.addLayer(marker);
+    bounds.push([lat, lon]);
+  });
+
+  if (bounds.length > 0) {
+    mapaActivo.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+  }
+}
+
+// ── Seleccionar reporte (centrar mapa) ─────────────────────────────
+function seleccionarReporte(id, ubi) {
+  document.querySelectorAll('.reporte-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.add('selected');
+
+  if (ubi && ubi.includes(',') && mapaActivo) {
+    const [lat, lon] = ubi.split(',').map(parseFloat);
+    if (!isNaN(lat) && !isNaN(lon)) {
+      mapaActivo.flyTo([lat, lon], 16, { duration: 1 });
+    }
+  }
+}
+
+// ── Inicialización ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  inicializarMapa();
+  cargarDatos();
+  setInterval(cargarDatos, 15000);
+});
+
+// Registro de Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(reg => console.log('✅ [PWA Dashboard Kuche] Service Worker activo:', reg.scope))
+      .catch(err => console.warn('⚠️ [PWA Dashboard Kuche] Error:', err));
+  });
+}
+</script>
+</body>
+</html>
