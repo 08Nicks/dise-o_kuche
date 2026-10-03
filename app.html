@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>KUCHE — App Móvil (Modo Demo)</title>
+  
+  <!-- PWA & Meta Tags -->
+  <link rel="manifest" href="./static/manifest.json">
+  <meta name="theme-color" content="#611232">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="KUCHE Demo">
+  <link rel="apple-touch-icon" href="./static/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./static/icons/icon-192.png">
+  
+  <!-- Tipografía Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/styles.css?v=7.0">
+</head>
+<body>
+
+<div class="app-wrapper">
+  <!-- BANNER EXPLICATIVO MODO DEMO -->
+  <div style="background:linear-gradient(90deg, #BC955C, #98732E); color:#FFFFFF; padding:7px 12px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+    <div style="display:flex; align-items:center; gap:6px;">
+      <span style="background:rgba(0,0,0,0.25); padding:2px 6px; border-radius:4px; font-size:9.5px; text-transform:uppercase; letter-spacing:0.5px;">Modo Demo</span>
+      <span>Acceso libre sin registro</span>
+    </div>
+    <a href="./portal.html" style="background:#611232; color:#FFFFFF; text-decoration:none; padding:3px 9px; border-radius:4px; font-size:10px; font-weight:800; display:inline-flex; align-items:center; gap:4px; box-shadow:0 1px 4px rgba(0,0,0,0.2);">
+      <span>Acceso Oficial (CURP) &rarr;</span>
+    </a>
+  </div>
+
+  <!-- BARRA SUPERIOR / NAVBAR -->
+  <header class="app-header">
+    <div class="brand-group">
+      <div class="brand-text">
+        <h1 class="brand-kuche-wordmark">KUCHE</h1>
+        <p>Monitoreo IA &bull; Modo Demostración</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button id="btn-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Instalar</span>
+      </button>
+      <a href="./dashboard.html" class="btn-nav-map" title="Ver mapa general de reportes">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:14px; height:14px;">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+          <line x1="8" y1="2" x2="8" y2="18"/>
+          <line x1="16" y1="6" x2="16" y2="22"/>
+        </svg>
+        <span>Sala GIS</span>
+      </a>
+      <a href="./index.html" class="btn-nav-map" style="background:transparent; border-color:rgba(255,255,255,0.15);" title="Ver propuestas de diseño">
+        <span>Diseño</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- SELECTOR DE MODOS (TABS SEGMENTADOS) -->
+  <div class="tabs-container">
+    <div class="segmented-control tabs">
+      <button class="tab activa" id="tab-video" onclick="cambiarModo('video')">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+        <span>Video</span>
+      </button>
+      <button class="tab" id="tab-foto" onclick="cambiarModo('foto')">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="13" r="4"/>
+          <path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+        </svg>
+        <span>Foto</span>
+      </button>
+      <button class="tab" id="tab-manual" onclick="cambiarModo('manual')">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        <span>Manual</span>
+      </button>
+    </div>
+    <button id="btn-cam-toggle" class="btn-cam-toggle" onclick="toggleCamara()">
+      <span class="dot-indicator"></span>
+      <span>Camara: ON</span>
+    </button>
+  </div>
+
+  <!-- VISOR DE CÁMARA / CANVAS -->
+  <div id="visor-container">
+    <div class="hud-reticle hud-tl"></div>
+    <div class="hud-reticle hud-tr"></div>
+    <div class="hud-reticle hud-bl"></div>
+    <div class="hud-reticle hud-br"></div>
+    <canvas id="canvas"></canvas>
+    <div id="progress-bar"></div>
+  </div>
+  <div id="manual-preview" style="display:none">
+    <svg class="icon-svg" viewBox="0 0 24 24" style="width:32px; height:32px; opacity:0.4;">
+      <path d="M1 1l22 22"/>
+      <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"/>
+    </svg>
+    <span>Camara desactivada</span>
+  </div>
+
+  <!-- CONTROL DE MODO VIDEO (MÁXIMO 10 SEGUNDOS) -->
+  <div id="sec-video">
+    <button id="btn-grabar-video" class="btn-record" onclick="toggleGrabacionVideo()">
+      <span id="ico-grabar"><span class="rec-pulse-icon"></span></span>
+      <span id="txt-grabar">Iniciar Grabacion (10s)</span>
+    </button>
+  </div>
+
+  <!-- ESTADO DE LA IA -->
+  <div id="live">Iniciando sistema...</div>
+
+  <!-- SECCIÓN MODO FOTO -->
+  <div id="sec-foto">
+    <button onclick="capturarFoto()" class="btn-primary-action">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span>Capturar y Analizar Foto</span>
+    </button>
+    <label class="btn-file-upload">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <span>Subir imagen desde archivo</span>
+      <input type="file" id="file" accept="image/*" hidden>
+    </label>
+  </div>
+
+  <!-- SECCIÓN MODO MANUAL -->
+  <div id="sec-manual">
+    <div>
+      <label class="form-label" for="infra-categoria-manual">Tipo de Luminaria / Incidencia</label>
+      <select id="infra-categoria-manual" class="input-select">
+        <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
+        <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
+        <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
+        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
+        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="desc-manual">Descripción de la incidencia</label>
+      <textarea id="desc-manual" class="input-textarea" placeholder="Indica referencias de la luminaria, cruce o severidad..." rows="3"></textarea>
+    </div>
+    <button onclick="enviarReporteManual()" class="btn-submit-report">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      <span>Registrar Luminaria (Demo)</span>
+    </button>
+  </div>
+
+  <!-- PANEL DE REPORTE (IA detectó algo — modo Video/Foto) -->
+  <div id="panel-reporte">
+    <div class="panel-title-badge">
+      <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Luminaria Detectada por IA</span>
+    </div>
+
+    <!-- Imagen capturada -->
+    <img id="reporte-img" src="" alt="Captura de luminaria">
+
+    <!-- Categoría detectada (editable) -->
+    <div style="margin-bottom:8px;">
+      <label class="form-label" for="reporte-categoria">Clasificación de Luminaria</label>
+      <select id="reporte-categoria" class="input-select">
+        <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
+        <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
+        <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
+        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
+        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+      </select>
+    </div>
+
+    <!-- Confianza IA -->
+    <div id="reporte-conf"></div>
+
+    <!-- Descripción adicional -->
+    <div style="margin-bottom:12px;">
+      <label class="form-label" for="reporte-desc">Notas de campo (opcional)</label>
+      <textarea id="reporte-desc" class="input-textarea" placeholder="Crucero, altura de poste o condición del foco..." rows="2"></textarea>
+    </div>
+
+    <button onclick="enviarReporteIA()" class="btn-submit-report">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      <span>Confirmar y Registrar (Demo)</span>
+    </button>
+    <button onclick="descartarReporte()" class="btn-discard-report">
+      Descartar
+    </button>
+  </div>
+
+  <!-- CONSOLA DE DIAGNÓSTICO -->
+  <div id="log-panel"></div>
+
+  <!-- TOAST DE CONFIRMACIÓN -->
+  <div id="toast-ok">
+    <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--green); stroke-width:3;">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span>Registro guardado correctamente</span>
+  </div>
+
+  <video id="video" autoplay playsinline muted hidden></video>
+</div>
+
+<!-- Scripts Kuche: Puente API y Lógica PWA -->
+<script src="./static/kuche-api.js"></script>
+<script src="./static/app.js?v=7.0"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./static/sw.js')
+        .then(reg => console.log('✅ [PWA Demo Kuche] SW activo:', reg.scope))
+        .catch(err => console.warn('⚠️ [PWA Demo Kuche] SW:', err));
+    });
+  }
+
+  let deferredPrompt;
+  const btnInstalar = document.getElementById('btn-instalar-pwa');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (btnInstalar) {
+      btnInstalar.style.display = 'inline-flex';
+      btnInstalar.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('[PWA Demo] Elección:', outcome);
+        deferredPrompt = null;
+        btnInstalar.style.display = 'none';
+      });
+    }
+  });
+</script>
+</body>
+</html>

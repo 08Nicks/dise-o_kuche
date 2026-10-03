@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>KUCHE — App Oficial de Monitoreo e Inspección</title>
+  
+  <!-- PWA & Meta Tags -->
+  <link rel="manifest" href="./static/manifest.json">
+  <meta name="theme-color" content="#611232">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="KUCHE Oficial">
+  <link rel="apple-touch-icon" href="./static/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./static/icons/icon-192.png">
+  
+  <!-- Tipografía Montserrat y JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./static/styles.css?v=7.0">
+
+  <style>
+    /* Estilos del Módulo de Autenticación Oficial KUCHE */
+    .auth-overlay-view {
+      min-height: 100vh;
+      background: radial-gradient(circle at 50% 20%, #2b0615 0%, #100207 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .auth-card-box {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(188, 149, 92, 0.35);
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+
+    .auth-header-brand {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .auth-brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #BC955C;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .auth-brand-sub {
+      font-size: 11px;
+      color: #E6D194;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .auth-tabs-nav {
+      display: flex;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 9px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .auth-tab-btn.active {
+      background: #611232;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(97, 18, 50, 0.5);
+    }
+
+    .auth-form-group {
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .auth-form-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #E6D194;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .auth-input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 11px 14px;
+      color: #FFFFFF;
+      font-size: 13.5px;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .auth-input-field:focus {
+      border-color: #BC955C;
+      box-shadow: 0 0 0 3px rgba(188, 149, 92, 0.25);
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    .auth-input-curp {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .auth-pwd-wrapper {
+      position: relative;
+    }
+
+    .auth-pwd-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #BC955C;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px;
+    }
+
+    .auth-remember-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0 20px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .auth-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .auth-btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #611232 0%, #9B2247 100%);
+      border: 1px solid #BC955C;
+      color: #FFFFFF;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(97, 18, 50, 0.4);
+    }
+
+    .auth-btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .curp-feedback-tag {
+      font-size: 10px;
+      margin-top: 4px;
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+    }
+
+    /* Modal de Correo de Seguridad Emitido */
+    .sec-email-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(8px);
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    .sec-email-modal-card {
+      background: #111827;
+      border: 2px solid #BC955C;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      color: #FFFFFF;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .sec-email-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    .sec-email-badge-ico {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(188, 149, 92, 0.2);
+      border: 1px solid #BC955C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #E6D194;
+    }
+
+    .sec-email-otp-box {
+      background: #0B1120;
+      border: 1px dashed #BC955C;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .sec-email-otp-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 5px;
+      color: #10B981;
+    }
+
+    /* Barra Superior Inspector Verificado */
+    .official-badge-strip {
+      background: #111827;
+      border-bottom: 2px solid #BC955C;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #FFFFFF;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     1. VISTA DE AUTENTICACIÓN OFICIAL (CURP, CORREO, CONTRASEÑA)
+     ================================================================ -->
+<div id="view-auth-container" class="auth-overlay-view">
+  <div class="auth-card-box">
+    
+    <div class="auth-header-brand">
+      <h1 class="auth-brand-title">KUCHE</h1>
+      <span class="auth-brand-sub">Sistema Oficial de Monitoreo de Luminarias</span>
+    </div>
+
+    <!-- Navegación entre Login y Registro -->
+    <div class="auth-tabs-nav">
+      <button class="auth-tab-btn active" id="tab-login-btn" onclick="toggleAuthTab('login')">Iniciar Sesión</button>
+      <button class="auth-tab-btn" id="tab-register-btn" onclick="toggleAuthTab('register')">Registrar Inspector</button>
+    </div>
+
+    <!-- FORMULARIO 1: INICIO DE SESIÓN -->
+    <form id="form-login" onsubmit="handleLoginSubmit(event)">
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="login-curp">CURP Oficial (18 Caracteres)</label>
+        <input type="text" id="login-curp" class="auth-input-field auth-input-curp" placeholder="ABCD800101HDFRRN01" maxlength="18" required oninput="validarCurpInput(this, 'login-curp-feedback')">
+        <span id="login-curp-feedback" class="curp-feedback-tag" style="color:#aaa;">Ingresa tu CURP completa verificada por RENAPO</span>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="login-email">Correo Electrónico Oficial</label>
+        <input type="email" id="login-email" class="auth-input-field" placeholder="inspector@kuche.gob.mx" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="login-password">Contraseña de Seguridad</label>
+        <div class="auth-pwd-wrapper">
+          <input type="password" id="login-password" class="auth-input-field" placeholder="••••••••" required minlength="6">
+          <button type="button" class="auth-pwd-toggle" onclick="togglePasswordVisibility('login-password')">Ver</button>
+        </div>
+      </div>
+
+      <div class="auth-remember-row">
+        <label class="auth-checkbox-label">
+          <input type="checkbox" id="login-remember" checked>
+          <span>Guardar sesión en este dispositivo</span>
+        </label>
+      </div>
+
+      <button type="submit" class="auth-btn-primary">
+        🔐 Iniciar Sesión Oficial y Enviar Correo de Seguridad
+      </button>
+    </form>
+
+    <!-- FORMULARIO 2: REGISTRO DE INSPECTOR -->
+    <form id="form-register" style="display:none;" onsubmit="handleRegisterSubmit(event)">
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-nombre">Nombre Completo del Inspector</label>
+        <input type="text" id="reg-nombre" class="auth-input-field" placeholder="Ing. Pedro Ramírez" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-curp">CURP Oficial del Inspector (18 Caracteres)</label>
+        <input type="text" id="reg-curp" class="auth-input-field auth-input-curp" placeholder="ABCD800101HDFRRN01" maxlength="18" required oninput="validarCurpInput(this, 'reg-curp-feedback')">
+        <span id="reg-curp-feedback" class="curp-feedback-tag" style="color:#aaa;">Formato oficial de 18 caracteres</span>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-email">Correo Electrónico de Notificaciones</label>
+        <input type="email" id="reg-email" class="auth-input-field" placeholder="pedro.ramirez@kuche.gob.mx" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-cuadrilla">Zona / Cuadrilla Asignada</label>
+        <input type="text" id="reg-cuadrilla" class="auth-input-field" placeholder="Cuadrilla Alumbrado Centro 02" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-password">Crear Contraseña</label>
+        <div class="auth-pwd-wrapper">
+          <input type="password" id="reg-password" class="auth-input-field" placeholder="Mínimo 6 caracteres" required minlength="6">
+          <button type="button" class="auth-pwd-toggle" onclick="togglePasswordVisibility('reg-password')">Ver</button>
+        </div>
+      </div>
+
+      <div class="auth-remember-row">
+        <label class="auth-checkbox-label">
+          <input type="checkbox" id="reg-remember" checked>
+          <span>Guardar mi sesión permanentemente</span>
+        </label>
+      </div>
+
+      <button type="submit" class="auth-btn-primary">
+        ✍️ Registrar Inspector y Emitir Alerta de Seguridad
+      </button>
+    </form>
+
+    <div style="margin-top:18px; text-align:center;">
+      <a href="./app.html" style="color:#BC955C; font-size:11px; text-decoration:none; font-weight:700;">
+        &larr; O entrar en Modo Demostración (Sin Registro)
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================================================================
+     2. MODAL FLOTANTE DE NOTIFICACIÓN DE CORREO DE SEGURIDAD
+     ================================================================ -->
+<div id="modal-seguridad-correo" class="sec-email-modal-overlay" style="display:none;">
+  <div class="sec-email-modal-card">
+    <div class="sec-email-header">
+      <div class="sec-email-badge-ico">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div>
+        <h3 style="margin:0; font-size:15px; color:#E6D194; font-weight:800;">Protocolo de Seguridad KUCHE Activado</h3>
+        <span style="font-size:11px; color:#aaa;">Notificación de Acceso Emitida</span>
+      </div>
+    </div>
+
+    <p style="font-size:12px; line-height:1.5; color:#E5E7EB; margin-bottom:12px;">
+      Se ha emitido y enviado un <strong>Correo de Seguridad</strong> a:
+    </p>
+
+    <div style="background:rgba(255,255,255,0.06); padding:10px 14px; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:12px; color:#BC955C; margin-bottom:12px;" id="modal-email-destinatario">
+      inspector@kuche.gob.mx
+    </div>
+
+    <div style="font-size:11px; color:#aaa; line-height:1.4;">
+      <strong style="color:#fff;">Asunto:</strong> [ALERTA DE SEGURIDAD KUCHE] Acceso oficial autorizado para CURP <span id="modal-curp-span" style="color:#10B981;"></span><br>
+      <strong style="color:#fff;">Fecha y Hora:</strong> <span id="modal-fecha-span"></span><br>
+      <strong style="color:#fff;">Dispositivo:</strong> Acceso seguro validado vía PWA
+    </div>
+
+    <div class="sec-email-otp-box">
+      <span style="font-size:10px; color:#aaa; display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Código OTP de Acceso Seguro</span>
+      <span class="sec-email-otp-code" id="modal-otp-code">KUC-782194</span>
+    </div>
+
+    <button onclick="completarIngresoOficial()" class="auth-btn-primary" style="background:#10B981; border-color:#059669;">
+      ✅ Confirmar y Entrar a la App Oficial
+    </button>
+  </div>
+</div>
+
+<!-- ================================================================
+     3. APP OFICIAL KUCHE (CÁMARA, IA Y REGISTRO AUTORIZADO)
+     ================================================================ -->
+<div id="view-app-container" class="app-wrapper" style="display:none;">
+  
+  <!-- BANNER DE CREDENCIAL OFICIAL DEL INSPECTOR -->
+  <div class="official-badge-strip">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="width:8px; height:8px; border-radius:50%; background:#10B981; display:inline-block; box-shadow:0 0 6px #10B981;"></span>
+      <div>
+        <strong id="badge-inspector-nombre" style="color:#E6D194;">Inspector Oficial</strong>
+        <span style="opacity:0.8;"> &bull; CURP: </span>
+        <span id="badge-inspector-curp" style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#10B981;"></span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <span id="badge-inspector-cuadrilla" style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; font-size:9.5px;"></span>
+      <button onclick="cerrarSesionOficial()" style="background:#ef4444; border:none; color:#fff; border-radius:4px; padding:3px 8px; font-size:10px; font-weight:700; cursor:pointer;" title="Cerrar sesión actual">Salir</button>
+    </div>
+  </div>
+
+  <!-- BARRA SUPERIOR / NAVBAR -->
+  <header class="app-header">
+    <div class="brand-group">
+      <div class="brand-text">
+        <h1 class="brand-kuche-wordmark">KUCHE</h1>
+        <p>Estación Oficial de Inspección</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <button id="btn-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Instalar</span>
+      </button>
+      <a href="./dashboard.html" class="btn-nav-map" title="Ver mapa general de reportes">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:14px; height:14px;">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+          <line x1="8" y1="2" x2="8" y2="18"/>
+          <line x1="16" y1="6" x2="16" y2="22"/>
+        </svg>
+        <span>Sala GIS</span>
+      </a>
+      <a href="./index.html" class="btn-nav-map" style="background:transparent; border-color:rgba(255,255,255,0.15);" title="Ver propuestas">
+        <span>Diseño</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- SELECTOR DE MODOS (TABS SEGMENTADOS) -->
+  <div class="tabs-container">
+    <div class="segmented-control tabs">
+      <button class="tab activa" id="tab-video" onclick="cambiarModo('video')">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+        <span>Video</span>
+      </button>
+      <button class="tab" id="tab-foto" onclick="cambiarModo('foto')">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="13" r="4"/>
+          <path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+        </svg>
+        <span>Foto</span>
+      </button>
+      <button class="tab" id="tab-manual" onclick="cambiarModo('manual')">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        <span>Manual</span>
+      </button>
+    </div>
+    <button id="btn-cam-toggle" class="btn-cam-toggle" onclick="toggleCamara()">
+      <span class="dot-indicator"></span>
+      <span>Camara: ON</span>
+    </button>
+  </div>
+
+  <!-- VISOR DE CÁMARA / CANVAS -->
+  <div id="visor-container">
+    <div class="hud-reticle hud-tl"></div>
+    <div class="hud-reticle hud-tr"></div>
+    <div class="hud-reticle hud-bl"></div>
+    <div class="hud-reticle hud-br"></div>
+    <canvas id="canvas"></canvas>
+    <div id="progress-bar"></div>
+  </div>
+  <div id="manual-preview" style="display:none">
+    <svg class="icon-svg" viewBox="0 0 24 24" style="width:32px; height:32px; opacity:0.4;">
+      <path d="M1 1l22 22"/>
+      <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"/>
+    </svg>
+    <span>Camara desactivada</span>
+  </div>
+
+  <!-- CONTROL DE MODO VIDEO (MÁXIMO 10 SEGUNDOS) -->
+  <div id="sec-video">
+    <button id="btn-grabar-video" class="btn-record" onclick="toggleGrabacionVideo()">
+      <span id="ico-grabar"><span class="rec-pulse-icon"></span></span>
+      <span id="txt-grabar">Iniciar Grabacion (10s)</span>
+    </button>
+  </div>
+
+  <!-- ESTADO DE LA IA -->
+  <div id="live">Iniciando sistema...</div>
+
+  <!-- SECCIÓN MODO FOTO -->
+  <div id="sec-foto">
+    <button onclick="capturarFoto()" class="btn-primary-action">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span>Capturar y Analizar Foto</span>
+    </button>
+    <label class="btn-file-upload">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <span>Subir imagen desde archivo</span>
+      <input type="file" id="file" accept="image/*" hidden>
+    </label>
+  </div>
+
+  <!-- SECCIÓN MODO MANUAL -->
+  <div id="sec-manual">
+    <div>
+      <label class="form-label" for="infra-categoria-manual">Tipo de Luminaria / Incidencia</label>
+      <select id="infra-categoria-manual" class="input-select">
+        <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
+        <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
+        <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
+        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
+        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label" for="desc-manual">Descripción de la incidencia</label>
+      <textarea id="desc-manual" class="input-textarea" placeholder="Indica referencias de la luminaria, cruce o severidad..." rows="3"></textarea>
+    </div>
+    <button onclick="enviarReporteManualOficial()" class="btn-submit-report">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      <span>Registrar Luminaria Oficial</span>
+    </button>
+  </div>
+
+  <!-- PANEL DE REPORTE (IA detectó algo — modo Video/Foto) -->
+  <div id="panel-reporte">
+    <div class="panel-title-badge">
+      <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>Luminaria Detectada por IA</span>
+    </div>
+
+    <!-- Imagen capturada -->
+    <img id="reporte-img" src="" alt="Captura de luminaria">
+
+    <!-- Categoría detectada (editable) -->
+    <div style="margin-bottom:8px;">
+      <label class="form-label" for="reporte-categoria">Clasificación de Luminaria</label>
+      <select id="reporte-categoria" class="input-select">
+        <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
+        <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
+        <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
+        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
+        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+      </select>
+    </div>
+
+    <!-- Confianza IA -->
+    <div id="reporte-conf"></div>
+
+    <!-- Descripción adicional -->
+    <div style="margin-bottom:12px;">
+      <label class="form-label" for="reporte-desc">Notas de campo (opcional)</label>
+      <textarea id="reporte-desc" class="input-textarea" placeholder="Crucero, altura de poste o condición del foco..." rows="2"></textarea>
+    </div>
+
+    <button onclick="enviarReporteIAOficial()" class="btn-submit-report">
+      <svg class="icon-svg" viewBox="0 0 24 24">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      <span>Confirmar y Registrar (Firma Oficial)</span>
+    </button>
+    <button onclick="descartarReporte()" class="btn-discard-report">
+      Descartar
+    </button>
+  </div>
+
+  <!-- CONSOLA DE DIAGNÓSTICO -->
+  <div id="log-panel"></div>
+
+  <!-- TOAST DE CONFIRMACIÓN -->
+  <div id="toast-ok">
+    <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--green); stroke-width:3;">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span>Registro guardado con autoría oficial</span>
+  </div>
+
+  <video id="video" autoplay playsinline muted hidden></video>
+</div>
+
+<!-- Scripts Kuche: Puente API y Lógica PWA -->
+<script src="./static/kuche-api.js"></script>
+<script src="./static/app.js?v=7.0"></script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// SISTEMA DE AUTENTICACIÓN OFICIAL KUCHE (CURP + CORREO + SESIÓN + OTP)
+// ═══════════════════════════════════════════════════════════════════════
+
+const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[B-DF-HJ-NP-TV-Z]{3}[A-Z0-9]\d$/;
+let sesionActual = null;
+let sesionPendiente = null;
+
+// Validar estructura de CURP en vivo
+function validarCurpInput(input, feedbackId) {
+  input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const val = input.value.trim();
+  const fb = document.getElementById(feedbackId);
+  if (!fb) return;
+
+  if (val.length === 18) {
+    if (CURP_REGEX.test(val)) {
+      fb.textContent = '✅ Formato de CURP válido (18 caracteres)';
+      fb.style.color = '#10B981';
+    } else {
+      fb.textContent = '⚠️ 18 caracteres ingresados, pero la estructura no coincide con CURP oficial';
+      fb.style.color = '#F59E0B';
+    }
+  } else {
+    fb.textContent = `${val.length}/18 caracteres (Formato Oficial RENAPO)`;
+    fb.style.color = '#aaa';
+  }
+}
+
+// Alternar pestañas Login / Registro
+function toggleAuthTab(tab) {
+  const btnLogin = document.getElementById('tab-login-btn');
+  const btnReg = document.getElementById('tab-register-btn');
+  const formLogin = document.getElementById('form-login');
+  const formReg = document.getElementById('form-register');
+
+  if (tab === 'login') {
+    btnLogin.classList.add('active');
+    btnReg.classList.remove('active');
+    formLogin.style.display = 'block';
+    formReg.style.display = 'none';
+  } else {
+    btnLogin.classList.remove('active');
+    btnReg.classList.add('active');
+    formLogin.style.display = 'none';
+    formReg.style.display = 'block';
+  }
+}
+
+// Ver / ocultar contraseña
+function togglePasswordVisibility(fieldId) {
+  const inp = document.getElementById(fieldId);
+  if (!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// Iniciar sesión
+function handleLoginSubmit(e) {
+  e.preventDefault();
+  const curp = document.getElementById('login-curp').value.trim().toUpperCase();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pwd = document.getElementById('login-password').value;
+  const remember = document.getElementById('login-remember').checked;
+
+  if (curp.length !== 18) {
+    alert('La CURP debe tener exactamente 18 caracteres.');
+    return;
+  }
+
+  // Generar datos de sesión
+  sesionPendiente = {
+    curp: curp,
+    email: email,
+    nombre: 'Inspector ' + curp.substring(0, 4),
+    cuadrilla: 'Cuadrilla Activa',
+    remember: remember,
+    loginAt: new Date().toISOString(),
+    token: 'kuc_' + Math.random().toString(36).substring(2) + Date.now().toString(36)
+  };
+
+  dispararModalSeguridad(sesionPendiente);
+}
+
+// Registrar inspector
+function handleRegisterSubmit(e) {
+  e.preventDefault();
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const curp = document.getElementById('reg-curp').value.trim().toUpperCase();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
+  const cuadrilla = document.getElementById('reg-cuadrilla').value.trim();
+  const pwd = document.getElementById('reg-password').value;
+  const remember = document.getElementById('reg-remember').checked;
+
+  if (curp.length !== 18) {
+    alert('La CURP debe tener exactamente 18 caracteres.');
+    return;
+  }
+
+  sesionPendiente = {
+    curp: curp,
+    email: email,
+    nombre: nombre || ('Inspector ' + curp.substring(0, 4)),
+    cuadrilla: cuadrilla || 'Cuadrilla General',
+    remember: remember,
+    loginAt: new Date().toISOString(),
+    token: 'kuc_' + Math.random().toString(36).substring(2) + Date.now().toString(36)
+  };
+
+  dispararModalSeguridad(sesionPendiente);
+}
+
+// Modal de correo de seguridad
+function dispararModalSeguridad(sesion) {
+  const otp = 'KUC-' + Math.floor(100000 + Math.random() * 900000);
+  document.getElementById('modal-email-destinatario').textContent = sesion.email;
+  document.getElementById('modal-curp-span').textContent = sesion.curp;
+  document.getElementById('modal-fecha-span').textContent = new Date().toLocaleString();
+  document.getElementById('modal-otp-code').textContent = otp;
+  document.getElementById('modal-seguridad-correo').style.display = 'flex';
+
+  // Si hay backend conectado, intentar notificar por API
+  if (window.KucheAPI && window.KucheAPI.isOnline()) {
+    fetch(window.KucheAPI.apiUrl('/api/auth/notificar_seguridad'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        curp: sesion.curp,
+        email: sesion.email,
+        otp: otp,
+        timestamp: sesion.loginAt
+      })
+    }).catch(err => console.log('[Auth] Backend notify (handled):', err));
+  }
+}
+
+// Completar ingreso y activar App Oficial
+function completarIngresoOficial() {
+  document.getElementById('modal-seguridad-correo').style.display = 'none';
+  if (!sesionPendiente) return;
+  sesionActual = sesionPendiente;
+
+  if (sesionActual.remember) {
+    localStorage.setItem('kuche_auth_session', JSON.stringify(sesionActual));
+  } else {
+    sessionStorage.setItem('kuche_auth_session', JSON.stringify(sesionActual));
+  }
+
+  activarVistaAppOficial(sesionActual);
+}
+
+// Activar vista oficial
+function activarVistaAppOficial(sesion) {
+  document.getElementById('view-auth-container').style.display = 'none';
+  document.getElementById('view-app-container').style.display = 'block';
+
+  document.getElementById('badge-inspector-nombre').textContent = sesion.nombre;
+  document.getElementById('badge-inspector-curp').textContent = sesion.curp;
+  document.getElementById('badge-inspector-cuadrilla').textContent = sesion.cuadrilla;
+
+  // Iniciar cámara si está encendida
+  if (typeof iniciarCamara === 'function') {
+    iniciarCamara();
+  }
+}
+
+// Cerrar sesión
+function cerrarSesionOficial() {
+  if (!confirm('¿Deseas cerrar tu sesión oficial?')) return;
+  localStorage.removeItem('kuche_auth_session');
+  sessionStorage.removeItem('kuche_auth_session');
+  sesionActual = null;
+  sesionPendiente = null;
+
+  if (typeof detenerCamara === 'function') {
+    detenerCamara();
+  }
+
+  document.getElementById('view-app-container').style.display = 'none';
+  document.getElementById('view-auth-container').style.display = 'flex';
+}
+
+// Envío de reportes con firma oficial (CURP)
+window.enviarReporteManualOficial = async function() {
+  const usuarioFirma = sesionActual ? `${sesionActual.curp} (${sesionActual.nombre} - ${sesionActual.cuadrilla})` : 'Inspector Oficial';
+  const cat  = document.getElementById('infra-categoria-manual').value;
+  const desc = (document.getElementById('desc-manual').value || '').trim();
+  await _enviarReporteConUsuario(cat, desc, null, usuarioFirma);
+  document.getElementById('desc-manual').value = '';
+};
+
+window.enviarReporteIAOficial = async function() {
+  const usuarioFirma = sesionActual ? `${sesionActual.curp} (${sesionActual.nombre} - ${sesionActual.cuadrilla})` : 'Inspector Oficial';
+  const cat  = document.getElementById('reporte-categoria').value;
+  const desc = (document.getElementById('reporte-desc').value || '').trim();
+  const img  = document.getElementById('reporte-img');
+  const imgB64 = (img && img.src && img.src.startsWith('data:')) ? img.src.split(',')[1] : null;
+
+  await _enviarReporteConUsuario(cat, desc, imgB64, usuarioFirma);
+  document.getElementById('panel-reporte').style.display = 'none';
+  if (modo === 'video' && typeof iniciarAnalisisVideo === 'function') iniciarAnalisisVideo();
+};
+
+async function _enviarReporteConUsuario(categoria, descripcion, imgB64, usuario) {
+  const texto = categoria + (descripcion ? ' | ' + descripcion : '');
+  try {
+    const body = {
+      luminaria: texto,
+      incidencia: texto,
+      placa: texto,
+      tipo: 'Inspección Kuche Oficial',
+      usuario: usuario,
+      img: imgB64 || null,
+      conf: '1.0',
+      lat: ubiActual ? ubiActual.lat : null,
+      lon: ubiActual ? ubiActual.lon : null
+    };
+    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/registrar') : '/api/infraestructura/registrar';
+    const r = await fetch(targetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (r.ok) {
+      mostrarToast('Registro guardado con autoría oficial: ' + (sesionActual ? sesionActual.curp : ''));
+      LOG('Reporte oficial firmado por: ' + usuario, '#00ff80');
+      estado('Reporte enviado con firma oficial', '#00ff80');
+    } else {
+      throw new Error('HTTP ' + r.status);
+    }
+  } catch (e) {
+    LOG('Error al enviar reporte oficial: ' + e.message, '#ff4444');
+    alert('Error al enviar reporte: ' + e.message);
+  }
+}
+
+// ── Comprobar si ya existe sesión guardada al abrir la página ─────
+window.addEventListener('DOMContentLoaded', () => {
+  const guardada = localStorage.getItem('kuche_auth_session') || sessionStorage.getItem('kuche_auth_session');
+  if (guardada) {
+    try {
+      const parsed = JSON.parse(guardada);
+      if (parsed && parsed.curp) {
+        sesionActual = parsed;
+        activarVistaAppOficial(sesionActual);
+      }
+    } catch(e) {}
+  }
+});
+</script>
+</body>
+</html>
