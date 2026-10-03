@@ -20,7 +20,9 @@ Documento de especificación gráfica y funcional para el sistema **Kuche**, cen
 
 * **Nombre Oficial del Proyecto:** **Kuche**
 * **Origen Lingüístico:** *Ngwa* / *Ngigua* (Popoloca), lengua perteneciente a la familia lingüística otomangue (región del Valle de Tehuacán y Sierra Negra, Puebla / Oaxaca).
-* **Simbolismo Cultural:** La luz y guía comunal que orienta los caminos y espacios públicos en el territorio tradicional.
+* **Etimología y Significado:** Proviene directamente del vocablo popoloca para **«Luz»** (claridad, iluminación y guía luminosa).
+* **Simbolismo Cultural:** La luz y guía comunal que disipa la oscuridad, orienta los caminos y resguarda los espacios públicos en el territorio tradicional.
+* **Propósito en el Sistema:** Brindar tecnología de monitoreo e inspección con IA para mantener encendida y en óptimo estado la red de luminarias y alumbrado público urbano y rural.
 
 ---
 

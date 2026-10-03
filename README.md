@@ -1,6 +1,6 @@
 # KUCHE — Plataforma de Gestión y Monitoreo de Luminarias
 
-Sitio web interactivo con la propuesta visual, identidad biocultural popoloca y mockups de alta fidelidad para el sistema de monitoreo de alumbrado público y luminarias **KUCHE**.
+Sitio web interactivo con la propuesta visual, identidad biocultural y mockups de alta fidelidad para el sistema de monitoreo de alumbrado público y luminarias **KUCHE** (del vocablo popoloca *ngigua / ngwa*: **«Luz»**).
 
 ## 🌐 Ver Sitio Publicado (GitHub Pages)
 👉 **[https://08nicks.github.io/dise-o_kuche/](https://08nicks.github.io/dise-o_kuche/)**
@@ -9,8 +9,8 @@ Sitio web interactivo con la propuesta visual, identidad biocultural popoloca y 
 
 ## 🏛️ Contenido del Portal
 1. **Identidad Visual:**
+   - Concepto biocultural y etimología: **Kuche = «Luz»** en lengua popoloca (*Ngwa / Ngigua*) de Tehuacán y Los Reyes Metzontla.
    - Paleta cromática oficial con funcionalidad *click-to-copy*.
-   - Concepto biocultural (raíz *Ngwa* / Popoloca de Los Reyes Metzontla y Tehuacán).
    - Acervo de códices, glifos tradicionales y piezas históricas ampliables en visor lightbox.
    - Jerarquía tipográfica con Montserrat.
 2. **Propuestas de Diseño (Matriz 3x3 Interactiva):**

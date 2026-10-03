@@ -1932,7 +1932,7 @@
 
   <!-- PLECA SUB-HEADER CON ESTADO Y LEMA -->
   <div class="status-strip-official">
-    <span class="tag-current" id="status-tag-text">Proyecto Kuche · Sistema de Luminarias y Alumbrado Público · Raíz Popoloca (Ngwa)</span>
+    <span class="tag-current" id="status-tag-text">Kuche («Luz» en Popoloca / Ngwa) · Sistema de Monitoreo de Luminarias y Alumbrado Público</span>
     <span id="status-desc-text">Exclusivo Monitoreo y Verificación de la Red de Luminarias en Tiempo Real</span>
   </div>
 
@@ -1967,15 +1967,20 @@
         <!-- Tarjeta Hero de Concepto Biocultural Kuche -->
         <div class="hero-identity-box" id="sec-identidad-concepto">
           <div class="hero-text-content">
-            <h2>Kuche — Significado y Patrimonio Biocultural</h2>
+            <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(188,149,92,0.15); border:1px solid var(--clr-dorado-metal); border-radius:4px; padding:4px 12px; margin-bottom:12px;">
+              <svg class="svg-ico" viewBox="0 0 24 24" style="color:var(--clr-dorado-metal);"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <span style="font-size:11px; font-weight:800; color:var(--clr-guinda-dark); letter-spacing:0.8px; text-transform:uppercase;">Etimología Originaria: Kuche = «Luz»</span>
+            </div>
+            <h2>Kuche — El Nombre de la Luz en Lengua Popoloca</h2>
             <p>
-              En lengua popoloca originaria (<strong>Ngwa / Ngigua</strong>) de Tehuacán y Los Reyes Metzontla, <strong>Kuche</strong> simboliza la luminosidad comunal y el punto de encuentro territorial donde convergen los caminos iluminados de los pueblos. El proyecto integra este legado con la alfarería tradicional de <strong>barro bruñido de Metzontla</strong> y una estética limpia, armónica y sobria.
+              El nombre del sistema es <strong>Kuche</strong>, vocablo de la lengua originaria popoloca (<strong>Ngwa / Ngigua</strong>) de la región del Valle de Tehuacán y Los Reyes Metzontla que significa <strong>«Luz»</strong>. Representa la claridad, la iluminación comunal y la guía que alumbra los caminos y espacios públicos en el territorio tradicional. El proyecto rinde tributo a este patrimonio biocultural vinculándolo con el arte del <strong>barro bruñido de Metzontla</strong> y una arquitectura de inspección con Inteligencia Artificial enfocada exclusivamente en mantener encendida y óptima la <strong>red de luminarias y alumbrado público</strong>.
             </p>
             <div class="chips-spec-row">
+              <span class="badge-chip-spec" style="background:#FFFBEB; border-color:#F59E0B; color:#92400E; font-weight:800;">Raíz: Popoloca (Ngwa) = «Luz»</span>
               <span class="badge-chip-spec">Fondo: Blanco Institucional</span>
               <span class="badge-chip-spec">Tipografía: Montserrat en Toda la UI</span>
-              <span class="badge-chip-spec">Enfoque: Red de Luminarias Únicamente</span>
-              <span class="badge-chip-spec">Acervo: Glifos de Metzontla</span>
+              <span class="badge-chip-spec">Enfoque: Red de Luminarias y Alumbrado</span>
+              <span class="badge-chip-spec">Patrimonio: Valle de Tehuacán y Metzontla</span>
             </div>
           </div>
         </div>
@@ -2124,6 +2129,14 @@
               <div>
                 <h4>Glifo Luminaria</h4>
                 <p>Trazo de códice ngwa</p>
+              </div>
+            </div>
+
+            <div class="asset-thumb-card" onclick="abrirModalLightbox('kuche identidda visual/velas.png', 'Velas y Luminarias Tradicionales', 'Representación tradicional de la luz comunitaria en códice popoloca, fuente de inspiración para Kuche (Luz).')">
+              <img src="kuche identidda visual/velas.png" alt="Luminarias Tradicionales Velas">
+              <div>
+                <h4>Kuche · Luz / Velas</h4>
+                <p>Icono de luz tradicional</p>
               </div>
             </div>
 
@@ -3134,7 +3147,7 @@
 
       if (menu === 'identity') {
         pIdentity.classList.add('active');
-        sTag.textContent = 'Proyecto Kuche · Sistema de Monitoreo de Luminarias · Raíz Popoloca (Ngwa)';
+        sTag.textContent = 'Kuche («Luz» en Popoloca / Ngwa) · Sistema de Monitoreo de Luminarias y Alumbrado Público';
         sDesc.textContent = 'Colores Institucionales, Tipografía Montserrat y Códices de Metzontla';
       } else if (menu === 'mockups') {
         pMockups.classList.add('active');
