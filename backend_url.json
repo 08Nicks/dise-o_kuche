@@ -1,5 +1,5 @@
 {
-  "backend_url": "",
-  "online": false,
-  "updated_at": "2026-10-03T22:30:00Z"
+  "backend_url": "https://kuche-live-test.trycloudflare.com",
+  "online": true,
+  "updated_at": "2026-10-03T22:30:03.107515+00:00"
 }
