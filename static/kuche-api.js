@@ -6,8 +6,8 @@
  * =====================================================================
  */
 (function() {
-  const GITHUB_REPO_API = 'https://api.github.com/repos/08Nicks/dise-o_kuche/contents/backend_url.json';
-  const GITHUB_RAW_URL  = 'https://raw.githubusercontent.com/08Nicks/dise-o_kuche/main/backend_url.json';
+  const GITHUB_REPO_API = 'https://api.github.com/repos/08Nicks/dise-o_kuche/contents/backend_url.json?ref=gh-pages';
+  const GITHUB_RAW_URL  = 'https://raw.githubusercontent.com/08Nicks/dise-o_kuche/gh-pages/backend_url.json';
   const LOCAL_JSON_PATH = './backend_url.json';
 
   let backendUrl = localStorage.getItem('kuche_backend_url') || '';
