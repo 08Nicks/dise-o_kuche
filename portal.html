@@ -236,13 +236,13 @@
     <!-- 1. FORMULARIO DE INICIAR SESIÓN -->
     <form id="form-login" onsubmit="handleLoginSubmit(event)">
       <div class="auth-form-group">
-        <label class="auth-form-label" for="login-user">Usuario o Correo</label>
-        <input type="text" id="login-user" class="auth-input-field" placeholder="ej. inspector1@kuche.gob.mx o admin" required>
+        <label class="auth-form-label" for="login-user">Correo Electrónico o CURP</label>
+        <input type="text" id="login-user" class="auth-input-field" placeholder="ej. ciudadano@correo.com o CURP (18 caracteres)" required autocomplete="username">
       </div>
 
       <div class="auth-form-group">
         <label class="auth-form-label" for="login-password">Contraseña</label>
-        <input type="password" id="login-password" class="auth-input-field" placeholder="••••••••" required>
+        <input type="password" id="login-password" class="auth-input-field" placeholder="••••••••" required autocomplete="current-password">
       </div>
 
       <div class="auth-remember-row">
@@ -258,30 +258,36 @@
 
       <div style="text-align:center; margin-top:16px; font-size:12px;">
         <span style="color:var(--text-secondary);">¿No tienes una cuenta aún?</span>
-        <button type="button" onclick="cambiarAuthTab('registro')" style="background:none; border:none; color:var(--dorado-accent); font-weight:700; cursor:pointer; text-decoration:underline; margin-left:4px; font-family:inherit;">Hacer una cuenta nueva</button>
+        <button type="button" onclick="cambiarAuthTab('registro')" style="background:none; border:none; color:var(--dorado-accent); font-weight:700; cursor:pointer; text-decoration:underline; margin-left:4px; font-family:inherit;">Hacer una cuenta nueva con Correo o CURP</button>
       </div>
     </form>
 
     <!-- 2. FORMULARIO DE CREAR CUENTA NUEVA -->
     <form id="form-registro" onsubmit="handleRegistroSubmit(event)" style="display:none;">
       <div class="auth-form-group">
-        <label class="auth-form-label" for="reg-nombre">Nombre Completo o Inspector</label>
-        <input type="text" id="reg-nombre" class="auth-input-field" placeholder="ej. Ing. Carlos Mendoza" required>
+        <label class="auth-form-label" for="reg-nombre">Nombre Completo del Ciudadano / Inspector</label>
+        <input type="text" id="reg-nombre" class="auth-input-field" placeholder="ej. Mario Roberto Morales" required>
       </div>
 
       <div class="auth-form-group">
-        <label class="auth-form-label" for="reg-user">Usuario o Correo Institucional</label>
-        <input type="text" id="reg-user" class="auth-input-field" placeholder="ej. carlos.mendoza@kuche.gob.mx" required>
+        <label class="auth-form-label" for="reg-correo">Correo Electrónico</label>
+        <input type="email" id="reg-correo" class="auth-input-field" placeholder="ej. mario.morales@correo.com">
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-curp">CURP (Clave Única de Registro de Población)</label>
+        <input type="text" id="reg-curp" class="auth-input-field" placeholder="ej. MORM800101HDFRRN09 (18 caracteres)" maxlength="18" style="text-transform:uppercase; font-family:'JetBrains Mono', monospace;">
+        <small style="color:var(--text-secondary); font-size:10.5px; display:block; margin-top:4px;">Ingresa tu Correo, tu CURP o ambos para poder acceder.</small>
       </div>
 
       <div class="auth-form-group">
         <label class="auth-form-label" for="reg-password">Contraseña</label>
-        <input type="password" id="reg-password" class="auth-input-field" placeholder="Crea una contraseña" required>
+        <input type="password" id="reg-password" class="auth-input-field" placeholder="Crea una contraseña" required autocomplete="new-password">
       </div>
 
       <div class="auth-form-group">
         <label class="auth-form-label" for="reg-password-confirm">Confirmar Contraseña</label>
-        <input type="password" id="reg-password-confirm" class="auth-input-field" placeholder="Repite la contraseña" required>
+        <input type="password" id="reg-password-confirm" class="auth-input-field" placeholder="Repite la contraseña" required autocomplete="new-password">
       </div>
 
       <button type="submit" class="auth-btn-primary" style="background:linear-gradient(135deg, var(--clr-dorado-metal), #a07a42); color:#000; font-weight:800;">
@@ -545,36 +551,52 @@ function cambiarAuthTab(tab) {
   }
 }
 
-// Iniciar sesión
+// Iniciar sesión (por Correo o CURP)
 function handleLoginSubmit(e) {
   e.preventDefault();
-  const user = document.getElementById('login-user').value.trim();
+  const inputIdentificador = document.getElementById('login-user').value.trim();
   const pwd = document.getElementById('login-password').value;
   const remember = document.getElementById('login-remember').checked;
 
-  if (!user || !pwd) {
-    alert('Por favor ingresa usuario y contraseña.');
+  if (!inputIdentificador || !pwd) {
+    alert('Por favor ingresa tu Correo Electrónico o CURP y tu contraseña.');
     return;
   }
 
+  const limpio = inputIdentificador.toLowerCase();
+  const limpioCurp = inputIdentificador.toUpperCase();
+
   // Buscar en cuentas registradas locales
   const cuentasRaw = localStorage.getItem('kuche_cuentas_registradas') || '[]';
-  let nombreEncontrado = user.includes('@') ? user.split('@')[0] : user;
+  let nombreEncontrado = inputIdentificador.includes('@') ? inputIdentificador.split('@')[0] : inputIdentificador;
+  let correoEncontrado = '';
+  let curpEncontrada = '';
+
   try {
     const cuentas = JSON.parse(cuentasRaw);
-    const c = cuentas.find(item => item.user.toLowerCase() === user.toLowerCase());
+    const c = cuentas.find(item => 
+      (item.correo && item.correo.toLowerCase() === limpio) ||
+      (item.curp && item.curp.toUpperCase() === limpioCurp) ||
+      (item.user && item.user.toLowerCase() === limpio) ||
+      (item.user && item.user.toUpperCase() === limpioCurp)
+    );
+
     if (c) {
       if (c.password && c.password !== pwd) {
-        alert('Contraseña incorrecta. Intente de nuevo.');
+        alert('Contraseña incorrecta. Por favor verifica tus credenciales.');
         return;
       }
       nombreEncontrado = c.nombre || c.user;
+      correoEncontrado = c.correo || '';
+      curpEncontrada = c.curp || '';
     }
-  } catch(e) {}
+  } catch(err) {}
 
   sesionActual = {
-    user: user,
+    user: inputIdentificador,
     nombre: nombreEncontrado,
+    correo: correoEncontrado,
+    curp: curpEncontrada,
     remember: remember,
     loginAt: new Date().toISOString()
   };
@@ -588,16 +610,32 @@ function handleLoginSubmit(e) {
   activarVistaApp(sesionActual);
 }
 
-// Registrar nueva cuenta
+// Registrar nueva cuenta (por Correo o CURP)
 function handleRegistroSubmit(e) {
   e.preventDefault();
   const nombre = document.getElementById('reg-nombre').value.trim();
-  const user = document.getElementById('reg-user').value.trim();
+  const correo = (document.getElementById('reg-correo').value || '').trim();
+  const curp = (document.getElementById('reg-curp').value || '').trim().toUpperCase();
   const pwd = document.getElementById('reg-password').value;
   const pwdConfirm = document.getElementById('reg-password-confirm').value;
 
-  if (!nombre || !user || !pwd) {
-    alert('Por favor completa todos los campos.');
+  if (!nombre) {
+    alert('Por favor ingresa tu nombre completo.');
+    return;
+  }
+
+  if (!correo && !curp) {
+    alert('Por favor ingresa al menos un Correo Electrónico o tu CURP para crear la cuenta.');
+    return;
+  }
+
+  if (curp && curp.length < 10) {
+    alert('La CURP ingresada no parece válida (debe tener entre 10 y 18 caracteres).');
+    return;
+  }
+
+  if (!pwd) {
+    alert('Por favor ingresa una contraseña.');
     return;
   }
 
@@ -606,22 +644,31 @@ function handleRegistroSubmit(e) {
     return;
   }
 
-  // Obtener cuentas previas
+  // Obtener cuentas previas para evitar duplicados
   const cuentasRaw = localStorage.getItem('kuche_cuentas_registradas') || '[]';
   let cuentas = [];
-  try { cuentas = JSON.parse(cuentasRaw); } catch(e) { cuentas = []; }
+  try { cuentas = JSON.parse(cuentasRaw); } catch(err) { cuentas = []; }
 
-  const yaExiste = cuentas.find(c => c.user.toLowerCase() === user.toLowerCase());
+  const yaExiste = cuentas.find(c => 
+    (correo && c.correo && c.correo.toLowerCase() === correo.toLowerCase()) ||
+    (curp && c.curp && c.curp.toUpperCase() === curp) ||
+    (correo && c.user && c.user.toLowerCase() === correo.toLowerCase()) ||
+    (curp && c.user && c.user.toUpperCase() === curp)
+  );
+
   if (yaExiste) {
-    alert('Ya existe una cuenta con este usuario o correo. Por favor inicia sesión.');
+    alert('Ya existe una cuenta con este Correo o CURP. Por favor inicia sesión directamente.');
     cambiarAuthTab('login');
-    document.getElementById('login-user').value = user;
+    document.getElementById('login-user').value = correo || curp;
     return;
   }
 
+  const identificadorPrincipal = correo || curp;
   const nuevaCuenta = {
     nombre: nombre,
-    user: user,
+    user: identificadorPrincipal,
+    correo: correo,
+    curp: curp,
     password: pwd,
     fechaRegistro: new Date().toISOString()
   };
@@ -629,14 +676,16 @@ function handleRegistroSubmit(e) {
   localStorage.setItem('kuche_cuentas_registradas', JSON.stringify(cuentas));
 
   sesionActual = {
-    user: user,
+    user: identificadorPrincipal,
     nombre: nombre,
+    correo: correo,
+    curp: curp,
     remember: true,
     loginAt: new Date().toISOString()
   };
   localStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
 
-  alert(`Cuenta creada exitosamente para ${nombre}. Bienvenido a KUCHE.`);
+  alert(`Cuenta creada exitosamente para ${nombre}.\nPuedes iniciar sesión en cualquier momento con tu Correo o con tu CURP.`);
   activarVistaApp(sesionActual);
 }
 
