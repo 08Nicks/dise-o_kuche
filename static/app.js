@@ -549,26 +549,40 @@ function mostrarPanelReporte(vista) {
     conf.style.display = 'block';
   }
 
-  estado('🚨 Luminaria detectada: Generación de reporte obligatoria', '#ffcc00');
+  const inpFalla = document.getElementById('reporte-falla');
+  if (inpFalla) {
+    inpFalla.value = '';
+    setTimeout(() => inpFalla.focus(), 300);
+  }
+
+  estado('Luminaria detectada: Generación de reporte obligatoria', '#ffcc00');
   panel.style.display = 'block';
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // El reporte es OBLIGATORIO: no se permite descartar
 window.descartarReporte = function () {
-  LOG('🚨 El levantamiento del reporte es obligatorio para registrar la evidencia.', '#ff9800');
-  mostrarToast('🚨 El registro del reporte es obligatorio');
+  LOG('El levantamiento del reporte es obligatorio para registrar la evidencia.', '#ff9800');
+  mostrarToast('El registro del reporte es obligatorio');
 };
 
-// ─── Enviar reporte IA (Obligatorio) ───────────────────────────
+// ─── Enviar reporte IA (Obligatorio con redacción humana de falla) ──
 window.enviarReporteIA = async function () {
   const inpTipo = document.getElementById('reporte-tipo-luminaria');
   const selCat  = document.getElementById('reporte-categoria');
-  const tipo    = (inpTipo && inpTipo.value) || (selCat && selCat.value) || 'Luminaria LED Vial';
+  const tipo    = (inpTipo && inpTipo.value) || (selCat && selCat.value) || 'Luminaria de Alumbrado';
   
-  const selCond = document.getElementById('reporte-condicion');
-  const condicion = selCond ? selCond.value : 'Apagada / Foco Fundido';
-  const desc = (document.getElementById('reporte-desc').value || '').trim();
+  const inpFalla = document.getElementById('reporte-falla');
+  const falla = (inpFalla && inpFalla.value ? inpFalla.value.trim() : '');
+  
+  if (!falla || falla.length < 3) {
+    alert('Debe escribir la descripción de la falla para generar el reporte oficial.');
+    if (inpFalla) inpFalla.focus();
+    return;
+  }
+
+  const inpDesc = document.getElementById('reporte-desc');
+  const ref = (inpDesc && inpDesc.value ? inpDesc.value.trim() : '');
   
   const img  = document.getElementById('reporte-img');
   const imgB64 = (img && img.src && img.src.startsWith('data:')) ? img.src.split(',')[1] : null;
@@ -580,13 +594,13 @@ window.enviarReporteIA = async function () {
   }
 
   try {
-    const detalleIncidencia = `${condicion}${desc ? ' — ' + desc : ''}`;
+    const detalleIncidencia = `${falla}${ref ? ' — Referencia: ' + ref : ''}`;
     await _enviarReporte(tipo, detalleIncidencia, imgB64);
-    mostrarToast('✅ Reporte oficial registrado con éxito');
+    mostrarToast('Reporte oficial registrado con éxito');
     
     document.getElementById('panel-reporte').style.display = 'none';
-    const descEl = document.getElementById('reporte-desc');
-    if (descEl) descEl.value = '';
+    if (inpFalla) inpFalla.value = '';
+    if (inpDesc) inpDesc.value = '';
     
     // Reiniciar para la siguiente luminaria
     if (modo === 'video' && camaraEncendida) {
@@ -599,7 +613,7 @@ window.enviarReporteIA = async function () {
   } finally {
     if (btnSubmit) {
       btnSubmit.disabled = false;
-      btnSubmit.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>🚨 Confirmar y Enviar Reporte Oficial</span>`;
+      btnSubmit.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>Confirmar y Enviar Reporte Oficial</span>`;
     }
   }
 };
@@ -669,7 +683,7 @@ function mostrarToast(msg) {
 window.cambiarModo = function (nuevoModo) {
   const panel = document.getElementById('panel-reporte');
   if (panel && panel.style.display === 'block') {
-    mostrarToast('🚨 Reporte obligatorio pendiente. Envíe el reporte antes de cambiar de sección.');
+    mostrarToast('Reporte obligatorio pendiente. Envíe el reporte antes de cambiar de sección.');
     return;
   }
   modo = nuevoModo;

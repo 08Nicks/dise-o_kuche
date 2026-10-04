@@ -519,7 +519,7 @@
       <span>EN VIVO</span>
     </div>
     <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTemaDashboard()" title="Alternar entre Modo Oscuro y Modo Claro">
-      ☀️ Modo Claro
+      Modo Claro
     </button>
     <button id="btn-refresh" onclick="cargarDatos()">
       <svg class="icon-svg" viewBox="0 0 24 24">
@@ -831,7 +831,7 @@ function aplicarTemaDashboard(tema) {
   document.body.classList.add(tema === 'light' ? 'theme-light' : 'theme-dark');
 
   const btn = document.getElementById('btn-theme-toggle');
-  if (btn) btn.innerHTML = tema === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+  if (btn) btn.innerHTML = tema === 'light' ? 'Modo Oscuro' : 'Modo Claro';
 
   const mapEl = document.getElementById('map');
   if (mapEl) {
@@ -865,8 +865,8 @@ window.addEventListener('storage', (e) => {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/static/sw.js')
-      .then(reg => console.log('✅ [PWA Dashboard Kuche] Service Worker activo:', reg.scope))
-      .catch(err => console.warn('⚠️ [PWA Dashboard Kuche] Error:', err));
+      .then(reg => console.log('[PWA Dashboard Kuche] Service Worker activo:', reg.scope))
+      .catch(err => console.warn('[PWA Dashboard Kuche] Error:', err));
   });
 }
 </script>
