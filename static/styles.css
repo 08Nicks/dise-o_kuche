@@ -5,29 +5,32 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-:root {
-  --bg-base: #070a11;
-  --bg-surface: #0f172a;
-  --bg-surface-glass: rgba(15, 23, 42, 0.82);
-  --bg-surface-elevated: #1e293b;
-  --bg-input: #0b1120;
+:root, body.theme-dark {
+  --bg-base: #131113;
+  --bg-surface: #1B181A;
+  --bg-surface-glass: rgba(27, 24, 26, 0.92);
+  --bg-surface-elevated: #252124;
+  --bg-input: #252124;
   
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.16);
-  --border-active: #00d2ff;
+  --border-subtle: #2E292C;
+  --border-medium: #2E292C;
+  --border-active: #E6D194;
   
-  --cyan: #00d2ff;
-  --cyan-glow: rgba(0, 210, 255, 0.25);
+  --cyan: #E6D194;
+  --cyan-glow: rgba(230, 209, 148, 0.25);
   --green: #10b981;
   --green-glow: rgba(16, 185, 129, 0.25);
   --amber: #f59e0b;
   --amber-glow: rgba(245, 158, 11, 0.25);
-  --red: #ef4444;
-  --red-glow: rgba(239, 68, 68, 0.35);
+  --red: #9B2247;
+  --red-glow: rgba(155, 34, 71, 0.35);
   
-  --text-main: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-main: #F1ECEE;
+  --text-secondary: #A69CA1;
+  --text-muted: #A69CA1;
+  
+  --guinda-primary: #9B2247;
+  --dorado-accent: #E6D194;
   
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -35,7 +38,73 @@
   --radius-full: 9999px;
   
   --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px var(--cyan-glow);
+  --shadow-glow: 0 0 20px rgba(230, 209, 148, 0.25);
+}
+
+body.theme-light {
+  --bg-base: #F8F9FA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-glass: rgba(255, 255, 255, 0.95);
+  --bg-surface-elevated: #F3F4F6;
+  --bg-input: #FFFFFF;
+  
+  --border-subtle: #E5E7EB;
+  --border-medium: #D1D5DB;
+  --border-active: #9B2247;
+  
+  --cyan: #9B2247;
+  --cyan-glow: rgba(155, 34, 71, 0.2);
+  --green: #059669;
+  --green-glow: rgba(5, 150, 105, 0.2);
+  --amber: #d97706;
+  --amber-glow: rgba(217, 119, 6, 0.2);
+  --red: #9B2247;
+  --red-glow: rgba(155, 34, 71, 0.25);
+  
+  --text-main: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+  
+  --guinda-primary: #9B2247;
+  --dorado-accent: #BC955C;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+  
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 16px rgba(155, 34, 71, 0.15);
+}
+
+.btn-theme-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-medium);
+  background: var(--bg-surface-elevated);
+  color: var(--dorado-accent);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.btn-theme-pill:hover {
+  border-color: var(--dorado-accent);
+  transform: translateY(-1px);
+}
+body.theme-light .btn-theme-pill {
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  color: #9B2247;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+body.theme-light .btn-theme-pill:hover {
+  border-color: #9B2247;
+  background: #F9FAFB;
 }
 
 *, *::before, *::after {
@@ -53,6 +122,7 @@ body {
   display: flex;
   justify-content: center;
   overflow-x: hidden;
+  transition: background-color 0.25s, color 0.25s;
 }
 
 .app-wrapper {
@@ -61,9 +131,10 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 0%, #131d33 0%, var(--bg-base) 60%);
+  background: var(--bg-base);
   padding: 0 10px 30px;
   position: relative;
+  transition: background-color 0.25s;
 }
 
 /* ─── Top Navbar ─────────────────────────────────────────────── */
@@ -87,7 +158,7 @@ body {
   font-size: 22px;
   font-weight: 900;
   letter-spacing: 2px;
-  color: #611232;
+  color: var(--guinda-primary);
   line-height: 1;
   text-transform: uppercase;
   margin-bottom: 2px;
@@ -104,9 +175,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #611232;
+  background: var(--guinda-primary);
   color: #FFFFFF;
-  border: 1px solid #BC955C;
+  border: 1px solid var(--dorado-accent);
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-size: 11.5px;
@@ -116,29 +187,12 @@ body {
 }
 
 .btn-instalar-pwa:hover {
-  background: #7e1741;
+  filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
 .btn-nav-map {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(0, 210, 255, 0.1);
-  color: var(--cyan);
-  border: 1px solid rgba(0, 210, 255, 0.3);
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  font-size: 11px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.btn-nav-map:hover {
-  background: var(--cyan);
-  color: #000;
-  transform: translateY(-1px);
+  display: none !important;
 }
 
 /* ─── Tabs Segmentados (Modo) ────────────────────────────────── */
@@ -183,10 +237,10 @@ body {
 }
 
 .tab.activa {
-  background: var(--bg-surface-elevated);
-  color: var(--cyan);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 210, 255, 0.3);
+  background: var(--guinda-primary);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(155, 34, 71, 0.4);
+  border: 1px solid var(--dorado-accent);
 }
 
 .btn-cam-toggle {
@@ -296,9 +350,9 @@ canvas#canvas {
 .btn-record {
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  background: linear-gradient(135deg, #7e1741, #9B2247);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--dorado-accent);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 700;
@@ -368,7 +422,7 @@ canvas#canvas {
 
 /* ─── Consola de Diagnóstico (Log) ───────────────────────────── */
 #log-panel {
-  background: #050811;
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
@@ -400,9 +454,9 @@ canvas#canvas {
 .btn-primary-action {
   width: 100%;
   padding: 13px 18px;
-  background: linear-gradient(135deg, var(--cyan), #0284c7);
-  color: #000;
-  border: none;
+  background: linear-gradient(135deg, #7e1741, #9B2247);
+  color: #fff;
+  border: 1px solid var(--dorado-accent);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 700;
@@ -411,7 +465,7 @@ canvas#canvas {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px var(--cyan-glow);
+  box-shadow: 0 4px 14px rgba(155, 34, 71, 0.4);
   transition: all 0.2s ease;
 }
 
@@ -438,8 +492,8 @@ canvas#canvas {
 }
 
 .btn-file-upload:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--cyan);
+  background: var(--bg-surface);
+  border-color: var(--dorado-accent);
 }
 
 /* ─── Sección Modo Manual ────────────────────────────────────── */
@@ -478,8 +532,8 @@ canvas#canvas {
 }
 
 .input-select:focus, .input-textarea:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 2px var(--cyan-glow);
+  border-color: var(--dorado-accent);
+  box-shadow: 0 0 0 2px rgba(230, 209, 148, 0.25);
 }
 
 .input-textarea {
@@ -490,13 +544,12 @@ canvas#canvas {
 /* ─── Panel Modal de Reporte IA ──────────────────────────────── */
 #panel-reporte {
   display: none;
-  background: var(--bg-surface-glass);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(0, 210, 255, 0.35);
+  background: var(--bg-surface);
+  border: 1px solid var(--dorado-accent);
   border-radius: var(--radius-lg);
   padding: 14px;
   margin-bottom: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-card);
   animation: slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -513,12 +566,12 @@ canvas#canvas {
   font-weight: 700;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: var(--cyan);
-  background: rgba(0, 210, 255, 0.1);
+  color: var(--dorado-accent);
+  background: rgba(188, 149, 92, 0.15);
   padding: 4px 10px;
   border-radius: var(--radius-full);
   margin-bottom: 10px;
-  border: 1px solid rgba(0, 210, 255, 0.25);
+  border: 1px solid var(--dorado-accent);
 }
 
 #reporte-img {
@@ -543,9 +596,9 @@ canvas#canvas {
 .btn-submit-report {
   width: 100%;
   padding: 13px;
-  background: linear-gradient(135deg, var(--green), #059669);
-  color: #000;
-  border: none;
+  background: linear-gradient(135deg, #7e1741, #9B2247);
+  color: #FFFFFF;
+  border: 1px solid var(--dorado-accent);
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 700;
@@ -554,7 +607,7 @@ canvas#canvas {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px var(--green-glow);
+  box-shadow: 0 4px 14px rgba(155, 34, 71, 0.4);
   transition: all 0.2s ease;
   margin-bottom: 6px;
 }
