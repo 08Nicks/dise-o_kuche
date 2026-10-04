@@ -630,12 +630,12 @@ window.enviarReporteManual = async function () {
 async function _enviarReporte(categoria, descripcion, imgB64) {
   const texto = categoria + (descripcion ? ' | ' + descripcion : '');
   
-  let usuarioActivo = 'Inspector Móvil';
+  let usuarioActivo = 'Versión Demo';
   try {
     const ses = localStorage.getItem('kuche_basic_session') || sessionStorage.getItem('kuche_basic_session');
     if (ses) {
       const parsed = JSON.parse(ses);
-      if (parsed && (parsed.nombre || parsed.user)) usuarioActivo = parsed.nombre || parsed.user;
+      if (parsed && (parsed.user || parsed.nombre)) usuarioActivo = parsed.user || parsed.nombre;
     }
   } catch(e) {}
 

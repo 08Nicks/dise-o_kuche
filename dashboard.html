@@ -313,25 +313,60 @@
       padding: 12px 14px;
       border-bottom: 1px solid var(--border);
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.2s ease;
       display: flex;
       gap: 12px;
       align-items: flex-start;
+      position: relative;
     }
     .reporte-card:hover {
-      background: rgba(0, 210, 255, 0.04);
+      background: rgba(230, 209, 148, 0.05);
     }
     .reporte-card.selected {
-      background: rgba(0, 210, 255, 0.08);
-      border-left: 3px solid var(--cyan);
+      background: rgba(155, 34, 71, 0.12);
+      border-left: 3px solid var(--guinda-primary);
+    }
+
+    /* Miniatura de Foto en la Tarjeta */
+    .card-thumb-box {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      cursor: zoom-in;
+    }
+    .card-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s;
+    }
+    .card-thumb:hover {
+      transform: scale(1.12);
+    }
+    .card-thumb-placeholder {
+      color: var(--text-muted);
+      font-size: 9px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      line-height: 1.1;
     }
 
     .cat-badge-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       flex-shrink: 0;
-      margin-top: 4px;
     }
     .dot-led        { background: #9B2247; box-shadow: 0 0 8px #9B2247; }
     .dot-colonial   { background: #BC955C; box-shadow: 0 0 8px #BC955C; }
@@ -342,28 +377,118 @@
     .card-info { flex: 1; min-width: 0; }
     .card-titulo {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .card-desc {
+
+    /* Caja de Falla Escrita por el Ciudadano / Inspector */
+    .card-falla-box {
+      margin-top: 5px;
+      padding: 6px 9px;
+      border-radius: 5px;
+      background: rgba(155, 34, 71, 0.16);
+      border: 1px solid rgba(155, 34, 71, 0.35);
       font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--text);
+      line-height: 1.35;
+      word-break: break-word;
     }
+    .card-falla-label {
+      font-weight: 800;
+      color: #ff809b;
+      margin-right: 4px;
+    }
+    body.theme-light .card-falla-box {
+      background: #fdf2f4;
+      border: 1px solid #fecdd3;
+      color: #881337;
+    }
+    body.theme-light .card-falla-label {
+      color: #9B2247;
+    }
+
+    .card-ref-box {
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .card-ref-label {
+      font-weight: 600;
+      color: var(--dorado-accent);
+    }
+
+    /* Insignias de Autor: Oficial vs Versión Demo */
+    .badge-autor {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .badge-autor-oficial {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .badge-autor-demo {
+      background: rgba(230, 209, 148, 0.12);
+      color: var(--dorado-accent);
+      border: 1px solid rgba(230, 209, 148, 0.3);
+    }
+
     .card-meta {
       font-size: 10px;
       color: var(--text-muted);
-      margin-top: 5px;
+      margin-top: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
       font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Modal Visor de Fotos */
+    .foto-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .foto-modal-content {
+      width: 100%;
+      max-width: 620px;
+      background: var(--panel);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+    }
+    .foto-modal-img {
+      max-width: 100%;
+      max-height: 65vh;
+      object-fit: contain;
+      background: #000;
+    }
+    .foto-modal-footer {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
     }
 
     .empty-state {
@@ -440,56 +565,85 @@
 
     /* ── Popups Leaflet ── */
     .leaflet-popup-content-wrapper {
-      background: #0f172a;
-      color: var(--text);
-      border: 1px solid var(--border-hover);
-      border-radius: var(--radius-md);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      background: var(--panel) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border-hover) !important;
+      border-radius: var(--radius-md) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
       padding: 4px;
     }
-    .leaflet-popup-tip { background: #0f172a; }
+    .leaflet-popup-tip { background: var(--panel) !important; }
     .popup-body {
-      padding: 8px 10px;
+      padding: 10px 12px;
       font-family: 'Inter', sans-serif;
+      min-width: 220px;
+      max-width: 280px;
+    }
+    .popup-header-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
     }
     .popup-badge {
       display: inline-block;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 9999px;
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      letter-spacing: 0.4px;
     }
     .popup-body h4 {
       color: var(--text);
       font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      line-height: 1.3;
     }
-    .popup-body p {
+    .popup-falla-box {
+      background: rgba(155, 34, 71, 0.16);
+      border: 1px solid rgba(155, 34, 71, 0.35);
+      border-radius: 6px;
+      padding: 6px 8px;
       font-size: 11px;
-      color: var(--text-muted);
-      margin: 3px 0;
-      line-height: 1.4;
+      line-height: 1.35;
+      margin: 6px 0;
+      color: var(--text);
+      word-break: break-word;
+    }
+    body.theme-light .popup-falla-box {
+      background: #fdf2f4;
+      border: 1px solid #fecdd3;
+      color: #881337;
     }
     .popup-body img {
       width: 100%;
-      max-width: 220px;
-      height: 110px;
+      height: 120px;
       object-fit: cover;
       border-radius: var(--radius-sm);
       margin-top: 8px;
       border: 1px solid var(--border);
+      cursor: zoom-in;
+      transition: opacity 0.2s;
+    }
+    .popup-body img:hover {
+      opacity: 0.88;
     }
     .popup-coords {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       color: var(--cyan);
-      margin-top: 6px;
-      display: block;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       text-decoration: none;
+      font-weight: 600;
+    }
+    .popup-coords:hover {
+      text-decoration: underline;
     }
 
     /* Iconos SVG */
@@ -574,12 +728,33 @@
   </div>
 </main>
 
+<!-- Modal Visor de Foto en Alta Definición -->
+<div id="foto-modal" class="foto-modal-overlay" style="display:none;" onclick="cerrarModalFoto()">
+  <div class="foto-modal-content" onclick="event.stopPropagation()">
+    <div style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border);">
+      <div>
+        <h3 id="foto-modal-titulo" style="font-size:14px; font-weight:700; margin:0; color:var(--text);">Evidencia Fotográfica</h3>
+        <small id="foto-modal-sub" style="color:var(--text-muted); font-size:11px;">Fotografía registrada en campo</small>
+      </div>
+      <button type="button" onclick="cerrarModalFoto()" style="background:rgba(255,255,255,0.08); border:1px solid var(--border); color:var(--text); cursor:pointer; font-size:12px; font-weight:700; padding:6px 14px; border-radius:6px; transition:background 0.2s;">Cerrar</button>
+    </div>
+    <div style="text-align:center; background:#000; padding:8px;">
+      <img id="foto-modal-img" class="foto-modal-img" src="" alt="Evidencia de luminaria">
+    </div>
+    <div class="foto-modal-footer">
+      <span id="foto-modal-autor" class="badge-autor"></span>
+      <a id="foto-modal-link" href="#" target="_blank" class="btn-action-report" style="font-size:11px; padding:6px 14px;">Abrir original en nueva pestaña</a>
+    </div>
+  </div>
+</div>
+
 <script src="./static/kuche-api.js"></script>
 <script>
 // ── Variables globales ────────────────────────────────────────────
 let mapaActivo, markersLayer;
 let todosReportes = [];
 let filtroActivo  = 'todos';
+let markersMap    = {};
 
 // ── Inicializar mapa interactivo (Puebla) ────────────────────────
 function inicializarMapa() {
@@ -720,6 +895,66 @@ function reportesFiltrados() {
   });
 }
 
+// ── Desglose Inteligente del Reporte ──────────────────────────────
+function desglosarReporte(r) {
+  const textoPrincipal = (r.luminaria || r.incidencia || r.placa || 'Luminaria Registrada').trim();
+  let tipoIA = 'Luminaria Detectada';
+  let fallaEscrita = (r.falla || '').trim();
+  let referencia = (r.referencia || '').trim();
+
+  if (textoPrincipal.includes(' | ')) {
+    const partes = textoPrincipal.split(' | ');
+    tipoIA = partes[0].trim();
+    const resto = partes.slice(1).join(' | ').trim();
+    if (resto.includes(' — Referencia: ')) {
+      const sub = resto.split(' — Referencia: ');
+      fallaEscrita = sub[0].trim();
+      referencia = sub[1].trim();
+    } else if (resto.includes(' - Referencia: ')) {
+      const sub = resto.split(' - Referencia: ');
+      fallaEscrita = sub[0].trim();
+      referencia = sub[1].trim();
+    } else {
+      fallaEscrita = resto;
+    }
+  } else {
+    tipoIA = textoPrincipal;
+  }
+
+  if (!fallaEscrita && r.incidencia && r.incidencia !== textoPrincipal) {
+    fallaEscrita = r.incidencia.trim();
+  }
+  if (!fallaEscrita) {
+    fallaEscrita = 'Sin descripción de falla especificada';
+  }
+
+  // Identificación de Autor vs Versión Demo
+  const rawUser = (r.usuario || '').trim();
+  const esDemo = !rawUser || 
+                 rawUser.toLowerCase() === 'versión demo' || 
+                 rawUser.toLowerCase() === 'version demo' || 
+                 rawUser.toLowerCase() === 'demo' || 
+                 rawUser.toLowerCase() === 'ciudadano' || 
+                 rawUser.toLowerCase() === 'anonimo';
+  const usuarioLabel = esDemo ? 'Versión Demo' : rawUser;
+
+  // Resolución de URL de Fotografía mediante window.KucheAPI
+  let fotoUrl = '';
+  if (r.foto && typeof r.foto === 'string' && r.foto.trim()) {
+    const limpia = r.foto.trim();
+    fotoUrl = window.KucheAPI ? window.KucheAPI.apiUrl(limpia) : limpia;
+  }
+
+  return {
+    tipoIA,
+    fallaEscrita,
+    referencia,
+    usuarioLabel,
+    esDemo,
+    fotoUrl
+  };
+}
+
 // ── Lista de reportes ─────────────────────────────────────────────
 function renderLista() {
   const lista = document.getElementById('lista-reportes');
@@ -731,24 +966,49 @@ function renderLista() {
     return;
   }
 
-  lista.innerHTML = datos.slice(0, 100).map((r, i) => {
-    const textoLuminaria = r.luminaria || r.incidencia || r.placa || 'Luminaria';
-    const info = catInfo(textoLuminaria);
-    const partes = textoLuminaria.split(' | ');
-    const titulo = partes[0] || 'Luminaria Registrada';
-    const desc   = partes[1] || '';
-    const hora   = (r.hora || '').substring(0, 16);
-    const ubiCorta = r.ubi ? r.ubi.substring(0, 22) : 'Sin GPS';
+  lista.innerHTML = datos.slice(0, 150).map(r => {
+    const des = desglosarReporte(r);
+    const info = catInfo(des.tipoIA);
+    const hora = (r.hora || '').substring(0, 16);
+    const ubiCorta = r.ubi ? r.ubi.substring(0, 24) : 'Sin GPS';
 
-    return `<div class="reporte-card" id="card-${r.id}" onclick="seleccionarReporte(${r.id}, '${r.ubi}')">
-      <div class="cat-badge-dot ${info.dotCls}"></div>
+    const autorBadge = des.esDemo
+      ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
+      : `<span class="badge-autor badge-autor-oficial">Cuenta: ${des.usuarioLabel}</span>`;
+
+    const thumbHtml = des.fotoUrl
+      ? `<div class="card-thumb-box" title="Clic para ampliar foto" onclick="event.stopPropagation(); abrirModalFotoId(${r.id})">
+           <img src="${des.fotoUrl}" class="card-thumb" alt="Foto luminaria" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'card-thumb-placeholder\\'>Foto no disponible</span>';">
+         </div>`
+      : `<div class="card-thumb-box" title="Sin fotografía adjunta">
+           <div class="card-thumb-placeholder">
+             <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+             <span>Sin foto</span>
+           </div>
+         </div>`;
+
+    const refHtml = des.referencia
+      ? `<div class="card-ref-box"><span class="card-ref-label">Referencia:</span> ${des.referencia}</div>`
+      : '';
+
+    return `<div class="reporte-card" id="card-${r.id}" onclick="seleccionarReporte(${r.id})">
+      ${thumbHtml}
       <div class="card-info">
-        <div class="card-titulo">${titulo}</div>
-        ${desc ? `<div class="card-desc">${desc}</div>` : ''}
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:4px;">
+          <div style="display:flex; align-items:center; gap:6px; min-width:0;">
+            <div class="cat-badge-dot ${info.dotCls}"></div>
+            <div class="card-titulo" title="${des.tipoIA}">${des.tipoIA}</div>
+          </div>
+          ${autorBadge}
+        </div>
+        <div class="card-falla-box">
+          <span class="card-falla-label">Falla reportada:</span>${des.fallaEscrita}
+        </div>
+        ${refHtml}
         <div class="card-meta">
           <span>${hora}</span>
           <span>&middot;</span>
-          <span>${ubiCorta}</span>
+          <span style="color:var(--cyan); cursor:pointer;" title="Clic para ubicar en mapa">${ubiCorta}</span>
         </div>
       </div>
     </div>`;
@@ -759,32 +1019,52 @@ function renderLista() {
 function renderMapa() {
   if (!mapaActivo || !markersLayer) return;
   markersLayer.clearLayers();
+  markersMap = {};
   const datos = reportesFiltrados();
   const bounds = [];
 
-  datos.forEach((r, i) => {
+  datos.forEach(r => {
     if (!r.ubi || !r.ubi.includes(',')) return;
     const [lat, lon] = r.ubi.split(',').map(parseFloat);
     if (isNaN(lat) || isNaN(lon)) return;
 
-    const textoLuminaria = r.luminaria || r.incidencia || r.placa || 'Luminaria';
-    const info = catInfo(textoLuminaria);
-    const partes = textoLuminaria.split(' | ');
-    const titulo = partes[0] || 'Luminaria Registrada';
-    const desc   = partes[1] || '';
-    const hora   = (r.hora || '').substring(0, 16);
+    const des = desglosarReporte(r);
+    const info = catInfo(des.tipoIA);
+    const hora = (r.hora || '').substring(0, 16);
 
     const marker = L.marker([lat, lon], { icon: iconFromCat(info) });
-    const fotoTag = r.foto ? `<img src="${r.foto}" alt="Foto de luminaria">` : '';
 
-    marker.bindPopup(`<div class="popup-body">
-      <span class="popup-badge" style="background:${info.bg}; color:${info.color}; border:1px solid ${info.color}55;">${info.label}</span>
-      <h4>${titulo}</h4>
-      ${desc ? `<p>${desc}</p>` : ''}
-      <p style="font-size:10px; margin-top:4px;">${hora}</p>
-      ${fotoTag}
-      <a class="popup-coords" target="_blank" href="https://www.google.com/maps?q=${lat},${lon}">Ver coordenadas en Google Maps &rarr;</a>
-    </div>`, { maxWidth: 240 });
+    const autorBadge = des.esDemo
+      ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
+      : `<span class="badge-autor badge-autor-oficial">Cuenta: ${des.usuarioLabel}</span>`;
+
+    const fotoImg = des.fotoUrl
+      ? `<img src="${des.fotoUrl}" alt="Evidencia" title="Clic para ampliar foto" onclick="abrirModalFotoId(${r.id})" onerror="this.style.display='none';">`
+      : '';
+
+    const refP = des.referencia
+      ? `<p style="font-size:11px; margin-top:3px;"><strong style="color:var(--dorado-accent);">Referencia:</strong> ${des.referencia}</p>`
+      : '';
+
+    marker.bindPopup(`
+      <div class="popup-body">
+        <div class="popup-header-badges">
+          <span class="popup-badge" style="background:${info.bg}; color:${info.color}; border:1px solid ${info.color}55;">${info.label}</span>
+          ${autorBadge}
+        </div>
+        <h4>${des.tipoIA}</h4>
+        <div class="popup-falla-box">
+          <strong style="color:#ff809b;">Falla:</strong> ${des.fallaEscrita}
+        </div>
+        ${refP}
+        <p style="font-size:10px; margin-top:4px; color:var(--text-muted);">${hora}</p>
+        ${fotoImg}
+        <a class="popup-coords" target="_blank" href="https://www.google.com/maps?q=${lat},${lon}">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          ${lat.toFixed(5)}, ${lon.toFixed(5)} &mdash; Ver en Google Maps
+        </a>
+      </div>
+    `, { maxWidth: 280 });
 
     marker.on('click', () => {
       document.querySelectorAll('.reporte-card').forEach(c => c.classList.remove('selected'));
@@ -796,27 +1076,73 @@ function renderMapa() {
     });
 
     markersLayer.addLayer(marker);
+    markersMap[r.id] = marker;
     bounds.push([lat, lon]);
   });
 
-  if (bounds.length > 0) {
-    mapaActivo.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+  if (bounds.length > 0 && filtroActivo === 'todos' && !window.__mapaInicializadoBounds) {
+    mapaActivo.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+    window.__mapaInicializadoBounds = true;
   }
 }
 
-// ── Seleccionar reporte (centrar mapa) ─────────────────────────────
-function seleccionarReporte(id, ubi) {
+// ── Seleccionar reporte (centrar mapa y abrir popup) ───────────────
+function seleccionarReporte(id) {
   document.querySelectorAll('.reporte-card').forEach(c => c.classList.remove('selected'));
   const card = document.getElementById('card-' + id);
-  if (card) card.classList.add('selected');
+  if (card) {
+    card.classList.add('selected');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 
-  if (ubi && ubi.includes(',') && mapaActivo) {
-    const [lat, lon] = ubi.split(',').map(parseFloat);
+  const r = todosReportes.find(item => item.id === id);
+  if (r && r.ubi && r.ubi.includes(',') && mapaActivo) {
+    const [lat, lon] = r.ubi.split(',').map(parseFloat);
     if (!isNaN(lat) && !isNaN(lon)) {
-      mapaActivo.flyTo([lat, lon], 16, { duration: 1 });
+      mapaActivo.flyTo([lat, lon], 17, { duration: 0.8 });
+      setTimeout(() => {
+        if (markersMap[id]) {
+          markersMap[id].openPopup();
+        }
+      }, 400);
     }
   }
 }
+
+// ── Visor de Fotografía en Modal ──────────────────────────────────
+function abrirModalFotoId(id) {
+  const r = todosReportes.find(item => item.id === id);
+  if (!r) return;
+  const des = desglosarReporte(r);
+  abrirModalFoto(des.fotoUrl, des.tipoIA, des.usuarioLabel, des.esDemo);
+}
+
+function abrirModalFoto(url, titulo, autor, esDemo) {
+  const modal = document.getElementById('foto-modal');
+  const img   = document.getElementById('foto-modal-img');
+  const tit   = document.getElementById('foto-modal-titulo');
+  const aut   = document.getElementById('foto-modal-autor');
+  const link  = document.getElementById('foto-modal-link');
+
+  if (!modal || !img) return;
+  img.src = url || '';
+  if (tit) tit.textContent = titulo || 'Evidencia Fotográfica';
+  if (aut) {
+    aut.textContent = esDemo ? 'Versión Demo' : 'Cuenta: ' + autor;
+    aut.className = 'badge-autor ' + (esDemo ? 'badge-autor-demo' : 'badge-autor-oficial');
+  }
+  if (link) link.href = url || '#';
+  modal.style.display = 'flex';
+}
+
+function cerrarModalFoto() {
+  const modal = document.getElementById('foto-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') cerrarModalFoto();
+});
 
 // ── Alternar Tema (Modo Oscuro / Modo Claro) ─────────────────────
 function alternarTemaDashboard() {
