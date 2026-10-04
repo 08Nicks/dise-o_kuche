@@ -74,6 +74,11 @@ function conectarWS() {
     wsDeteccion = null;
   }
 
+  if (!url || url.includes('undefined') || url === 'wss://' || url === 'ws://') {
+    LOG('Esperando enlace activo de Cloudflare...', '#ffcc00');
+    return;
+  }
+
   LOG('Conectando WS → ' + url, '#ffcc00');
   try {
     wsDeteccion = new WebSocket(url);
@@ -84,7 +89,7 @@ function conectarWS() {
   }
 
   wsDeteccion.onopen = () => {
-    LOG('WebSocket conectado', '#00ff80');
+    LOG('WebSocket conectado con éxito', '#00ff80');
     estado('IA Kuche lista', '#00ff80');
     wsReconnecting = false;
     analizando = false;
@@ -94,9 +99,12 @@ function conectarWS() {
   };
 
   wsDeteccion.onerror = (e) => {
-    LOG('Error WS — reconectando...', '#ff9800');
+    LOG('Error WS — verificando enlace del servidor...', '#ff9800');
     analizando = false;
     setProgressBar(false);
+    if (window.KucheAPI && typeof window.KucheAPI.reportarErrorConexion === 'function') {
+      window.KucheAPI.reportarErrorConexion();
+    }
   };
 
   wsDeteccion.onmessage = (event) => {
@@ -134,17 +142,18 @@ function conectarWS() {
   wsDeteccion.onclose = (e) => {
     LOG('WS cerrado (código ' + e.code + ')', '#ff9800');
     analizando = false;
+    if (e.code === 1006 || e.code === 1001) {
+      // 1006 ocurre cuando Cloudflare se reinició y el túnel anterior murió
+      if (window.KucheAPI && typeof window.KucheAPI.reportarErrorConexion === 'function') {
+        window.KucheAPI.reportarErrorConexion();
+      }
+    }
     if (!wsReconnecting) {
       wsReconnecting = true;
-      if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
-        window.KucheAPI.sincronizarUrl().then(() => {
-          setTimeout(conectarWS, 1500);
-        }).catch(() => {
-          setTimeout(conectarWS, 2000);
-        });
-      } else {
-        setTimeout(conectarWS, 2000);
-      }
+      setTimeout(() => {
+        wsReconnecting = false;
+        conectarWS();
+      }, 2000);
     }
   };
 }
@@ -164,6 +173,9 @@ if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
 // ─── Arranque ────────────────────────────────────────────────────
 window.addEventListener('load', async () => {
   LOG('Sistema iniciando...', '#ffcc00');
+  if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
+    await window.KucheAPI.sincronizarUrl();
+  }
   conectarWS();
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {

@@ -1,8 +1,8 @@
 /**
  * =====================================================================
- * KUCHE API BRIDGE (kuche-api.js)
- * Sincronización dinámica entre GitHub Pages y el Backend en la PC.
- * Resuelve la URL de Cloudflare desde backend_url.json / GitHub API.
+ * KUCHE API BRIDGE (kuche-api.js) — v5.0 Bulletproof
+ * Sincronización dinámica ultra-resistente entre GitHub Pages y Cloudflare.
+ * Resuelve la URL aunque el túnel se reinicie 100 veces.
  * =====================================================================
  */
 (function() {
@@ -13,7 +13,18 @@
   let backendUrl = localStorage.getItem('kuche_backend_url') || '';
   let isOnline = false;
   let listeners = [];
-  let pollInterval = null;
+  let sincronizando = false;
+
+  // 0. Si la URL contiene parámetro directo de API (?api=https://... o ?backend=https://...)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const paramApi = params.get('api') || params.get('backend');
+    if (paramApi && paramApi.startsWith('http')) {
+      const limpia = paramApi.trim().replace(/\/+$/, '');
+      backendUrl = limpia;
+      localStorage.setItem('kuche_backend_url', backendUrl);
+    }
+  } catch(e) {}
 
   // Si estamos navegando directamente en localhost o puerto 8000, usar origen actual
   const isDirectBackend = window.location.port === '8000' || 
@@ -46,7 +57,7 @@
   function aplicarConfig(cfg) {
     if (!cfg || !cfg.backend_url) return false;
     const nuevaUrl = cfg.backend_url.trim().replace(/\/+$/, '');
-    if (!nuevaUrl) return false;
+    if (!nuevaUrl || nuevaUrl === 'null') return false;
     if (backendUrl !== nuevaUrl) {
       backendUrl = nuevaUrl;
       localStorage.setItem('kuche_backend_url', backendUrl);
@@ -55,63 +66,83 @@
   }
 
   async function sincronizarUrl() {
-    if (isDirectBackend) {
-      backendUrl = window.location.origin;
-      isOnline = true;
-      notificar();
-      return backendUrl;
-    }
+    if (sincronizando) return backendUrl;
+    sincronizando = true;
 
-    let exito = false;
-
-    // 1. Intentar siempre primero con GitHub Raw + cache buster (refleja cambios en 1-2s tras push)
     try {
-      const r = await fetch(GITHUB_RAW_URL + '?_t=' + Date.now(), { cache: 'no-store' });
-      if (r.ok) {
-        const cfg = await r.json();
-        if (aplicarConfig(cfg)) exito = true;
+      if (isDirectBackend) {
+        backendUrl = window.location.origin;
+        isOnline = true;
+        notificar();
+        return backendUrl;
       }
-    } catch(e) {}
 
-    // 2. Si no, consultar backend_url.json servido en GitHub Pages
-    if (!exito) {
-      try {
-        const r = await fetch(LOCAL_JSON_PATH + '?_t=' + Date.now(), { cache: 'no-store' });
-        if (r.ok) {
-          const d = await r.json();
-          if (aplicarConfig(d)) exito = true;
+      // Paso 1: Si ya tenemos una URL en memoria o query param, probar si sigue viva
+      if (backendUrl) {
+        isOnline = await verificarPing(backendUrl);
+        if (isOnline) {
+          notificar();
+          return backendUrl;
+        } else {
+          // La URL anterior murió (por ejemplo reiniciaron Cloudflare)
+          console.warn('[KucheAPI] La URL previa ya no responde. Buscando nueva URL de Cloudflare...');
+          localStorage.removeItem('kuche_backend_url');
+          backendUrl = '';
+          isOnline = false;
         }
-      } catch(e) {}
-    }
+      }
 
-    // 3. Si falló, consultar GitHub API
-    if (!exito) {
+      let exito = false;
+      const t = Date.now();
+
+      // Paso 2: Intentar GitHub Raw con bust de caché estricto
       try {
-        const r = await fetch(GITHUB_REPO_API, { cache: 'no-store' });
+        const r = await fetch(`${GITHUB_RAW_URL}?_t=${t}`, { cache: 'no-store' });
         if (r.ok) {
-          const d = await r.json();
-          if (d && d.content) {
-            const raw = atob(d.content.replace(/\s/g, ''));
-            const cfg = JSON.parse(raw);
-            if (aplicarConfig(cfg)) exito = true;
+          const cfg = await r.json();
+          if (aplicarConfig(cfg)) {
+            isOnline = await verificarPing(backendUrl);
+            if (isOnline) exito = true;
           }
         }
       } catch(e) {}
-    }
 
-    // Verificar si la URL responde actualmente
-    if (backendUrl) {
-      isOnline = await verificarPing(backendUrl);
-      // Si la URL no responde y falló, intentar limpiar para volver a sincronizar
-      if (!isOnline && !exito) {
-        console.warn('[KucheAPI] La URL guardada no responde ping:', backendUrl);
+      // Paso 3: Si falló Raw, consultar GitHub API (no tiene caché CDN)
+      if (!exito) {
+        try {
+          const r = await fetch(`${GITHUB_REPO_API}&_t=${t}`, { 
+            cache: 'no-store',
+            headers: { 'Accept': 'application/vnd.github.v3.raw' }
+          });
+          if (r.ok) {
+            const cfg = await r.json();
+            if (aplicarConfig(cfg)) {
+              isOnline = await verificarPing(backendUrl);
+              if (isOnline) exito = true;
+            }
+          }
+        } catch(e) {}
       }
-    } else {
-      isOnline = false;
-    }
 
-    notificar();
-    return backendUrl;
+      // Paso 4: Si falló, intentar archivo local servido en GitHub Pages
+      if (!exito) {
+        try {
+          const r = await fetch(`${LOCAL_JSON_PATH}?_t=${t}`, { cache: 'no-store' });
+          if (r.ok) {
+            const d = await r.json();
+            if (aplicarConfig(d)) {
+              isOnline = await verificarPing(backendUrl);
+              if (isOnline) exito = true;
+            }
+          }
+        } catch(e) {}
+      }
+
+      notificar();
+      return backendUrl;
+    } finally {
+      sincronizando = false;
+    }
   }
 
   function actualizarBanner() {
@@ -144,7 +175,7 @@
       banner.innerHTML = `
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="width:8px; height:8px; border-radius:50%; background:#E6D194; display:inline-block;"></span>
-          <span>Sincronizando con Servidor IA Kuche...</span>
+          <span>Buscando Servidor IA Kuche en vivo...</span>
         </div>
         <button onclick="window.KucheAPI.reintentar()" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; border-radius:4px; padding:3px 10px; font-size:10px; font-weight:bold; cursor:pointer;">Reintentar</button>
       `;
@@ -177,14 +208,29 @@
       fn({ url: backendUrl, online: isOnline });
     },
     sincronizarUrl: sincronizarUrl,
+    reportarErrorConexion: async function() {
+      console.warn('[KucheAPI] Error de túnel reportado. Forzando búsqueda de nueva URL...');
+      localStorage.removeItem('kuche_backend_url');
+      backendUrl = '';
+      isOnline = false;
+      notificar();
+      return await sincronizarUrl();
+    },
     reintentar: function() {
       const b = document.getElementById('kuche-server-status-banner');
       if (b) b.innerText = 'Sincronizando con el servidor de la PC...';
+      localStorage.removeItem('kuche_backend_url');
+      backendUrl = '';
       return sincronizarUrl();
     }
   };
 
-  // Inicialización inmediata y periódica
-  sincronizarUrl();
-  if (!pollInterval) pollInterval = setInterval(sincronizarUrl, 15000);
+  // Ciclo dinámico: sondea cada 3.5s si está offline, o cada 15s si ya está conectado
+  async function loopAutosync() {
+    await sincronizarUrl();
+    const tiempo = isOnline ? 15000 : 3500;
+    setTimeout(loopAutosync, tiempo);
+  }
+
+  loopAutosync();
 })();
