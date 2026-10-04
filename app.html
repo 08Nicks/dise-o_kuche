@@ -3,243 +3,1159 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>KUCHE — App Móvil (Modo Demo)</title>
+  <title>Kuche — Auditoría de Alumbrado Público</title>
   
   <!-- PWA & Meta Tags -->
   <link rel="manifest" href="./static/manifest.json">
-  <meta name="theme-color" content="#611232">
+  <meta name="theme-color" content="#131113">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="KUCHE Demo">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kuche">
   <link rel="apple-touch-icon" href="./static/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./static/icons/icon-192.png">
   
-  <!-- Tipografía Montserrat -->
+  <!-- Tipografía Montserrat e Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./static/styles.css?v=7.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       SISTEMA DE DISEÑO KUCHE: MODO OSCURO (DEFAULT) & MODO CLARO
+       ═══════════════════════════════════════════════════════════════════ */
+    :root, body.theme-dark {
+      --bg-base: #131113;
+      --bg-card: #1B181A;
+      --bg-sec: #252124;
+      --border-color: #2E292C;
+      --border-hover: #E6D194;
+      --text-primary: #F1ECEE;
+      --text-secondary: #A69CA1;
+      --guinda-primary: #9B2247;
+      --guinda-hover: #b82954;
+      --guinda-text: #F8F1F4;
+      --dorado-accent: #E6D194;
+      --dorado-hover: #fae7b1;
+      --badge-bg: #1B181A;
+      --badge-border: #2E292C;
+      --bar-y-grid: rgba(255, 255, 255, 0.08);
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.55);
+      --hud-reticle: #E6D194;
+    }
+
+    body.theme-light {
+      --bg-base: #F8F9FA;
+      --bg-card: #FFFFFF;
+      --bg-sec: #F3F4F6;
+      --border-color: #E5E7EB;
+      --border-hover: #9B2247;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --guinda-primary: #9B2247;
+      --guinda-hover: #7e1741;
+      --guinda-text: #FFFFFF;
+      --dorado-accent: #BC955C;
+      --dorado-hover: #98732E;
+      --badge-bg: #FFFFFF;
+      --badge-border: #E5E7EB;
+      --bar-y-grid: rgba(0, 0, 0, 0.08);
+      --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      --hud-reticle: #BC955C;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       1. TOP NAVBAR (KUCHE · AUDITORÍA DE ALUMBRADO PÚBLICO)
+       ═══════════════════════════════════════════════════════════════════ */
+    .navbar-kuche {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .navbar-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-avatar-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #7e1741 0%, #9B2247 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(155, 34, 71, 0.4);
+      flex-shrink: 0;
+    }
+
+    .brand-lamp-svg {
+      width: 20px;
+      height: 20px;
+      color: #FFFFFF;
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+    }
+
+    .brand-badge-mode {
+      background: rgba(230, 209, 148, 0.15);
+      color: var(--dorado-accent);
+      border: 1px solid var(--dorado-accent);
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* Tabs Centrales: Captura · Análisis · Estadísticas (SIN BOTÓN MAPA) */
+    .navbar-nav-tabs {
+      display: flex;
+      background: var(--bg-sec);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab-btn.active {
+      background: var(--guinda-primary);
+      color: var(--guinda-text);
+      outline: 1.5px solid var(--dorado-accent);
+      box-shadow: 0 2px 8px rgba(155, 34, 71, 0.35);
+    }
+
+    .nav-icon {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    /* Controles a la derecha (Status IA + Theme Toggle) */
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-status-pill {
+      background: var(--bg-sec);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-dot-amber {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--dorado-accent);
+      box-shadow: 0 0 8px var(--dorado-accent);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    .btn-theme-pill {
+      background: var(--bg-sec);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-theme-pill:hover {
+      border-color: var(--dorado-accent);
+      color: var(--dorado-accent);
+      transform: translateY(-1px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       2. CONTENEDOR PRINCIPAL
+       ═══════════════════════════════════════════════════════════════════ */
+    .app-main-layout {
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 28px 40px;
+    }
+
+    .app-main-pane {
+      display: none;
+      animation: paneIn 0.22s ease-out;
+    }
+
+    .app-main-pane.active {
+      display: block;
+    }
+
+    @keyframes paneIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       3. PESTAÑA: PANEL DE ESTADÍSTICAS (EXACTO A LA CAPTURA)
+       ═══════════════════════════════════════════════════════════════════ */
+    .section-hero-header {
+      margin-bottom: 24px;
+    }
+
+    .sub-step-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--dorado-accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .main-page-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      line-height: 1.15;
+    }
+
+    .main-page-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    /* Grilla de 4 KPIs Superiores */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .kpi-cards-grid { grid-template-columns: 1fr; }
+    }
+
+    .kpi-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
+    }
+
+    .kpi-stat-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    /* Grilla de las 2 Gráficas Inferiores */
+    .charts-two-col-grid {
+      display: grid;
+      grid-template-columns: 38% 60%;
+      gap: 18px;
+    }
+
+    @media (max-width: 980px) {
+      .charts-two-col-grid { grid-template-columns: 1fr; }
+    }
+
+    .chart-box-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chart-box-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    /* Donut Chart */
+    .donut-chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 16px;
+    }
+
+    .donut-chart-svg {
+      width: 220px;
+      height: 220px;
+    }
+
+    .donut-center-pct {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      fill: var(--text-primary);
+    }
+
+    .donut-center-lbl {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      fill: var(--text-secondary);
+    }
+
+    .chart-legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-item strong {
+      color: var(--text-primary);
+      margin-left: 2px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    /* Stacked Bar Chart */
+    .stacked-bar-container {
+      width: 100%;
+      height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stacked-bar-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .bar-axis-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      fill: var(--text-secondary);
+    }
+
+    .bar-x-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      fill: var(--text-secondary);
+    }
+
+    .bar-segment {
+      transition: opacity 0.2s ease;
+      cursor: pointer;
+    }
+
+    .bar-segment:hover {
+      opacity: 0.85;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       4. PESTAÑA: CAPTURA EN VIVO (CÁMARA, YOLO-WORLD, MODO VIDEO 10S)
+       ═══════════════════════════════════════════════════════════════════ */
+    .captura-workspace-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .segmented-control-modes {
+      display: flex;
+      background: var(--bg-sec);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+
+    .mode-tab-pill {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .mode-tab-pill.activa {
+      background: var(--guinda-primary);
+      color: var(--guinda-text);
+      outline: 1.5px solid var(--dorado-accent);
+    }
+
+    /* Visor de Cámara y Canvas */
+    #visor-container {
+      position: relative;
+      background: #000000;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      border: 2px solid var(--hud-reticle);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hud-reticle {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-color: var(--hud-reticle);
+      border-style: solid;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .hud-tl { top: 10px; left: 10px; border-width: 3px 0 0 3px; }
+    .hud-tr { top: 10px; right: 10px; border-width: 3px 3px 0 0; }
+    .hud-bl { bottom: 10px; left: 10px; border-width: 0 0 3px 3px; }
+    .hud-br { bottom: 10px; right: 10px; border-width: 0 3px 3px 0; }
+
+    #live-ai-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(19, 17, 19, 0.85);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      backdrop-filter: blur(6px);
+      z-index: 6;
+    }
+
+    .btn-action-primary {
+      width: 100%;
+      background: var(--guinda-primary);
+      color: var(--guinda-text);
+      border: 1px solid var(--dorado-accent);
+      padding: 13px;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(155, 34, 71, 0.35);
+    }
+
+    .btn-action-primary:hover {
+      background: var(--guinda-hover);
+      transform: translateY(-1px);
+    }
+
+    .rec-pulse-icon {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      display: inline-block;
+      animation: pulseDot 1.2s infinite;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       5. PESTAÑA: ANÁLISIS E INCIDENCIAS DE LUMINARIAS
+       ═══════════════════════════════════════════════════════════════════ */
+    .analisis-card-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+
+    .table-container-modern {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-top: 14px;
+    }
+
+    .table-analisis {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    .table-analisis th {
+      background: var(--bg-sec);
+      color: var(--dorado-accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      letter-spacing: 0.5px;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .table-analisis td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .table-analisis tr:hover td {
+      background: var(--bg-sec);
+    }
+
+    .badge-status-operativo {
+      background: rgba(230, 209, 148, 0.15);
+      color: var(--dorado-accent);
+      border: 1px solid var(--dorado-accent);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .badge-status-fundido {
+      background: rgba(155, 34, 71, 0.2);
+      color: #ff6b8b;
+      border: 1px solid var(--guinda-primary);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .form-input-control {
+      width: 100%;
+      background: var(--bg-sec);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      margin-top: 5px;
+      margin-bottom: 14px;
+    }
+
+    .form-input-control:focus {
+      border-color: var(--dorado-accent);
+      box-shadow: 0 0 0 2px rgba(230, 209, 148, 0.2);
+    }
+
+    /* Modal de Notificación Toast */
+    #toast-ok {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      border: 2px solid var(--dorado-accent);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 99999;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+  </style>
 </head>
-<body>
+<body class="theme-dark">
 
-<div class="app-wrapper">
-  <!-- BANNER EXPLICATIVO MODO DEMO -->
-  <div style="background:linear-gradient(90deg, #BC955C, #98732E); color:#FFFFFF; padding:7px 12px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-    <div style="display:flex; align-items:center; gap:6px;">
-      <span style="background:rgba(0,0,0,0.25); padding:2px 6px; border-radius:4px; font-size:9.5px; text-transform:uppercase; letter-spacing:0.5px;">Modo Demo</span>
-      <span>Acceso libre sin registro</span>
-    </div>
-  </div>
-
-  <!-- BARRA SUPERIOR / NAVBAR -->
-  <header class="app-header">
-    <div class="brand-group">
-      <div class="brand-text">
-        <h1 class="brand-kuche-wordmark">KUCHE</h1>
-        <p>Monitoreo IA &bull; Modo Demostración</p>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       1. TOP NAVBAR (KUCHE · AUDITORÍA DE ALUMBRADO PÚBLICO)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <header class="navbar-kuche">
+    <div class="navbar-brand-group">
+      <div class="brand-avatar-box">
+        <svg viewBox="0 0 24 24" class="brand-lamp-svg"><path d="M9 18h6m-4 3h2m-5-8.5a6 6 0 1 1 8 0c-.8 1-1.5 2-1.5 3.5h-5c0-1.5-.7-2.5-1.5-3.5z" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-titles">
+        <div class="brand-title-row">
+          <h1 class="brand-name">Kuche</h1>
+          <span class="brand-badge-mode">Demo</span>
+        </div>
+        <p class="brand-sub">Auditoría de alumbrado público</p>
       </div>
     </div>
-    <div style="display:flex; align-items:center; gap:6px;">
-      <button id="btn-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
-        <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Instalar</span>
+
+    <!-- Navegación: Captura · Análisis · Estadísticas (SIN BOTÓN MAPA) -->
+    <nav class="navbar-nav-tabs">
+      <button class="nav-tab-btn" id="navtab-captura" onclick="cambiarSeccionApp('captura')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Captura</span>
+      </button>
+      <button class="nav-tab-btn" id="navtab-analisis" onclick="cambiarSeccionApp('analisis')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span>Análisis</span>
+      </button>
+      <button class="nav-tab-btn active" id="navtab-stats" onclick="cambiarSeccionApp('stats')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Estadísticas</span>
+      </button>
+    </nav>
+
+    <!-- Controles de la Barra Superior -->
+    <div class="navbar-right">
+      <div class="badge-status-pill">
+        <span class="status-dot-amber"></span>
+        <span>Modelo v2.3 activo</span>
+      </div>
+      <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro">
+        ☀️ Modo Claro
+      </button>
+      <button id="btn-instalar-pwa" class="btn-theme-pill" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+        ⬇️ Instalar
       </button>
     </div>
   </header>
 
-  <!-- SELECTOR DE MODOS (TABS SEGMENTADOS) -->
-  <div class="tabs-container">
-    <div class="segmented-control tabs">
-      <button class="tab activa" id="tab-video" onclick="cambiarModo('video')">
-        <svg class="icon-svg" viewBox="0 0 24 24">
-          <polygon points="23 7 16 12 23 17 23 7"/>
-          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-        </svg>
-        <span>Video</span>
-      </button>
-      <button class="tab" id="tab-foto" onclick="cambiarModo('foto')">
-        <svg class="icon-svg" viewBox="0 0 24 24">
-          <circle cx="12" cy="13" r="4"/>
-          <path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
-        </svg>
-        <span>Foto</span>
-      </button>
-      <button class="tab" id="tab-manual" onclick="cambiarModo('manual')">
-        <svg class="icon-svg" viewBox="0 0 24 24">
-          <path d="M12 20h9"/>
-          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-        </svg>
-        <span>Manual</span>
-      </button>
-    </div>
-    <button id="btn-cam-toggle" class="btn-cam-toggle" onclick="toggleCamara()">
-      <span class="dot-indicator"></span>
-      <span>Camara: ON</span>
-    </button>
-  </div>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       2. CONTENIDO PRINCIPAL DE LA APLICACIÓN
+       ═══════════════════════════════════════════════════════════════════ -->
+  <main class="app-main-layout">
 
-  <!-- VISOR DE CÁMARA / CANVAS -->
-  <div id="visor-container">
-    <div class="hud-reticle hud-tl"></div>
-    <div class="hud-reticle hud-tr"></div>
-    <div class="hud-reticle hud-bl"></div>
-    <div class="hud-reticle hud-br"></div>
-    <canvas id="canvas"></canvas>
-    <div id="progress-bar"></div>
-  </div>
-  <div id="manual-preview" style="display:none">
-    <svg class="icon-svg" viewBox="0 0 24 24" style="width:32px; height:32px; opacity:0.4;">
-      <path d="M1 1l22 22"/>
-      <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"/>
-    </svg>
-    <span>Camara desactivada</span>
-  </div>
+    <!-- ───────────────────────────────────────────────────────────────
+         VISTA 1: PANEL DE ESTADÍSTICAS (PANTALLA DE LA CAPTURA)
+         ─────────────────────────────────────────────────────────────── -->
+    <section id="view-stats" class="app-main-pane active">
+      <!-- Encabezado con Paso y Título -->
+      <div class="section-hero-header">
+        <span class="sub-step-label">PASO 4 · RESULTADOS</span>
+        <h2 class="main-page-title">Panel de estadísticas</h2>
+        <p class="main-page-desc">Resumen del estado de la red de alumbrado auditada y reportes de reparación pendientes.</p>
+      </div>
 
-  <!-- CONTROL DE MODO VIDEO (MÁXIMO 10 SEGUNDOS) -->
-  <div id="sec-video">
-    <button id="btn-grabar-video" class="btn-record" onclick="toggleGrabacionVideo()">
-      <span id="ico-grabar"><span class="rec-pulse-icon"></span></span>
-      <span id="txt-grabar">Iniciar Grabacion (10s)</span>
-    </button>
-  </div>
+      <!-- Fila de 4 Cédulas de Métricas (KPIs) -->
+      <div class="kpi-cards-grid">
+        <div class="kpi-stat-card">
+          <span class="kpi-label">Luminarias auditadas</span>
+          <strong class="kpi-value" id="kpi-val-total">64</strong>
+        </div>
+        <div class="kpi-stat-card">
+          <span class="kpi-label">Operativas</span>
+          <strong class="kpi-value" id="kpi-val-operativas">46</strong>
+        </div>
+        <div class="kpi-stat-card">
+          <span class="kpi-label">Focos fundidos</span>
+          <strong class="kpi-value" id="kpi-val-fundidos">18</strong>
+        </div>
+        <div class="kpi-stat-card">
+          <span class="kpi-label">Disponibilidad</span>
+          <strong class="kpi-value" id="kpi-val-disp">71.9%</strong>
+        </div>
+      </div>
 
-  <!-- ESTADO DE LA IA -->
-  <div id="live">Iniciando sistema...</div>
+      <!-- Fila de 2 Tarjetas de Gráficas -->
+      <div class="charts-two-col-grid">
+        <!-- Gráfica 1: Donut Fundidos vs Operativos -->
+        <div class="chart-box-card">
+          <h3 class="chart-box-title">Fundidos vs operativos</h3>
+          <div class="donut-chart-container">
+            <svg viewBox="0 0 200 200" class="donut-chart-svg">
+              <!-- Fondo del anillo -->
+              <circle cx="100" cy="100" r="70" fill="none" stroke="var(--border-color)" stroke-width="22"/>
+              <!-- Segmento Dorado (Operativas: 71.9% = 316.23 de circunferencia 439.82) -->
+              <circle cx="100" cy="100" r="70" fill="none" stroke="var(--dorado-accent)" stroke-width="22"
+                      stroke-dasharray="316.23 439.82" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+              <!-- Segmento Guinda (Fundidas: 28.1% = 123.59 de circunferencia 439.82) -->
+              <circle cx="100" cy="100" r="70" fill="none" stroke="var(--guinda-primary)" stroke-width="22"
+                      stroke-dasharray="123.59 439.82" stroke-dashoffset="-316.23" transform="rotate(-90 100 100)"/>
+              <!-- Texto Central -->
+              <text x="100" y="96" text-anchor="middle" class="donut-center-pct" id="donut-pct-text">71.9%</text>
+              <text x="100" y="117" text-anchor="middle" class="donut-center-lbl">operativas</text>
+            </svg>
+          </div>
+          <div class="chart-legend-row">
+            <div class="legend-item">
+              <span class="legend-dot" style="background:var(--dorado-accent);"></span>
+              <span>Operativas <strong id="leg-val-operativas">46</strong></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:var(--guinda-primary);"></span>
+              <span>Fundidas <strong id="leg-val-fundidas">18</strong></span>
+            </div>
+          </div>
+        </div>
 
-  <!-- SECCIÓN MODO FOTO -->
-  <div id="sec-foto">
-    <button onclick="capturarFoto()" class="btn-primary-action">
-      <svg class="icon-svg" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-      </svg>
-      <span>Capturar y Analizar Foto</span>
-    </button>
-    <label class="btn-file-upload">
-      <svg class="icon-svg" viewBox="0 0 24 24">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="17 8 12 3 7 8"/>
-        <line x1="12" y1="3" x2="12" y2="15"/>
-      </svg>
-      <span>Subir imagen desde archivo</span>
-      <input type="file" id="file" accept="image/*" hidden>
-    </label>
-  </div>
+        <!-- Gráfica 2: Barras Apiladas Estado por Sector -->
+        <div class="chart-box-card">
+          <h3 class="chart-box-title">Estado por sector</h3>
+          <div class="stacked-bar-container">
+            <svg viewBox="0 0 500 240" class="stacked-bar-svg" preserveAspectRatio="none">
+              <!-- Líneas Guía Horizontales y Eje Y (20, 15, 10, 5, 0) -->
+              <line x1="45" y1="25" x2="480" y2="25" stroke="var(--bar-y-grid)" stroke-dasharray="3 3"/>
+              <text x="35" y="29" class="bar-axis-text" text-anchor="end">20</text>
 
-  <!-- SECCIÓN MODO MANUAL -->
-  <div id="sec-manual">
-    <div>
-      <label class="form-label" for="infra-categoria-manual">Tipo de Luminaria / Incidencia</label>
-      <select id="infra-categoria-manual" class="input-select">
-        <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
-        <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
-        <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
-        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
-        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
-      </select>
-    </div>
-    <div>
-      <label class="form-label" for="desc-manual">Descripción de la incidencia</label>
-      <textarea id="desc-manual" class="input-textarea" placeholder="Indica referencias de la luminaria, cruce o severidad..." rows="3"></textarea>
-    </div>
-    <button onclick="enviarReporteManual()" class="btn-submit-report">
-      <svg class="icon-svg" viewBox="0 0 24 24">
-        <line x1="22" y1="2" x2="11" y2="13"/>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
-      <span>Registrar Luminaria (Demo)</span>
-    </button>
-  </div>
+              <line x1="45" y1="70" x2="480" y2="70" stroke="var(--bar-y-grid)" stroke-dasharray="3 3"/>
+              <text x="35" y="74" class="bar-axis-text" text-anchor="end">15</text>
 
-  <!-- PANEL DE REPORTE (IA detectó algo — modo Video/Foto) -->
-  <div id="panel-reporte">
-    <div class="panel-title-badge">
-      <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <span>Luminaria Detectada por IA</span>
-    </div>
+              <line x1="45" y1="115" x2="480" y2="115" stroke="var(--bar-y-grid)" stroke-dasharray="3 3"/>
+              <text x="35" y="119" class="bar-axis-text" text-anchor="end">10</text>
 
-    <!-- Imagen capturada -->
-    <img id="reporte-img" src="" alt="Captura de luminaria">
+              <line x1="45" y1="160" x2="480" y2="160" stroke="var(--bar-y-grid)" stroke-dasharray="3 3"/>
+              <text x="35" y="164" class="bar-axis-text" text-anchor="end">5</text>
 
-    <!-- Categoría detectada (editable) -->
-    <div style="margin-bottom:8px;">
-      <label class="form-label" for="reporte-categoria">Clasificación de Luminaria</label>
-      <select id="reporte-categoria" class="input-select">
-        <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
-        <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
-        <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
-        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
-        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
-      </select>
-    </div>
+              <line x1="45" y1="205" x2="480" y2="205" stroke="var(--border-color)"/>
+              <text x="35" y="209" class="bar-axis-text" text-anchor="end">0</text>
 
-    <!-- Confianza IA -->
-    <div id="reporte-conf"></div>
+              <!-- Barra 1: Centro (8 op, 2 fund = total 10) -->
+              <rect class="bar-segment" x="70" y="133" width="54" height="72" fill="var(--dorado-accent)" rx="3"/>
+              <rect class="bar-segment" x="70" y="115" width="54" height="18" fill="var(--guinda-primary)" rx="4"/>
+              <text x="97" y="225" class="bar-x-text" text-anchor="middle">Centro</text>
 
-    <!-- Descripción adicional -->
-    <div style="margin-bottom:12px;">
-      <label class="form-label" for="reporte-desc">Notas de campo (opcional)</label>
-      <textarea id="reporte-desc" class="input-textarea" placeholder="Crucero, altura de poste o condición del foco..." rows="2"></textarea>
-    </div>
+              <!-- Barra 2: Universidad (10 op, 7 fund = total 17) -->
+              <rect class="bar-segment" x="155" y="115" width="54" height="90" fill="var(--dorado-accent)" rx="3"/>
+              <rect class="bar-segment" x="155" y="52" width="54" height="63" fill="var(--guinda-primary)" rx="4"/>
+              <text x="182" y="225" class="bar-x-text" text-anchor="middle">Universidad</text>
 
-    <button onclick="enviarReporteIA()" class="btn-submit-report">
-      <svg class="icon-svg" viewBox="0 0 24 24">
-        <line x1="22" y1="2" x2="11" y2="13"/>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
-      <span>Confirmar y Registrar (Demo)</span>
-    </button>
-    <button onclick="descartarReporte()" class="btn-discard-report">
-      Descartar
-    </button>
-  </div>
+              <!-- Barra 3: La Merced (13 op, 4 fund = total 17) -->
+              <rect class="bar-segment" x="240" y="88" width="54" height="117" fill="var(--dorado-accent)" rx="3"/>
+              <rect class="bar-segment" x="240" y="52" width="54" height="36" fill="var(--guinda-primary)" rx="4"/>
+              <text x="267" y="225" class="bar-x-text" text-anchor="middle">La Merced</text>
 
-  <!-- CONSOLA DE DIAGNÓSTICO -->
-  <div id="log-panel"></div>
+              <!-- Barra 4: Américas (7 op, 3 fund = total 10) -->
+              <rect class="bar-segment" x="325" y="142" width="54" height="63" fill="var(--dorado-accent)" rx="3"/>
+              <rect class="bar-segment" x="325" y="115" width="54" height="27" fill="var(--guinda-primary)" rx="4"/>
+              <text x="352" y="225" class="bar-x-text" text-anchor="middle">Américas</text>
 
-  <!-- TOAST DE CONFIRMACIÓN -->
-  <div id="toast-ok">
-    <svg class="icon-svg" viewBox="0 0 24 24" style="color:var(--green); stroke-width:3;">
-      <polyline points="20 6 9 17 4 12"/>
-    </svg>
-    <span>Registro guardado correctamente</span>
-  </div>
+              <!-- Barra 5: San Sebastián (8 op, 2 fund = total 10) -->
+              <rect class="bar-segment" x="410" y="133" width="54" height="72" fill="var(--dorado-accent)" rx="3"/>
+              <rect class="bar-segment" x="410" y="115" width="54" height="18" fill="var(--guinda-primary)" rx="4"/>
+              <text x="437" y="225" class="bar-x-text" text-anchor="middle">San Sebastián</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────────
+         VISTA 2: CAPTURA EN VIVO (CÁMARA, YOLO-WORLD Y MODO VIDEO 10S)
+         ─────────────────────────────────────────────────────────────── -->
+    <section id="view-captura" class="app-main-pane">
+      <div class="captura-workspace-card">
+        <div class="section-hero-header" style="margin-bottom:16px;">
+          <span class="sub-step-label">PASO 1 · ADQUISICIÓN VISUAL</span>
+          <h2 class="main-page-title" style="font-size:22px;">Inspección y Captura Óptica</h2>
+          <p class="main-page-desc">Apunta hacia la luminaria para inferencia automática de la IA o captura fotogramas.</p>
+        </div>
+
+        <!-- Selector de Sub-Modo (Video / Foto / Manual) -->
+        <div class="segmented-control-modes">
+          <button class="mode-tab-pill activa" id="tab-video" onclick="cambiarModo('video')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Video IA</span>
+          </button>
+          <button class="mode-tab-pill" id="tab-foto" onclick="cambiarModo('foto')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="13" r="4"/><path d="M5 7h2l2-3h6l2 3h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/></svg>
+            <span>Foto Fija</span>
+          </button>
+          <button class="mode-tab-pill" id="tab-manual" onclick="cambiarModo('manual')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Manual</span>
+          </button>
+        </div>
+
+        <!-- Visor de Cámara con Retícula Táctica -->
+        <div id="visor-container">
+          <div class="hud-reticle hud-tl"></div>
+          <div class="hud-reticle hud-tr"></div>
+          <div class="hud-reticle hud-bl"></div>
+          <div class="hud-reticle hud-br"></div>
+          <canvas id="canvas"></canvas>
+          <div id="live-ai-badge">Iniciando sistema...</div>
+          <div id="progress-bar" style="position:absolute; bottom:0; left:0; height:3px; background:var(--dorado-accent); width:0%;"></div>
+        </div>
+
+        <!-- Botones de Acción de Captura -->
+        <div id="sec-video">
+          <button id="btn-grabar-video" class="btn-action-primary" onclick="toggleGrabacionVideo()">
+            <span id="ico-grabar"><span class="rec-pulse-icon"></span></span>
+            <span id="txt-grabar">Iniciar Grabación (10s)</span>
+          </button>
+        </div>
+
+        <div id="sec-foto" style="display:none; gap:10px; flex-direction:column;">
+          <button onclick="capturarFoto()" class="btn-action-primary">
+            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Capturar y Analizar Foto</span>
+          </button>
+          <label class="btn-theme-pill" style="justify-content:center; padding:10px; cursor:pointer;">
+            <span>Subir imagen desde archivo</span>
+            <input type="file" id="file" accept="image/*" hidden>
+          </label>
+        </div>
+
+        <div id="sec-manual" style="display:none; margin-top:10px;">
+          <label style="font-size:12px; font-weight:700; color:var(--text-secondary);">Tipo de Luminaria / Incidencia</label>
+          <select id="infra-categoria-manual" class="form-input-control">
+            <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
+            <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
+            <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
+            <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
+            <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+          </select>
+
+          <label style="font-size:12px; font-weight:700; color:var(--text-secondary);">Descripción y Referencia de Ubicación</label>
+          <textarea id="desc-manual" class="form-input-control" rows="3" placeholder="Indica crucero o detalles del poste..."></textarea>
+
+          <button onclick="enviarReporteManual()" class="btn-action-primary">
+            <span>Registrar Luminaria en Sistema</span>
+          </button>
+        </div>
+
+        <button id="btn-cam-toggle" class="btn-theme-pill" onclick="toggleCamara()" style="margin-top:12px; width:100%; justify-content:center;">
+          <span>Cámara: ON</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────────
+         VISTA 3: ANÁLISIS E INCIDENCIAS AUDITADAS
+         ─────────────────────────────────────────────────────────────── -->
+    <section id="view-analisis" class="app-main-pane">
+      <div class="analisis-card-box">
+        <div class="section-hero-header" style="margin-bottom:16px;">
+          <span class="sub-step-label">PASO 2 & 3 · AUDITORÍA EN TIEMPO REAL</span>
+          <h2 class="main-page-title" style="font-size:22px;">Bitácora de Luminarias Auditadas</h2>
+          <p class="main-page-desc">Clasificación automática por IA de focos operativos vs fundidos en campo.</p>
+        </div>
+
+        <!-- Panel de Reporte Emergente cuando la IA detecta algo -->
+        <div id="panel-reporte" style="display:none; background:var(--bg-sec); border:1px solid var(--dorado-accent); border-radius:10px; padding:18px; margin-bottom:18px;">
+          <h4 style="font-size:14px; font-weight:800; color:var(--dorado-accent); margin-bottom:10px;">Luminaria Detectada por YOLO-World</h4>
+          <img id="reporte-img" src="" alt="Captura IA" style="max-height:160px; border-radius:6px; margin-bottom:10px; display:block;">
+          <div id="reporte-conf" style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-secondary); margin-bottom:10px;"></div>
+
+          <label style="font-size:11px; font-weight:700; color:var(--text-secondary);">Clasificación Asignada:</label>
+          <select id="reporte-categoria" class="form-input-control">
+            <option value="Luminaria LED Vial Apagada">Luminaria LED Vial (Apagada / Averiada)</option>
+            <option value="Luminaria Colonial Dañada">Luminaria Colonial / Farol Ornamental</option>
+            <option value="Luminaria Solar con Falla">Luminaria Solar / Batería Descompuesta</option>
+            <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
+            <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+          </select>
+
+          <label style="font-size:11px; font-weight:700; color:var(--text-secondary);">Notas de Campo:</label>
+          <textarea id="reporte-desc" class="form-input-control" rows="2" placeholder="Observaciones técnicas adicionales..."></textarea>
+
+          <div style="display:flex; gap:10px;">
+            <button onclick="enviarReporteIA()" class="btn-action-primary" style="flex:2;">Confirmar y Registrar</button>
+            <button onclick="descartarReporte()" class="btn-theme-pill" style="flex:1; justify-content:center;">Descartar</button>
+          </div>
+        </div>
+
+        <!-- Tabla Historial -->
+        <div class="table-container-modern">
+          <table class="table-analisis">
+            <thead>
+              <tr>
+                <th>Folio</th>
+                <th>Clasificación</th>
+                <th>Estado</th>
+                <th>Sector</th>
+                <th>Confianza</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-analisis-body">
+              <tr>
+                <td><strong>#KUC-8421</strong></td>
+                <td>Luminaria LED Vial 100W</td>
+                <td><span class="badge-status-operativo">Operativa</span></td>
+                <td>Universidad</td>
+                <td>98.4%</td>
+              </tr>
+              <tr>
+                <td><strong>#KUC-8420</strong></td>
+                <td>Luminaria LED Vial (Apagada)</td>
+                <td><span class="badge-status-fundido">Foco Fundido</span></td>
+                <td>Centro</td>
+                <td>96.1%</td>
+              </tr>
+              <tr>
+                <td><strong>#KUC-8419</strong></td>
+                <td>Farol Colonial Ornamental</td>
+                <td><span class="badge-status-operativo">Operativa</span></td>
+                <td>La Merced</td>
+                <td>94.7%</td>
+              </tr>
+              <tr>
+                <td><strong>#KUC-8418</strong></td>
+                <td>Luminaria Solar Fotovoltaica</td>
+                <td><span class="badge-status-fundido">Foco Fundido</span></td>
+                <td>Américas</td>
+                <td>91.2%</td>
+              </tr>
+              <tr>
+                <td><strong>#KUC-8417</strong></td>
+                <td>Luminaria LED Vial 150W</td>
+                <td><span class="badge-status-operativo">Operativa</span></td>
+                <td>San Sebastián</td>
+                <td>97.9%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Consola de logs -->
+        <div id="log-panel" style="margin-top:18px; max-height:100px; overflow-y:auto; background:var(--bg-sec); border:1px solid var(--border-color); border-radius:6px; padding:10px; font-family:'JetBrains Mono',monospace; font-size:11px;"></div>
+      </div>
+    </section>
+
+  </main>
 
   <video id="video" autoplay playsinline muted hidden></video>
-</div>
 
-<!-- Scripts Kuche: Puente API y Lógica PWA -->
-<script src="./static/kuche-api.js"></script>
-<script src="./static/app.js?v=7.0"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./static/sw.js')
-        .then(reg => console.log('✅ [PWA Demo Kuche] SW activo:', reg.scope))
-        .catch(err => console.warn('⚠️ [PWA Demo Kuche] SW:', err));
+  <!-- Toast Flotante -->
+  <div id="toast-ok">
+    <svg viewBox="0 0 24 24" style="width:16px; height:16px; stroke:#10B981; fill:none; stroke-width:3;"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toast-text">Luminaria registrada correctamente</span>
+  </div>
+
+  <!-- Scripts Puente Kuche y Lógica IA -->
+  <script src="./static/kuche-api.js"></script>
+  <script src="./static/app.js?v=8.0"></script>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════════
+    // LÓGICA DE CONTROL DE LA INTERFAZ KUCHE
+    // ═══════════════════════════════════════════════════════════════════
+
+    // 1. Conmutador de Pestañas (Captura, Análisis, Estadísticas)
+    function cambiarSeccionApp(seccion) {
+      document.querySelectorAll('.app-main-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+
+      const pane = document.getElementById('view-' + seccion);
+      const btn = document.getElementById('navtab-' + seccion);
+      if (pane) pane.classList.add('active');
+      if (btn) btn.classList.add('active');
+
+      if (seccion === 'captura') {
+        if (typeof iniciarCamara === 'function') iniciarCamara();
+      }
+    }
+
+    // 2. Conmutador de Tema (Modo Oscuro / Modo Claro)
+    function alternarTema() {
+      const esOscuro = document.body.classList.contains('theme-dark');
+      const nuevo = esOscuro ? 'light' : 'dark';
+      aplicarTema(nuevo);
+      localStorage.setItem('kuche_theme_pref', nuevo);
+    }
+
+    function aplicarTema(tema) {
+      document.body.classList.remove('theme-dark', 'theme-light');
+      document.body.classList.add(tema === 'light' ? 'theme-light' : 'theme-dark');
+      const btn = document.getElementById('btn-theme-toggle');
+      if (btn) {
+        btn.innerHTML = tema === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+      }
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        metaTheme.setAttribute('content', tema === 'light' ? '#FFFFFF' : '#131113');
+      }
+    }
+
+    // 3. Inicialización al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      const guardado = localStorage.getItem('kuche_theme_pref') || 'dark';
+      aplicarTema(guardado);
     });
-  }
 
-  let deferredPrompt;
-  const btnInstalar = document.getElementById('btn-instalar-pwa');
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (btnInstalar) {
-      btnInstalar.style.display = 'inline-flex';
-      btnInstalar.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log('[PWA Demo] Elección:', outcome);
-        deferredPrompt = null;
-        btnInstalar.style.display = 'none';
+    // 4. Servicio PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./static/sw.js')
+          .then(reg => console.log('✅ [PWA Kuche] SW activo:', reg.scope))
+          .catch(err => console.warn('⚠️ [PWA Kuche] SW:', err));
       });
     }
-  });
-</script>
+
+    let deferredPrompt;
+    const btnInstalar = document.getElementById('btn-instalar-pwa');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (btnInstalar) {
+        btnInstalar.style.display = 'inline-flex';
+        btnInstalar.addEventListener('click', async () => {
+          if (!deferredPrompt) return;
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log('[PWA Kuche] Elección de instalación:', outcome);
+          deferredPrompt = null;
+          btnInstalar.style.display = 'none';
+        });
+      }
+    });
+  </script>
 </body>
 </html>
