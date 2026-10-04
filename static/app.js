@@ -65,8 +65,20 @@ function mapearCategoria(textoIA) {
 
 // ─── WebSocket ───────────────────────────────────────────────────
 function conectarWS() {
-  if (wsDeteccion && (wsDeteccion.readyState === WebSocket.OPEN || wsDeteccion.readyState === WebSocket.CONNECTING)) return;
   const url = window.KucheAPI ? window.KucheAPI.wsUrl('/api/infraestructura/ws/detectar') : `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/api/infraestructura/ws/detectar`;
+
+  if (wsDeteccion) {
+    if (wsDeteccion.url === url && (wsDeteccion.readyState === WebSocket.OPEN || wsDeteccion.readyState === WebSocket.CONNECTING)) {
+      return;
+    }
+    try {
+      wsDeteccion.onclose = null;
+      wsDeteccion.onerror = null;
+      wsDeteccion.close();
+    } catch(e) {}
+    wsDeteccion = null;
+  }
+
   LOG('Conectando WS → ' + url, '#ffcc00');
   try {
     wsDeteccion = new WebSocket(url);
@@ -81,11 +93,13 @@ function conectarWS() {
     estado('IA Kuche lista', '#00ff80');
     wsReconnecting = false;
     analizando = false;
-    if (camaraEncendida && modo === 'video') iniciarAnalisisVideo();
+    if (camaraEncendida && modo === 'video' && grabacionActiva) {
+      ejecutarAnalisis();
+    }
   };
 
   wsDeteccion.onerror = (e) => {
-    LOG('Error WS, verificando servidor...', '#ff9800');
+    LOG('Error WS — reconectando...', '#ff9800');
     analizando = false;
     setProgressBar(false);
   };
@@ -125,13 +139,31 @@ function conectarWS() {
   wsDeteccion.onclose = (e) => {
     LOG('WS cerrado (código ' + e.code + ')', '#ff9800');
     analizando = false;
-    if (!wsReconnecting) { wsReconnecting = true; setTimeout(conectarWS, 2000); }
+    if (!wsReconnecting) {
+      wsReconnecting = true;
+      if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
+        window.KucheAPI.sincronizarUrl().then(() => {
+          setTimeout(conectarWS, 1500);
+        }).catch(() => {
+          setTimeout(conectarWS, 2000);
+        });
+      } else {
+        setTimeout(conectarWS, 2000);
+      }
+    }
   };
+}
 
-  wsDeteccion.onerror = () => {
-    LOG('Error WS — reconectando...', '#ff4444');
-    analizando = false;
-  };
+// Escuchar cambios de URL en vivo desde KucheAPI
+if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
+  window.KucheAPI.onStateChange(({ url, online }) => {
+    if (url && online) {
+      const targetWs = window.KucheAPI.wsUrl('/api/infraestructura/ws/detectar');
+      if (!wsDeteccion || wsDeteccion.url !== targetWs || wsDeteccion.readyState > 1) {
+        conectarWS();
+      }
+    }
+  });
 }
 
 // ─── Arranque ────────────────────────────────────────────────────
