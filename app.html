@@ -22,26 +22,18 @@
 <body class="theme-dark">
 
 <div class="app-wrapper">
-  <!-- BANNER EXPLICATIVO MODO DEMO -->
-  <div style="background:linear-gradient(90deg, #9B2247, #7e1741); color:#FFFFFF; padding:6px 12px; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:space-between; border-radius:6px; margin:8px 0 10px; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
-    <div style="display:flex; align-items:center; gap:6px;">
-      <span style="background:rgba(0,0,0,0.3); padding:2px 7px; border-radius:4px; font-size:9.5px; text-transform:uppercase; letter-spacing:0.5px; border:1px solid rgba(230,209,148,0.4);">Modo Demo</span>
-      <span>Acceso libre sin registro</span>
-    </div>
-    <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:3px 10px; font-size:10px;">
-      ☀️ Modo Claro
-    </button>
-  </div>
-
   <!-- BARRA SUPERIOR / NAVBAR -->
   <header class="app-header">
     <div class="brand-group">
       <div class="brand-text">
         <h1 class="brand-kuche-wordmark">KUCHE</h1>
-        <p>Monitoreo IA &bull; Modo Demostración</p>
+        <p>Estación de Inspección y Auditoría</p>
       </div>
     </div>
-    <div style="display:flex; align-items:center; gap:6px;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:4px 10px; font-size:10px;">
+        ☀️ Modo Claro
+      </button>
       <button id="btn-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
         <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>Instalar</span>
