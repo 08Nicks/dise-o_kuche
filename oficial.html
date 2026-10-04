@@ -52,19 +52,39 @@
 
     .auth-header-brand {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
-    .auth-brand-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #7e1741 0%, #9B2247 100%);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 10px rgba(155, 34, 71, 0.4);
+    .auth-tabs {
+      display: flex;
+      background: var(--bg-tertiary);
+      padding: 4px;
+      border-radius: 9px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-subtle);
+      gap: 4px;
+    }
+    .auth-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .auth-tab-btn.active {
+      background: var(--guinda-primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(155, 34, 71, 0.4);
+    }
+    body.theme-light .auth-tab-btn.active {
+      background: var(--guinda-primary);
+      color: #FFFFFF;
     }
 
     .auth-brand-title {
@@ -199,18 +219,25 @@
   <div class="auth-card-box">
     
     <div class="auth-header-brand">
-      <div class="auth-brand-icon">
-        <svg viewBox="0 0 24 24" style="width:24px; height:24px; color:#fff;"><path d="M9 18h6m-4 3h2m-5-8.5a6 6 0 1 1 8 0c-.8 1-1.5 2-1.5 3.5h-5c0-1.5-.7-2.5-1.5-3.5z" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
       <h1 class="auth-brand-title">KUCHE</h1>
       <span class="auth-brand-sub">Sistema de Alumbrado Público</span>
     </div>
 
-    <!-- FORMULARIO DE LOGIN BÁSICO -->
+    <!-- SELECTOR DE PESTAÑAS: INICIAR SESIÓN O HACER CUENTA NUEVA -->
+    <div class="auth-tabs">
+      <button type="button" id="tab-auth-login" class="auth-tab-btn active" onclick="cambiarAuthTab('login')">
+        Iniciar Sesión
+      </button>
+      <button type="button" id="tab-auth-registro" class="auth-tab-btn" onclick="cambiarAuthTab('registro')">
+        Hacer Cuenta Nueva
+      </button>
+    </div>
+
+    <!-- 1. FORMULARIO DE INICIAR SESIÓN -->
     <form id="form-login" onsubmit="handleLoginSubmit(event)">
       <div class="auth-form-group">
         <label class="auth-form-label" for="login-user">Usuario o Correo</label>
-        <input type="text" id="login-user" class="auth-input-field" placeholder="ej. usuario@kuche.gob.mx o admin" required>
+        <input type="text" id="login-user" class="auth-input-field" placeholder="ej. inspector1@kuche.gob.mx o admin" required>
       </div>
 
       <div class="auth-form-group">
@@ -228,6 +255,43 @@
       <button type="submit" class="auth-btn-primary">
         Iniciar Sesión
       </button>
+
+      <div style="text-align:center; margin-top:16px; font-size:12px;">
+        <span style="color:var(--text-secondary);">¿No tienes una cuenta aún?</span>
+        <button type="button" onclick="cambiarAuthTab('registro')" style="background:none; border:none; color:var(--dorado-accent); font-weight:700; cursor:pointer; text-decoration:underline; margin-left:4px; font-family:inherit;">Hacer una cuenta nueva</button>
+      </div>
+    </form>
+
+    <!-- 2. FORMULARIO DE CREAR CUENTA NUEVA -->
+    <form id="form-registro" onsubmit="handleRegistroSubmit(event)" style="display:none;">
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-nombre">Nombre Completo o Inspector</label>
+        <input type="text" id="reg-nombre" class="auth-input-field" placeholder="ej. Ing. Carlos Mendoza" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-user">Usuario o Correo Institucional</label>
+        <input type="text" id="reg-user" class="auth-input-field" placeholder="ej. carlos.mendoza@kuche.gob.mx" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-password">Contraseña</label>
+        <input type="password" id="reg-password" class="auth-input-field" placeholder="Crea una contraseña" required>
+      </div>
+
+      <div class="auth-form-group">
+        <label class="auth-form-label" for="reg-password-confirm">Confirmar Contraseña</label>
+        <input type="password" id="reg-password-confirm" class="auth-input-field" placeholder="Repite la contraseña" required>
+      </div>
+
+      <button type="submit" class="auth-btn-primary" style="background:linear-gradient(135deg, var(--clr-dorado-metal), #a07a42); color:#000; font-weight:800;">
+        Registrar Cuenta e Ingresar
+      </button>
+
+      <div style="text-align:center; margin-top:16px; font-size:12px;">
+        <span style="color:var(--text-secondary);">¿Ya tienes una cuenta registrada?</span>
+        <button type="button" onclick="cambiarAuthTab('login')" style="background:none; border:none; color:var(--dorado-accent); font-weight:700; cursor:pointer; text-decoration:underline; margin-left:4px; font-family:inherit;">Iniciar sesión</button>
+      </div>
     </form>
   </div>
 </div>
@@ -461,7 +525,27 @@ function aplicarTema(tema) {
   }
 }
 
-// Iniciar sesión básico
+// Alternar Pestañas de Auth: Login vs Registro
+function cambiarAuthTab(tab) {
+  const formLogin = document.getElementById('form-login');
+  const formReg   = document.getElementById('form-registro');
+  const btnLogin  = document.getElementById('tab-auth-login');
+  const btnReg    = document.getElementById('tab-auth-registro');
+
+  if (tab === 'registro') {
+    if (formLogin) formLogin.style.display = 'none';
+    if (formReg)   formReg.style.display   = 'block';
+    if (btnLogin)  btnLogin.classList.remove('active');
+    if (btnReg)    btnReg.classList.add('active');
+  } else {
+    if (formLogin) formLogin.style.display = 'block';
+    if (formReg)   formReg.style.display   = 'none';
+    if (btnLogin)  btnLogin.classList.add('active');
+    if (btnReg)    btnReg.classList.remove('active');
+  }
+}
+
+// Iniciar sesión
 function handleLoginSubmit(e) {
   e.preventDefault();
   const user = document.getElementById('login-user').value.trim();
@@ -473,9 +557,24 @@ function handleLoginSubmit(e) {
     return;
   }
 
+  // Buscar en cuentas registradas locales
+  const cuentasRaw = localStorage.getItem('kuche_cuentas_registradas') || '[]';
+  let nombreEncontrado = user.includes('@') ? user.split('@')[0] : user;
+  try {
+    const cuentas = JSON.parse(cuentasRaw);
+    const c = cuentas.find(item => item.user.toLowerCase() === user.toLowerCase());
+    if (c) {
+      if (c.password && c.password !== pwd) {
+        alert('Contraseña incorrecta. Intente de nuevo.');
+        return;
+      }
+      nombreEncontrado = c.nombre || c.user;
+    }
+  } catch(e) {}
+
   sesionActual = {
     user: user,
-    nombre: user.includes('@') ? user.split('@')[0] : user,
+    nombre: nombreEncontrado,
     remember: remember,
     loginAt: new Date().toISOString()
   };
@@ -486,6 +585,58 @@ function handleLoginSubmit(e) {
     sessionStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
   }
 
+  activarVistaApp(sesionActual);
+}
+
+// Registrar nueva cuenta
+function handleRegistroSubmit(e) {
+  e.preventDefault();
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const user = document.getElementById('reg-user').value.trim();
+  const pwd = document.getElementById('reg-password').value;
+  const pwdConfirm = document.getElementById('reg-password-confirm').value;
+
+  if (!nombre || !user || !pwd) {
+    alert('Por favor completa todos los campos.');
+    return;
+  }
+
+  if (pwd !== pwdConfirm) {
+    alert('Las contraseñas no coinciden. Por favor verifica.');
+    return;
+  }
+
+  // Obtener cuentas previas
+  const cuentasRaw = localStorage.getItem('kuche_cuentas_registradas') || '[]';
+  let cuentas = [];
+  try { cuentas = JSON.parse(cuentasRaw); } catch(e) { cuentas = []; }
+
+  const yaExiste = cuentas.find(c => c.user.toLowerCase() === user.toLowerCase());
+  if (yaExiste) {
+    alert('Ya existe una cuenta con este usuario o correo. Por favor inicia sesión.');
+    cambiarAuthTab('login');
+    document.getElementById('login-user').value = user;
+    return;
+  }
+
+  const nuevaCuenta = {
+    nombre: nombre,
+    user: user,
+    password: pwd,
+    fechaRegistro: new Date().toISOString()
+  };
+  cuentas.push(nuevaCuenta);
+  localStorage.setItem('kuche_cuentas_registradas', JSON.stringify(cuentas));
+
+  sesionActual = {
+    user: user,
+    nombre: nombre,
+    remember: true,
+    loginAt: new Date().toISOString()
+  };
+  localStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
+
+  alert(`Cuenta creada exitosamente para ${nombre}. Bienvenido a KUCHE.`);
   activarVistaApp(sesionActual);
 }
 

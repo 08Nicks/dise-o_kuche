@@ -703,15 +703,7 @@
         <div class="stat-lbl">Operativas</div>
       </div>
     </div>
-
-    <!-- Filtros por Categoría -->
-    <div class="filtros">
-      <button class="filtro-btn active" onclick="filtrar('todos', this)">Todas</button>
-      <button class="filtro-btn" onclick="filtrar('LED', this)">LED Viales</button>
-      <button class="filtro-btn" onclick="filtrar('Colonial', this)">Coloniales</button>
-      <button class="filtro-btn" onclick="filtrar('Solar', this)">Solares</button>
-    </div>
-
+ 
     <div class="sidebar-title">
       <span>LUMINARIAS REGISTRADAS</span>
       <span id="count-badge" style="color:var(--cyan); font-family:'JetBrains Mono', monospace;">0</span>
@@ -815,36 +807,22 @@ function inicializarMapa() {
 }
 
 // ── Utilidades de Categoría de Luminaria (Sin emojis) ──────────────
-function catInfo(texto) {
-  const t = (texto || '').toLowerCase();
-  if (t.includes('colonial') || t.includes('farol')) {
-    return { label:'Luminaria Colonial', dotCls:'dot-colonial', color:'#BC955C', bg:'rgba(188, 149, 92, 0.2)' };
-  }
-  if (t.includes('solar') || t.includes('bateria') || t.includes('panel')) {
-    return { label:'Luminaria Solar', dotCls:'dot-solar', color:'#10b981', bg:'rgba(16, 185, 129, 0.2)' };
-  }
-  if (t.includes('fotocelda') || t.includes('intermitente')) {
-    return { label:'Fotocelda Averiada', dotCls:'dot-fotocelda', color:'#f59e0b', bg:'rgba(245, 158, 11, 0.2)' };
-  }
-  return { label:'Luminaria LED Vial', dotCls:'dot-led', color:'#9B2247', bg:'rgba(155, 34, 71, 0.2)' };
-}
-
-// ── Icono SVG para Marcadores en Mapa ─────────────────────────────
-function iconFromCat(info) {
+// ── Icono Institucional para Marcadores en Mapa (Sin tipos de farol) ─
+function getMarkerIcon() {
   return L.divIcon({
     className: 'custom-map-pin',
     html: `<div style="
-      width: 28px; height: 28px; border-radius: 50%;
-      background: ${info.bg}; border: 2px solid ${info.color};
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(155, 34, 71, 0.25); border: 2px solid #9B2247;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 12px ${info.color}88;
+      box-shadow: 0 0 12px rgba(155, 34, 71, 0.7);
       cursor: pointer;
     ">
-      <div style="width: 8px; height: 8px; border-radius: 50%; background: ${info.color};"></div>
+      <div style="width: 8px; height: 8px; border-radius: 50%; background: #E6D194;"></div>
     </div>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-    popupAnchor: [0, -16]
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
+    popupAnchor: [0, -14]
   });
 }
 
@@ -878,21 +856,8 @@ function actualizarEstadisticas() {
     }).length;
 }
 
-// ── Filtro ────────────────────────────────────────────────────────
-function filtrar(cat, btn) {
-  filtroActivo = cat;
-  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderLista();
-  renderMapa();
-}
-
 function reportesFiltrados() {
-  if (filtroActivo === 'todos') return todosReportes;
-  return todosReportes.filter(r => {
-    const texto = (r.luminaria || r.incidencia || r.placa || '').toLowerCase();
-    return texto.includes(filtroActivo.toLowerCase());
-  });
+  return todosReportes;
 }
 
 // ── Desglose Inteligente del Reporte ──────────────────────────────
@@ -962,13 +927,12 @@ function renderLista() {
   document.getElementById('count-badge').textContent = datos.length;
 
   if (!datos.length) {
-    lista.innerHTML = '<div class="empty-state">No hay luminarias registradas con este filtro.</div>';
+    lista.innerHTML = '<div class="empty-state">No hay luminarias registradas.</div>';
     return;
   }
 
   lista.innerHTML = datos.slice(0, 150).map(r => {
     const des = desglosarReporte(r);
-    const info = catInfo(des.tipoIA);
     const hora = (r.hora || '').substring(0, 16);
     const ubiCorta = r.ubi ? r.ubi.substring(0, 24) : 'Sin GPS';
 
@@ -995,10 +959,7 @@ function renderLista() {
       ${thumbHtml}
       <div class="card-info">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:4px;">
-          <div style="display:flex; align-items:center; gap:6px; min-width:0;">
-            <div class="cat-badge-dot ${info.dotCls}"></div>
-            <div class="card-titulo" title="${des.tipoIA}">${des.tipoIA}</div>
-          </div>
+          <div class="card-titulo" title="Reporte #${r.id}">Reporte #${r.id}</div>
           ${autorBadge}
         </div>
         <div class="card-falla-box">
@@ -1029,10 +990,9 @@ function renderMapa() {
     if (isNaN(lat) || isNaN(lon)) return;
 
     const des = desglosarReporte(r);
-    const info = catInfo(des.tipoIA);
     const hora = (r.hora || '').substring(0, 16);
 
-    const marker = L.marker([lat, lon], { icon: iconFromCat(info) });
+    const marker = L.marker([lat, lon], { icon: getMarkerIcon() });
 
     const autorBadge = des.esDemo
       ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
@@ -1049,10 +1009,9 @@ function renderMapa() {
     marker.bindPopup(`
       <div class="popup-body">
         <div class="popup-header-badges">
-          <span class="popup-badge" style="background:${info.bg}; color:${info.color}; border:1px solid ${info.color}55;">${info.label}</span>
           ${autorBadge}
         </div>
-        <h4>${des.tipoIA}</h4>
+        <h4>Reporte de Luminaria #${r.id}</h4>
         <div class="popup-falla-box">
           <strong style="color:#ff809b;">Falla:</strong> ${des.fallaEscrita}
         </div>
