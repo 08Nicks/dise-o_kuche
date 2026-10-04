@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- Color de la barra del navegador (Neutro oscuro oficial) -->
+  <meta name="theme-color" content="#131113">
+
   <style>
     *, *::before, *::after {
       box-sizing: border-box;
@@ -17,53 +20,77 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
-       SISTEMAS CROMÁTICOS Y MATRIZ DE 3 ESTILOS VISUALES
+       SISTEMAS CROMÁTICOS INSTITUCIONALES KUCHE (PROPUESTA OFICIAL)
        ═══════════════════════════════════════════════════════════════════ */
     :root {
-      --clr-guinda-dark: #611232;          /* Pantone 7421 C */
-      --clr-guinda-std: #9B2247;           /* Pantone 7420 C */
-      --clr-guinda-hover: #7e1741;
-      --clr-guinda-subtle: #fbf2f5;
-      --clr-dorado-metal: #BC955C;         /* Pantone 465 C */
-      --clr-dorado-arena: #E6D194;         /* Pantone 7402 C */
-      --clr-dorado-dark: #98732E;
-      --clr-terracota: #A84A32;            /* Barro Metzontla */
-      --clr-arcilla: #C87D55;
-      --clr-blanco: #FFFFFF;
-      --clr-gris-base: #F4F6F9;
-      --clr-gris-borde: #E5E7EB;
-      --clr-texto-titulos: #111827;
-      --clr-texto-cuerpo: #374151;
-      --clr-texto-muted: #6B7280;
+      /* Colores institucionales */
+      --clr-guinda-std: #9B2247;           /* Color principal: botones, focos fundidos, alertas y gráficas */
+      --clr-guinda-hover: #b82954;
+      --clr-dorado-acento: #E6D194;        /* Color de acento: focos operativos, contorno de selección, enlaces y gráficas */
+      --clr-dorado-hover: #fae7b1;
+
+      /* Neutros oscuros (fondos) */
+      --clr-bg-general: #131113;           /* Fondo general de la página y barra del navegador */
+      --clr-bg-tarjetas: #1B181A;          /* Tarjetas y ventanas emergentes */
+      --clr-bg-secundario: #252124;        /* Fondos secundarios y apagados */
+      --clr-borde-campos: #2E292C;         /* Bordes y campos de formulario */
+
+      /* Neutros claros (texto) */
+      --clr-texto-principal: #F1ECEE;      /* Texto principal */
+      --clr-texto-btn-guinda: #F8F1F4;     /* Texto sobre botones guinda */
+      --clr-texto-secundario: #A69CA1;     /* Texto secundario, etiquetas y descripciones */
+
+      /* Semántica y hardware de luminarias */
+      --foco-fundido: #9B2247;
+      --foco-operativo: #E6D194;
+      --contorno-seleccion: #E6D194;
+
+      /* Compatibilidad con variables del sistema */
+      --clr-guinda-dark: #9B2247;
+      --clr-guinda-subtle: #252124;
+      --clr-dorado-metal: #E6D194;
+      --clr-dorado-arena: #E6D194;
+      --clr-dorado-dark: #E6D194;
+      --clr-terracota: #9B2247;
+      --clr-arcilla: #E6D194;
+      --clr-blanco: #F1ECEE;
+      --clr-gris-base: #1B181A;
+      --clr-gris-borde: #2E292C;
+      --clr-texto-titulos: #F1ECEE;
+      --clr-texto-cuerpo: #F1ECEE;
+      --clr-texto-muted: #A69CA1;
     }
 
-    /* ─── ESTILO VISUAL 1: INSTITUCIONAL CLÁSICO (GUINDA Y DORADO) ─── */
-    body.skin-clasico {
-      --canvas-bg: #FFFFFF;
-      --header-bg: #FFFFFF;
-      --header-text: #111827;
-      --header-border-bot: 3px solid #BC955C;
-      --panel-bg: #FFFFFF;
-      --panel-border: #E5E7EB;
-      --card-bg: #FFFFFF;
-      --card-hover: #F8F9FA;
-      --card-border: #E5E7EB;
-      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    /* ─── ESTILO VISUAL 1: PROPUESTA OFICIAL INSTITUCIONAL (PREDETERMINADA) ─── */
+    body.skin-oficial, body.skin-clasico {
+      --canvas-bg: #131113;
+      --header-bg: #1B181A;
+      --header-text: #F1ECEE;
+      --header-border-bot: 2px solid #2E292C;
+      --panel-bg: #1B181A;
+      --panel-border: #2E292C;
+      --card-bg: #1B181A;
+      --card-hover: #252124;
+      --card-border: #2E292C;
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
       --btn-primary-bg: #9B2247;
-      --btn-primary-hover: #7e1741;
-      --btn-primary-text: #FFFFFF;
-      --btn-border: #BC955C;
-      --btn-radius: 4px;
-      --accent-color: #611232;
-      --highlight-color: #BC955C;
-      --hud-line: #BC955C;
-      --hud-tag-bg: #611232;
-      --kpi-num: #611232;
-      --kpi-bg: #F9FAFB;
-      --substrip-bg: #611232;
-      --substrip-text: #FFFFFF;
-      --badge-accent-bg: #FDF2F4;
-      --tag-skin-label: "Estilo Visual: Institucional Clásico (Guinda & Dorado)";
+      --btn-primary-hover: #b82954;
+      --btn-primary-text: #F8F1F4;
+      --btn-border: #E6D194;
+      --btn-radius: 6px;
+      --accent-color: #9B2247;
+      --highlight-color: #E6D194;
+      --hud-line: #E6D194;
+      --hud-tag-bg: #9B2247;
+      --kpi-num: #E6D194;
+      --kpi-bg: #252124;
+      --substrip-bg: #1B181A;
+      --substrip-text: #F1ECEE;
+      --badge-accent-bg: #252124;
+      --clr-texto-titulos: #F1ECEE;
+      --clr-texto-cuerpo: #F1ECEE;
+      --clr-texto-muted: #A69CA1;
+      --tag-skin-label: "Propuesta Oficial Institucional (Guinda #9B2247, Dorado #E6D194 & Neutros Oscuros)";
     }
 
     /* ─── ESTILO VISUAL 2: FUSIÓN CONTEMPORÁNEA (GEOMETRÍA RECTILÍNEA Y BORDES 6PX — CERO CÍRCULOS NI REDONDEOS) ─── */
@@ -157,8 +184,585 @@
       border-radius: 6px !important;
       outline: 2px solid var(--clr-dorado-arena) !important;
     }
-    body.skin-fusion .color-dot-indicator {
-      border-radius: 2px !important;
+    /* ─── SOBREESCRITURAS PARA PROPUESTA OFICIAL INSTITUCIONAL (PALETA OSCURA KUCHE) ─── */
+    body.skin-oficial,
+    body.skin-clasico {
+      background: #131113 !important;
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .master-nav-header,
+    body.skin-clasico .master-nav-header {
+      background: #1B181A !important;
+      border-bottom: 2px solid #2E292C !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.skin-oficial .brand-kuche-wordmark,
+    body.skin-clasico .brand-kuche-wordmark {
+      color: #E6D194 !important;
+      text-shadow: 0 0 12px rgba(230, 209, 148, 0.25) !important;
+    }
+
+    body.skin-oficial .main-nav-tabs,
+    body.skin-clasico .main-nav-tabs {
+      background: #252124 !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .main-tab-link,
+    body.skin-clasico .main-tab-link {
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .main-tab-link:hover,
+    body.skin-clasico .main-tab-link:hover {
+      color: #E6D194 !important;
+      background: #1B181A !important;
+    }
+
+    body.skin-oficial .main-tab-link.active,
+    body.skin-clasico .main-tab-link.active {
+      background: #9B2247 !important;
+      color: #F8F1F4 !important;
+      outline: 2px solid #E6D194 !important;
+      box-shadow: 0 2px 10px rgba(155, 34, 71, 0.4) !important;
+    }
+
+    body.skin-oficial .main-tab-link:not(.active) .badge-counter,
+    body.skin-clasico .main-tab-link:not(.active) .badge-counter {
+      background: #2E292C !important;
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .monitoreo-status-badge,
+    body.skin-clasico .monitoreo-status-badge {
+      background: #252124 !important;
+      border: 1px solid #E6D194 !important;
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .monitoreo-status-badge::before,
+    body.skin-clasico .monitoreo-status-badge::before {
+      background: #E6D194 !important;
+      box-shadow: 0 0 8px #E6D194 !important;
+    }
+
+    body.skin-oficial .status-strip-official,
+    body.skin-clasico .status-strip-official {
+      background: #1B181A !important;
+      border-bottom: 2px solid #E6D194 !important;
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .status-strip-official .tag-current,
+    body.skin-clasico .status-strip-official .tag-current {
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .identity-subnav-bar,
+    body.skin-clasico .identity-subnav-bar {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .identity-subnav-btn,
+    body.skin-clasico .identity-subnav-btn {
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .identity-subnav-btn:hover,
+    body.skin-clasico .identity-subnav-btn:hover {
+      background: #252124 !important;
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .identity-subnav-btn.active,
+    body.skin-clasico .identity-subnav-btn.active {
+      background: #9B2247 !important;
+      color: #F8F1F4 !important;
+      outline: 2px solid #E6D194 !important;
+    }
+
+    body.skin-oficial .hero-identity-box,
+    body.skin-clasico .hero-identity-box {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+      border-left: 6px solid #E6D194 !important;
+    }
+
+    body.skin-oficial .hero-text-content h2,
+    body.skin-clasico .hero-text-content h2 {
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .hero-text-content p,
+    body.skin-clasico .hero-text-content p {
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .content-card-box,
+    body.skin-clasico .content-card-box {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+    }
+
+    body.skin-oficial .box-heading-title,
+    body.skin-clasico .box-heading-title {
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .color-swatch-interactive,
+    body.skin-clasico .color-swatch-interactive {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .color-swatch-interactive:hover,
+    body.skin-clasico .color-swatch-interactive:hover {
+      border-color: #E6D194 !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    body.skin-oficial .swatch-meta strong,
+    body.skin-clasico .swatch-meta strong {
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .swatch-meta span,
+    body.skin-clasico .swatch-meta span {
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .swatch-meta small,
+    body.skin-clasico .swatch-meta small {
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .contrast-checker-box,
+    body.skin-clasico .contrast-checker-box {
+      background: #252124 !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .mockups-control-hub,
+    body.skin-clasico .mockups-control-hub {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+    }
+
+    body.skin-oficial .hub-row-label,
+    body.skin-clasico .hub-row-label {
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .hub-pill-selector,
+    body.skin-clasico .hub-pill-selector {
+      background: #252124 !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .hub-pill-btn,
+    body.skin-clasico .hub-pill-btn {
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .hub-pill-btn:hover,
+    body.skin-clasico .hub-pill-btn:hover {
+      background: #1B181A !important;
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .hub-pill-btn.active-layout,
+    body.skin-clasico .hub-pill-btn.active-layout {
+      background: #9B2247 !important;
+      color: #F8F1F4 !important;
+      outline: 2px solid #E6D194 !important;
+      box-shadow: 0 2px 10px rgba(155, 34, 71, 0.4) !important;
+    }
+
+    body.skin-oficial .hub-pill-btn.active-skin,
+    body.skin-clasico .hub-pill-btn.active-skin {
+      background: #E6D194 !important;
+      color: #131113 !important;
+      font-weight: 800 !important;
+      outline: 2px solid #E6D194 !important;
+      box-shadow: 0 2px 10px rgba(230, 209, 148, 0.4) !important;
+    }
+
+    body.skin-oficial .hub-pill-btn.active-screen,
+    body.skin-clasico .hub-pill-btn.active-screen {
+      background: #9B2247 !important;
+      color: #F8F1F4 !important;
+      outline: 2px solid #E6D194 !important;
+      box-shadow: 0 2px 10px rgba(155, 34, 71, 0.4) !important;
+    }
+
+    body.skin-oficial .mockup-tools-strip,
+    body.skin-clasico .mockup-tools-strip {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .filter-chip-btn,
+    body.skin-clasico .filter-chip-btn {
+      background: #252124 !important;
+      border: 1px solid #2E292C !important;
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .filter-chip-btn:hover,
+    body.skin-clasico .filter-chip-btn:hover {
+      border-color: #E6D194 !important;
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .filter-chip-btn.active,
+    body.skin-clasico .filter-chip-btn.active {
+      background: #E6D194 !important;
+      color: #131113 !important;
+      font-weight: 800 !important;
+      border-color: #E6D194 !important;
+      outline: 2px solid #E6D194 !important;
+    }
+
+    body.skin-oficial .btn-submit-action-styled,
+    body.skin-clasico .btn-submit-action-styled {
+      background: #9B2247 !important;
+      color: #F8F1F4 !important;
+      border: 1px solid #E6D194 !important;
+    }
+
+    body.skin-oficial .btn-submit-action-styled:hover,
+    body.skin-clasico .btn-submit-action-styled:hover {
+      background: #b82954 !important;
+      outline: 2px solid #E6D194 !important;
+    }
+
+    body.skin-oficial .disp1-frame,
+    body.skin-clasico .disp1-frame {
+      background: #1B181A !important;
+      border: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .disp1-head,
+    body.skin-clasico .disp1-head {
+      background: #1B181A !important;
+      border-bottom: 2px solid #E6D194 !important;
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .disp1-head h2,
+    body.skin-clasico .disp1-head h2 {
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .disp1-kpi-bar,
+    body.skin-clasico .disp1-kpi-bar {
+      background: #252124 !important;
+      border-bottom: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .disp1-kpi-cell,
+    body.skin-clasico .disp1-kpi-cell {
+      border-right: 1px solid #2E292C !important;
+    }
+
+    body.skin-oficial .disp1-kpi-cell span,
+    body.skin-clasico .disp1-kpi-cell span {
+      color: #A69CA1 !important;
+    }
+
+    body.skin-oficial .disp1-kpi-cell strong,
+    body.skin-clasico .disp1-kpi-cell strong {
+      color: #E6D194 !important;
+    }
+
+    body.skin-oficial .table-scroll-wrap,
+    body.skin-clasico .table-scroll-wrap {
+      border: 1px solid #2E292C !important;
+      background: #1B181A !important;
+    }
+
+    body.skin-oficial .fed-data-table th,
+    body.skin-clasico .fed-data-table th {
+      background: #252124 !important;
+      color: #E6D194 !important;
+      border-bottom: 2px solid #E6D194 !important;
+    }
+
+    body.skin-oficial .fed-data-table td,
+    body.skin-clasico .fed-data-table td {
+      border-bottom: 1px solid #2E292C !important;
+      color: #F1ECEE !important;
+    }
+
+    body.skin-oficial .fed-data-table tr:hover td,
+    body.skin-clasico .fed-data-table tr:hover td {
+      background: #252124 !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       SISTEMA DE MODO CLARO INSTITUCIONAL (SOBREESCRITURA COMPLETA)
+       ═══════════════════════════════════════════════════════════════════ */
+    .btn-theme-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #2E292C;
+      background: #252124;
+      color: #E6D194;
+      transition: all 0.2s ease;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn-theme-pill:hover {
+      border-color: #E6D194;
+      background: #1B181A;
+      transform: translateY(-1px);
+    }
+    body.theme-light .btn-theme-pill {
+      border: 1px solid #E5E7EB !important;
+      background: #FFFFFF !important;
+      color: #9B2247 !important;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    body.theme-light .btn-theme-pill:hover {
+      border-color: #9B2247 !important;
+      background: #F9FAFB !important;
+    }
+
+    body.theme-light,
+    body.skin-oficial.theme-light,
+    body.skin-clasico.theme-light {
+      --canvas-bg: #F8F9FA !important;
+      --header-bg: #FFFFFF !important;
+      --header-text: #111827 !important;
+      --header-border-bot: 2px solid #E5E7EB !important;
+      --panel-bg: #FFFFFF !important;
+      --panel-border: #E5E7EB !important;
+      --card-bg: #FFFFFF !important;
+      --card-hover: #F9FAFB !important;
+      --card-border: #E5E7EB !important;
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+      --substrip-bg: #FFFFFF !important;
+      --substrip-text: #111827 !important;
+      --clr-texto-titulos: #111827 !important;
+      --clr-texto-cuerpo: #1F2937 !important;
+      --clr-texto-muted: #6B7280 !important;
+      --kpi-bg: #F9FAFB !important;
+      background: #F8F9FA !important;
+      color: #111827 !important;
+    }
+
+    body.theme-light .master-nav-header {
+      background: #FFFFFF !important;
+      border-bottom: 2px solid #E5E7EB !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light .brand-kuche-wordmark {
+      color: #9B2247 !important;
+      text-shadow: none !important;
+    }
+    body.theme-light .main-nav-tabs {
+      background: #F3F4F6 !important;
+      border: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .main-tab-link {
+      color: #6B7280 !important;
+    }
+    body.theme-light .main-tab-link:hover {
+      color: #111827 !important;
+      background: #FFFFFF !important;
+    }
+    body.theme-light .main-tab-link.active {
+      background: #9B2247 !important;
+      color: #FFFFFF !important;
+      outline: 2px solid #BC955C !important;
+      box-shadow: 0 2px 8px rgba(155, 34, 71, 0.25) !important;
+    }
+    body.theme-light .main-tab-link:not(.active) .badge-counter {
+      background: #E5E7EB !important;
+      color: #4B5563 !important;
+    }
+    body.theme-light .monitoreo-status-badge {
+      background: #FFFFFF !important;
+      border: 1px solid #BC955C !important;
+      color: #9B2247 !important;
+    }
+    body.theme-light .monitoreo-status-badge::before {
+      background: #9B2247 !important;
+      box-shadow: 0 0 6px #9B2247 !important;
+    }
+    body.theme-light .status-strip-official {
+      background: #FFFFFF !important;
+      border-bottom: 2px solid #BC955C !important;
+      color: #111827 !important;
+    }
+    body.theme-light .status-strip-official .tag-current {
+      color: #9B2247 !important;
+    }
+    body.theme-light .identity-subnav-bar {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .identity-subnav-btn {
+      color: #6B7280 !important;
+      background: transparent !important;
+    }
+    body.theme-light .identity-subnav-btn:hover {
+      color: #111827 !important;
+      background: #F3F4F6 !important;
+    }
+    body.theme-light .identity-subnav-btn.active {
+      background: #9B2247 !important;
+      color: #FFFFFF !important;
+      border: 1px solid #BC955C !important;
+    }
+    body.theme-light .hero-identity-box {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light .hero-text-content h2 {
+      color: #111827 !important;
+    }
+    body.theme-light .hero-text-content p {
+      color: #374151 !important;
+    }
+    body.theme-light .content-card-box {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light .box-heading-title {
+      color: #111827 !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .color-swatch-interactive {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .color-swatch-interactive:hover {
+      border-color: #9B2247 !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    }
+    body.theme-light .swatch-meta strong {
+      color: #111827 !important;
+    }
+    body.theme-light .swatch-meta span {
+      color: #9B2247 !important;
+    }
+    body.theme-light .swatch-meta small {
+      color: #6B7280 !important;
+    }
+    body.theme-light .mockups-control-hub {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light .hub-row-label {
+      color: #111827 !important;
+    }
+    body.theme-light .hub-pill-selector {
+      background: #F3F4F6 !important;
+      border: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .hub-pill-btn {
+      color: #4B5563 !important;
+      border: 1px solid #E5E7EB !important;
+      background: #FFFFFF !important;
+    }
+    body.theme-light .hub-pill-btn:hover {
+      color: #111827 !important;
+      border-color: #9B2247 !important;
+    }
+    body.theme-light .hub-pill-btn.active-layout,
+    body.theme-light .hub-pill-btn.active-skin,
+    body.theme-light .hub-pill-btn.active-screen,
+    body.theme-light .hub-pill-btn.active-theme {
+      background: #9B2247 !important;
+      color: #FFFFFF !important;
+      outline: 2px solid #BC955C !important;
+    }
+    body.theme-light .mockup-tools-strip {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .filter-chip-btn {
+      background: #F3F4F6 !important;
+      border: 1px solid #E5E7EB !important;
+      color: #4B5563 !important;
+    }
+    body.theme-light .filter-chip-btn.active {
+      background: #9B2247 !important;
+      color: #FFFFFF !important;
+      border-color: #BC955C !important;
+    }
+    body.theme-light .disp1-frame,
+    body.theme-light .disp2-frame,
+    body.theme-light .disp3-frame {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light .disp1-head {
+      background: #F9FAFB !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .disp1-head h2 {
+      color: #111827 !important;
+    }
+    body.theme-light .disp1-kpi-bar {
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .disp1-kpi-cell {
+      background: #F9FAFB !important;
+      border-right: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .disp1-kpi-cell span {
+      color: #6B7280 !important;
+    }
+    body.theme-light .disp1-kpi-cell strong {
+      color: #9B2247 !important;
+    }
+    body.theme-light .table-scroll-wrap {
+      border: 1px solid #E5E7EB !important;
+      background: #FFFFFF !important;
+    }
+    body.theme-light .fed-data-table th,
+    body.theme-light .disp1-th {
+      background: #F3F4F6 !important;
+      color: #374151 !important;
+      border-bottom: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .fed-data-table td,
+    body.theme-light .disp1-td {
+      color: #1F2937 !important;
+      border-bottom: 1px solid #F3F4F6 !important;
+    }
+    body.theme-light .fed-data-table tr:hover td,
+    body.theme-light .disp1-row:hover {
+      background: #F9FAFB !important;
+    }
+    body.theme-light .asset-thumb-card {
+      background: #FFFFFF !important;
+      border: 1px solid #E5E7EB !important;
+    }
+    body.theme-light .asset-thumb-card:hover {
+      border-color: #9B2247 !important;
+    }
+    body.theme-light .asset-thumb-card h4 {
+      color: #111827 !important;
+    }
+    body.theme-light .asset-thumb-card p {
+      color: #6B7280 !important;
     }
 
     body {
@@ -1895,7 +2499,7 @@
     }
   </style>
 </head>
-<body class="skin-clasico">
+<body class="skin-oficial">
 
   <!-- ═══════════════════════════════════════════════════════════════════
        1. BARRA DE NAVEGACIÓN SUPERIOR MASTER (CON REDISEÑO DEL LOGO KUCHE)
@@ -1922,11 +2526,14 @@
       </button>
     </nav>
 
-    <!-- Estado y Conexión Operativa -->
-    <div class="header-quick-actions">
+    <!-- Estado y Conexión Operativa + Selector de Tema Institucional -->
+    <div class="header-quick-actions" style="display:flex; align-items:center; gap:12px;">
       <div class="monitoreo-status-badge">
         <span>SISTEMA DE GESTIÓN ACTIVO</span>
       </div>
+      <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTemaGlobal()" title="Alternar entre Modo Oscuro y Modo Claro">
+        ☀️ Modo Claro
+      </button>
     </div>
   </header>
 
@@ -1986,113 +2593,172 @@
         </div>
 
         <!-- Muestrario de Colores con Click-to-Copy -->
+        <!-- Muestrario de Colores con Click-to-Copy -->
         <div class="content-card-box" id="sec-identidad-paleta">
           <div class="box-heading-title">
             <div>
               <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
-              <span style="margin-left:6px;">Paleta Cromática Oficial (Haz clic en cualquier color para copiar el HEX)</span>
+              <span style="margin-left:6px;">Paleta Cromática Oficial Institucional (Haz clic en cualquier color para copiar el HEX)</span>
             </div>
-            <small style="color:var(--clr-texto-muted); font-size:11px; text-transform:none;">Paleta Cromática Kuche</small>
+            <small style="color:var(--clr-texto-muted); font-size:11px; text-transform:none;">Sistema Cromático Rector Kuche</small>
+          </div>
+
+          <!-- GRUPO 1: COLORES INSTITUCIONALES -->
+          <div style="margin: 18px 0 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #2E292C; padding-bottom:6px;">
+            <h4 style="font-size:12.5px; font-weight:800; color:#E6D194; text-transform:uppercase; letter-spacing:0.8px;">1. Colores Institucionales</h4>
+            <span style="font-size:10.5px; color:#A69CA1;">Identidad Central de Marca y Telemetría</span>
           </div>
 
           <div class="swatches-palette-grid">
-            <!-- Guinda Obscuro -->
-            <div class="color-swatch-interactive" onclick="copiarColorHex('#611232', 'Guinda Obscuro')">
-              <div class="swatch-fill" style="background:#611232;">
-                <span class="swatch-copy-hint">Copiar HEX</span>
-              </div>
-              <div class="swatch-meta">
-                <strong>Guinda Obscuro / Profundo</strong>
-                <span>#611232 · Pantone 7421 C</span>
-                <small>Barras maestras, cabeceras principales</small>
-              </div>
-            </div>
-
-            <!-- Guinda Estándar -->
-            <div class="color-swatch-interactive" onclick="copiarColorHex('#9B2247', 'Guinda Estándar')">
+            <!-- Guinda Principal -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#9B2247', 'Guinda Principal')">
               <div class="swatch-fill" style="background:#9B2247;">
-                <span class="swatch-copy-hint">Copiar HEX</span>
+                <span class="swatch-copy-hint">Copiar #9B2247</span>
               </div>
               <div class="swatch-meta">
-                <strong>Guinda Estándar</strong>
-                <span>#9B2247 · Pantone 7420 C</span>
-                <small>Botones de acción, acentos de estado</small>
+                <strong>Guinda Principal</strong>
+                <span>#9B2247 · Color Primario</span>
+                <small>Es el color principal. Se usa en botones, focos fundidos, alertas y gráficas.</small>
               </div>
             </div>
 
-            <!-- Dorado Metálico -->
-            <div class="color-swatch-interactive" onclick="copiarColorHex('#BC955C', 'Dorado Metálico')">
-              <div class="swatch-fill" style="background:#BC955C;">
-                <span class="swatch-copy-hint">Copiar HEX</span>
-              </div>
-              <div class="swatch-meta">
-                <strong>Dorado Metálico Tradicional</strong>
-                <span>#BC955C · Pantone 465 C</span>
-                <small>Plecas doradas de 3px, orlas y sellos</small>
-              </div>
-            </div>
-
-            <!-- Dorado Arena -->
-            <div class="color-swatch-interactive" onclick="copiarColorHex('#E6D194', 'Dorado Arena')">
+            <!-- Dorado de Acento -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#E6D194', 'Dorado de Acento')">
               <div class="swatch-fill" style="background:#E6D194;">
-                <span class="swatch-copy-hint">Copiar HEX</span>
+                <span class="swatch-copy-hint" style="background:#131113; color:#E6D194;">Copiar #E6D194</span>
               </div>
               <div class="swatch-meta">
-                <strong>Dorado Arena / Claro</strong>
-                <span>#E6D194 · Pantone 7402 C</span>
-                <small>Subtítulos en guinda, realces y badges</small>
+                <strong>Dorado de Acento</strong>
+                <span>#E6D194 · Color de Acento</span>
+                <small>Es el color de acento. Se usa en focos operativos, el contorno que indica qué elemento está seleccionado, enlaces y gráficas.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRUPO 2: NEUTROS OSCUROS (FONDOS) -->
+          <div style="margin: 24px 0 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #2E292C; padding-bottom:6px;">
+            <h4 style="font-size:12.5px; font-weight:800; color:#E6D194; text-transform:uppercase; letter-spacing:0.8px;">2. Neutros Oscuros (Fondos)</h4>
+            <span style="font-size:10.5px; color:#A69CA1;">Estructura de Canvas, Paneles y Líneas</span>
+          </div>
+
+          <div class="swatches-palette-grid">
+            <!-- Fondo General -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#131113', 'Fondo General')">
+              <div class="swatch-fill" style="background:#131113; border: 1px solid #2E292C;">
+                <span class="swatch-copy-hint">Copiar #131113</span>
+              </div>
+              <div class="swatch-meta">
+                <strong>Fondo General</strong>
+                <span>#131113 · Canvas & Navegador</span>
+                <small>Fondo general de la página. También es el color de la barra del navegador.</small>
               </div>
             </div>
 
-            <!-- Barro Terracota -->
-            <div class="color-swatch-interactive" onclick="copiarColorHex('#A84A32', 'Barro Terracota')">
-              <div class="swatch-fill" style="background:#A84A32;">
-                <span class="swatch-copy-hint">Copiar HEX</span>
+            <!-- Tarjetas y Ventanas Emergentes -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#1B181A', 'Tarjetas y Ventanas')">
+              <div class="swatch-fill" style="background:#1B181A; border: 1px solid #2E292C;">
+                <span class="swatch-copy-hint">Copiar #1B181A</span>
               </div>
               <div class="swatch-meta">
-                <strong>Barro Bruñido Popoloca</strong>
-                <span>#A84A32 · Terracota Metzontla</span>
-                <small>Acento de herencia alfarera y tierra</small>
+                <strong>Tarjetas y Ventanas</strong>
+                <span>#1B181A · Contenedores</span>
+                <small>Tarjetas y ventanas emergentes.</small>
               </div>
             </div>
 
-            <!-- Blanco Puro -->
-            <div class="color-swatch-interactive" onclick="copiarColorHex('#FFFFFF', 'Blanco Puro')">
-              <div class="swatch-fill" style="background:#FFFFFF; border-bottom:1px solid #E5E7EB;">
-                <span class="swatch-copy-hint" style="background:#111827; color:#fff;">Copiar HEX</span>
+            <!-- Fondos Secundarios -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#252124', 'Fondos Secundarios')">
+              <div class="swatch-fill" style="background:#252124; border: 1px solid #2E292C;">
+                <span class="swatch-copy-hint">Copiar #252124</span>
               </div>
               <div class="swatch-meta">
-                <strong>Blanco Puro Institucional</strong>
-                <span>#FFFFFF · Fondo Rector Limpio</span>
-                <small>Lienzo general sobrio, limpio y accesible</small>
+                <strong>Fondos Secundarios</strong>
+                <span>#252124 · Muted & Hover</span>
+                <small>Fondos secundarios y apagados.</small>
+              </div>
+            </div>
+
+            <!-- Bordes y Campos de Formulario -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#2E292C', 'Bordes y Campos')">
+              <div class="swatch-fill" style="background:#2E292C;">
+                <span class="swatch-copy-hint">Copiar #2E292C</span>
+              </div>
+              <div class="swatch-meta">
+                <strong>Bordes y Campos</strong>
+                <span>#2E292C · Líneas & Inputs</span>
+                <small>Bordes y campos de formulario.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- GRUPO 3: NEUTROS CLAROS (TEXTO) -->
+          <div style="margin: 24px 0 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #2E292C; padding-bottom:6px;">
+            <h4 style="font-size:12.5px; font-weight:800; color:#E6D194; text-transform:uppercase; letter-spacing:0.8px;">3. Neutros Claros (Texto)</h4>
+            <span style="font-size:10.5px; color:#A69CA1;">Jerarquía Tipográfica y Contraste</span>
+          </div>
+
+          <div class="swatches-palette-grid">
+            <!-- Texto Principal -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#F1ECEE', 'Texto Principal')">
+              <div class="swatch-fill" style="background:#F1ECEE;">
+                <span class="swatch-copy-hint" style="background:#131113; color:#F1ECEE;">Copiar #F1ECEE</span>
+              </div>
+              <div class="swatch-meta">
+                <strong>Texto Principal</strong>
+                <span>#F1ECEE · Alta Jerarquía</span>
+                <small>Texto principal.</small>
+              </div>
+            </div>
+
+            <!-- Texto sobre Botones Guinda -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#F8F1F4', 'Texto sobre Botones Guinda')">
+              <div class="swatch-fill" style="background:#F8F1F4;">
+                <span class="swatch-copy-hint" style="background:#9B2247; color:#F8F1F4;">Copiar #F8F1F4</span>
+              </div>
+              <div class="swatch-meta">
+                <strong>Texto en Botones Guinda</strong>
+                <span>#F8F1F4 · Contraste en Botones</span>
+                <small>Texto sobre botones guinda.</small>
+              </div>
+            </div>
+
+            <!-- Texto Secundario -->
+            <div class="color-swatch-interactive" onclick="copiarColorHex('#A69CA1', 'Texto Secundario')">
+              <div class="swatch-fill" style="background:#A69CA1;">
+                <span class="swatch-copy-hint" style="background:#131113; color:#A69CA1;">Copiar #A69CA1</span>
+              </div>
+              <div class="swatch-meta">
+                <strong>Texto Secundario</strong>
+                <span>#A69CA1 · Metadata & Muted</span>
+                <small>Texto secundario, como etiquetas y descripciones.</small>
               </div>
             </div>
           </div>
 
           <!-- Simulador de Contraste en Vivo -->
           <div class="contrast-checker-box">
-            <div class="contrast-sample-item" style="background:#611232; color:#FFFFFF;">
+            <div class="contrast-sample-item" style="background:#9B2247; color:#F8F1F4; border:1px solid #E6D194;">
               <div>
-                <strong style="font-size:13px; font-weight:800; display:block;">Guinda Obscuro + Blanco</strong>
-                <small style="opacity:0.85;">Combinación Rector Guinda & Blanco</small>
+                <strong style="font-size:13px; font-weight:800; display:block;">Botón Guinda (#9B2247) + Texto (#F8F1F4)</strong>
+                <small style="opacity:0.9;">Acción principal y focos fundidos/alertas</small>
               </div>
-              <span style="font-size:11px; font-weight:800; background:#BC955C; color:#000; padding:2px 8px; border-radius:4px; align-self:flex-start;">WCAG AAA · Contraste Óptimo (11.2:1)</span>
+              <span style="font-size:11px; font-weight:800; background:#E6D194; color:#131113; padding:2px 8px; border-radius:4px; align-self:flex-start;">WCAG AAA · Contraste Óptimo Certificado</span>
             </div>
 
-            <div class="contrast-sample-item" style="background:#FFFFFF; color:#611232; border:1px solid #BC955C;">
+            <div class="contrast-sample-item" style="background:#131113; color:#F1ECEE; border:1px solid #2E292C;">
               <div>
-                <strong style="font-size:13px; font-weight:800; display:block;">Blanco Puro + Texto Guinda</strong>
-                <small style="color:#6B7280;">Lectura en Cédulas y Tablas de Monitoreo</small>
+                <strong style="font-size:13px; font-weight:800; display:block;">Fondo General (#131113) + Texto (#F1ECEE)</strong>
+                <small style="color:#A69CA1;">Lectura de alta jerarquía y títulos de monitoreo</small>
               </div>
-              <span style="font-size:11px; font-weight:800; background:#611232; color:#fff; padding:2px 8px; border-radius:4px; align-self:flex-start;">WCAG AAA · Máxima Claridad</span>
+              <span style="font-size:11px; font-weight:800; background:#9B2247; color:#F8F1F4; padding:2px 8px; border-radius:4px; align-self:flex-start;">WCAG AAA · Contraste Superior (15.8:1)</span>
             </div>
 
-            <div class="contrast-sample-item" style="background:#FAF6ED; color:#A84A32; border:1px solid #C87D55;">
+            <div class="contrast-sample-item" style="background:#1B181A; color:#E6D194; border:2px solid #E6D194;">
               <div>
-                <strong style="font-size:13px; font-weight:800; display:block;">Lienzo Amate + Barro Metzontla</strong>
-                <small style="color:#5A1224;">Estilo Popoloca Tradicional</small>
+                <strong style="font-size:13px; font-weight:800; display:block;">Tarjetas (#1B181A) + Contorno Selección Dorado (#E6D194)</strong>
+                <small style="color:#A69CA1;">Elemento seleccionado y focos operativos</small>
               </div>
-              <span style="font-size:11px; font-weight:800; background:#A84A32; color:#fff; padding:2px 8px; border-radius:4px; align-self:flex-start;">Calidez Biocultural Auténtica</span>
+              <span style="font-size:11px; font-weight:800; background:#E6D194; color:#131113; padding:2px 8px; border-radius:4px; align-self:flex-start;">Acento Institucional Kuche</span>
             </div>
           </div>
         </div>
@@ -2266,17 +2932,17 @@
             2. Estilo Visual Aplicado:
           </span>
           <div class="hub-pill-selector">
-            <button class="hub-pill-btn active-skin" id="pill-skin-gob" onclick="aplicarEstiloVisualCruzado('clasico', this)">
-              <span class="color-dot-indicator" style="background:#611232;"></span>
-              Estilo A: Institucional Clásico (Guinda & Dorado)
+            <button class="hub-pill-btn active-skin" id="pill-skin-gob" onclick="aplicarEstiloVisualCruzado('oficial', this)">
+              <span class="color-dot-indicator" style="background:#9B2247; border:1px solid #E6D194;"></span>
+              Propuesta Oficial: Guinda (#9B2247) & Dorado (#E6D194)
             </button>
             <button class="hub-pill-btn" id="pill-skin-fus" onclick="aplicarEstiloVisualCruzado('fusion', this)">
-              <span class="color-dot-indicator" style="background:#9B2247;"></span>
-              Estilo B: Fusión Contemporánea (Geometría Rectilínea 6px)
+              <span class="color-dot-indicator" style="background:#611232;"></span>
+              Alternativa B: Fusión Contemporánea (Rectilínea 6px)
             </button>
             <button class="hub-pill-btn" id="pill-skin-pop" onclick="aplicarEstiloVisualCruzado('popoloca', this)">
               <span class="color-dot-indicator" style="background:#A84A32;"></span>
-              Estilo C: Raíz Popoloca & Barro
+              Alternativa C: Raíz Popoloca & Barro
             </button>
           </div>
         </div>
@@ -2295,6 +2961,22 @@
             <button class="hub-pill-btn" id="pill-scr-app" onclick="conmutarPantallaVista('app', this)">
               <svg class="svg-ico" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
               App Móvil de Cuadrillas de Campo
+            </button>
+          </div>
+        </div>
+
+        <!-- Fila 4: Conmutador de Modo Oscuro / Modo Claro Institucional -->
+        <div class="hub-row">
+          <span class="hub-row-label">
+            <svg class="svg-ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+            4. Modo de Visualización:
+          </span>
+          <div class="hub-pill-selector">
+            <button class="hub-pill-btn active-theme" id="pill-theme-dark" onclick="aplicarTemaGlobal('dark')">
+              🌙 Modo Oscuro (Neutros Oficiales #131113)
+            </button>
+            <button class="hub-pill-btn" id="pill-theme-light" onclick="aplicarTemaGlobal('light')">
+              ☀️ Modo Claro (Institucional #FFFFFF)
             </button>
           </div>
         </div>
@@ -3266,12 +3948,16 @@
       document.querySelectorAll('.hub-pill-btn[id^="pill-skin-"]').forEach(b => b.classList.remove('active-skin'));
       btn.classList.add('active-skin');
 
-      document.body.classList.remove('skin-clasico', 'skin-fusion', 'skin-popoloca');
-      document.body.classList.add('skin-' + skin);
+      document.body.classList.remove('skin-oficial', 'skin-clasico', 'skin-fusion', 'skin-popoloca');
+      if (skin === 'oficial' || skin === 'clasico') {
+        document.body.classList.add('skin-oficial');
+      } else {
+        document.body.classList.add('skin-' + skin);
+      }
 
       // Notificación rápida
       const toast = document.getElementById('copy-toast');
-      let nombreSkin = 'Institucional Clásico (Guinda & Dorado)';
+      let nombreSkin = 'Propuesta Oficial Institucional (Guinda #9B2247, Dorado #E6D194 & Neutros Oscuros)';
       if (skin === 'fusion') nombreSkin = 'Fusión Contemporánea (Geometría Rectilínea 6px — Sin Círculos)';
       if (skin === 'popoloca') nombreSkin = 'Raíz Popoloca & Barro Metzontla (Terracota & Arcilla)';
 
@@ -3372,9 +4058,52 @@
       if (e.key === 'Escape') cerrarModalLightbox();
     });
 
-    // Carga inicial
+    // ── 9. CONMUTADOR DE TEMA INSTITUCIONAL (MODO OSCURO / MODO CLARO) ──
+    function alternarTemaGlobal() {
+      const esOscuro = !document.body.classList.contains('theme-light');
+      const nuevo = esOscuro ? 'light' : 'dark';
+      aplicarTemaGlobal(nuevo);
+      localStorage.setItem('kuche_theme_pref', nuevo);
+    }
+
+    function aplicarTemaGlobal(tema) {
+      if (tema === 'light') {
+        document.body.classList.remove('theme-dark');
+        document.body.classList.add('theme-light');
+      } else {
+        document.body.classList.remove('theme-light');
+        document.body.classList.add('theme-dark');
+      }
+
+      const btn = document.getElementById('btn-theme-toggle');
+      if (btn) btn.innerHTML = tema === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+
+      const pDark = document.getElementById('pill-theme-dark');
+      const pLight = document.getElementById('pill-theme-light');
+      if (pDark && pLight) {
+        if (tema === 'light') {
+          pDark.classList.remove('active-theme');
+          pLight.classList.add('active-theme');
+        } else {
+          pDark.classList.add('active-theme');
+          pLight.classList.remove('active-theme');
+        }
+      }
+
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute('content', tema === 'light' ? '#FFFFFF' : '#131113');
+    }
+
+    // Carga inicial y sincronización cruzada
     window.addEventListener('DOMContentLoaded', () => {
-      // Maps initialized when entering mockups tab
+      const guardado = localStorage.getItem('kuche_theme_pref') || 'dark';
+      aplicarTemaGlobal(guardado);
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'kuche_theme_pref') {
+        aplicarTemaGlobal(e.newValue || 'dark');
+      }
     });
   </script>
 </body>

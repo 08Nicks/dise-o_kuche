@@ -1124,10 +1124,16 @@
       }
     }
 
-    // 3. Inicialización al cargar la página
+    // 3. Inicialización al cargar la página y sincronización cruzada entre pestañas
     window.addEventListener('DOMContentLoaded', () => {
       const guardado = localStorage.getItem('kuche_theme_pref') || 'dark';
       aplicarTema(guardado);
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'kuche_theme_pref') {
+        aplicarTema(e.newValue || 'dark');
+      }
     });
 
     // 4. Servicio PWA

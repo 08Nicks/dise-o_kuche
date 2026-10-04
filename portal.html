@@ -998,6 +998,13 @@
        1. VISTA DE AUTENTICACIÓN OFICIAL (CURP, CORREO, CONTRASEÑA)
        ================================================================ -->
   <div id="view-auth-container" class="auth-overlay-view">
+    <!-- Switch de Tema en Pantalla de Login / Registro -->
+    <div style="position:fixed; top:18px; right:22px; z-index:10000;">
+      <button id="btn-auth-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro">
+        ☀️ Modo Claro
+      </button>
+    </div>
+
     <div class="auth-card-box">
       
       <div class="auth-header-brand">
@@ -1646,7 +1653,7 @@
     }
 
     function alternarTema() {
-      const esOscuro = document.body.classList.contains('theme-dark');
+      const esOscuro = !document.body.classList.contains('theme-light');
       const nuevo = esOscuro ? 'light' : 'dark';
       aplicarTema(nuevo);
       localStorage.setItem('kuche_theme_pref', nuevo);
@@ -1655,10 +1662,14 @@
     function aplicarTema(tema) {
       document.body.classList.remove('theme-dark', 'theme-light');
       document.body.classList.add(tema === 'light' ? 'theme-light' : 'theme-dark');
-      const btn = document.getElementById('btn-theme-toggle');
-      if (btn) {
-        btn.innerHTML = tema === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
-      }
+      
+      const btns = [document.getElementById('btn-theme-toggle'), document.getElementById('btn-auth-theme-toggle')];
+      btns.forEach(btn => {
+        if (btn) {
+          btn.innerHTML = tema === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+        }
+      });
+
       const metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) {
         metaTheme.setAttribute('content', tema === 'light' ? '#FFFFFF' : '#131113');
@@ -1731,6 +1742,12 @@
             activarVistaAppOficial(sesionActual);
           }
         } catch(e) {}
+      }
+    });
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'kuche_theme_pref') {
+        aplicarTema(e.newValue || 'dark');
       }
     });
   </script>

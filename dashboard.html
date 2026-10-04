@@ -20,24 +20,81 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
-    :root {
-      --bg: #090d16;
-      --panel: #0f172a;
-      --card: #1e293b;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-hover: rgba(0, 210, 255, 0.4);
-      --cyan: #00d2ff;
-      --cyan-glow: rgba(0, 210, 255, 0.25);
-      --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.25);
+    :root, body.theme-dark {
+      --bg: #131113;
+      --panel: #1B181A;
+      --card: #252124;
+      --border: #2E292C;
+      --border-hover: #E6D194;
+      --header-bg: #1B181A;
+      --cyan: #E6D194;
+      --cyan-glow: rgba(230, 209, 148, 0.25);
+      --green: #E6D194;
+      --green-glow: rgba(230, 209, 148, 0.25);
       --orange: #f59e0b;
       --orange-glow: rgba(245, 158, 11, 0.25);
-      --red: #ef4444;
-      --red-glow: rgba(239, 68, 68, 0.25);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --red: #9B2247;
+      --red-glow: rgba(155, 34, 71, 0.35);
+      --text: #F1ECEE;
+      --text-muted: #A69CA1;
+      --dorado-accent: #E6D194;
+      --guinda-primary: #9B2247;
       --radius-sm: 6px;
       --radius-md: 10px;
+    }
+    
+    body.theme-light {
+      --bg: #F8F9FA;
+      --panel: #FFFFFF;
+      --card: #F3F4F6;
+      --border: #E5E7EB;
+      --border-hover: #9B2247;
+      --header-bg: #FFFFFF;
+      --cyan: #9B2247;
+      --cyan-glow: rgba(155, 34, 71, 0.2);
+      --green: #BC955C;
+      --green-glow: rgba(188, 149, 92, 0.25);
+      --orange: #d97706;
+      --orange-glow: rgba(217, 119, 6, 0.2);
+      --red: #9B2247;
+      --red-glow: rgba(155, 34, 71, 0.25);
+      --text: #111827;
+      --text-muted: #6B7280;
+      --dorado-accent: #BC955C;
+      --guinda-primary: #9B2247;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+    }
+
+    .btn-theme-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--dorado-accent);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .btn-theme-pill:hover {
+      border-color: var(--dorado-accent);
+      background: var(--panel);
+      transform: translateY(-1px);
+    }
+    body.theme-light .btn-theme-pill {
+      border: 1px solid #E5E7EB;
+      background: #FFFFFF;
+      color: #9B2247;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    body.theme-light .btn-theme-pill:hover {
+      border-color: #9B2247;
+      background: #F9FAFB;
     }
     
     body {
@@ -49,19 +106,21 @@
       flex-direction: column;
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.25s, color 0.25s;
     }
 
     /* ── Header ── */
     header {
-      background: linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+      background: var(--header-bg);
       border-bottom: 1px solid var(--border);
       padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       z-index: 1000;
+      transition: background 0.25s;
     }
     
     .brand-left {
@@ -459,6 +518,9 @@
       <div class="dot-live"></div>
       <span>EN VIVO</span>
     </div>
+    <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTemaDashboard()" title="Alternar entre Modo Oscuro y Modo Claro">
+      ☀️ Modo Claro
+    </button>
     <button id="btn-refresh" onclick="cargarDatos()">
       <svg class="icon-svg" viewBox="0 0 24 24">
         <polyline points="23 4 23 10 17 10"/>
@@ -756,11 +818,47 @@ function seleccionarReporte(id, ubi) {
   }
 }
 
+// ── Alternar Tema (Modo Oscuro / Modo Claro) ─────────────────────
+function alternarTemaDashboard() {
+  const esOscuro = !document.body.classList.contains('theme-light');
+  const nuevo = esOscuro ? 'light' : 'dark';
+  aplicarTemaDashboard(nuevo);
+  localStorage.setItem('kuche_theme_pref', nuevo);
+}
+
+function aplicarTemaDashboard(tema) {
+  document.body.classList.remove('theme-dark', 'theme-light');
+  document.body.classList.add(tema === 'light' ? 'theme-light' : 'theme-dark');
+
+  const btn = document.getElementById('btn-theme-toggle');
+  if (btn) btn.innerHTML = tema === 'light' ? '🌙 Modo Oscuro' : '☀️ Modo Claro';
+
+  const mapEl = document.getElementById('map');
+  if (mapEl) {
+    if (tema === 'light') {
+      mapEl.classList.remove('dark-tiles');
+    } else {
+      mapEl.classList.add('dark-tiles');
+    }
+  }
+
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute('content', tema === 'light' ? '#FFFFFF' : '#131113');
+}
+
 // ── Inicialización ────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
+  const guardado = localStorage.getItem('kuche_theme_pref') || 'dark';
+  aplicarTemaDashboard(guardado);
   inicializarMapa();
   cargarDatos();
   setInterval(cargarDatos, 15000);
+});
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'kuche_theme_pref') {
+    aplicarTemaDashboard(e.newValue || 'dark');
+  }
 });
 
 // Registro de Service Worker para PWA
