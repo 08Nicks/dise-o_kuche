@@ -831,13 +831,27 @@ async function cargarDatos() {
   try {
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/historial?page=0') : '/api/infraestructura/historial?page=0';
     const resp = await fetch(targetUrl);
-    const j    = await resp.json();
-    todosReportes = (j.historial || []).filter(r => r.estado_registro !== 'Borrada');
+    if (!resp.ok) {
+      console.warn('Respuesta no exitosa del servidor:', resp.status);
+      document.getElementById('lista-reportes').innerHTML = '<div class="empty-state">No se pudieron cargar los datos (HTTP ' + resp.status + '). Reintentando...</div>';
+      return;
+    }
+    const j = await resp.json();
+    let lista = [];
+    if (Array.isArray(j)) {
+      lista = j;
+    } else if (Array.isArray(j.historial)) {
+      lista = j.historial;
+    } else if (j.historial && Array.isArray(j.historial.historial)) {
+      lista = j.historial.historial;
+    }
+    todosReportes = lista.filter(r => r.estado_registro !== 'Borrada');
     actualizarEstadisticas();
     renderLista();
     renderMapa();
   } catch(e) {
     console.error('Error cargando datos:', e);
+    document.getElementById('lista-reportes').innerHTML = '<div class="empty-state">Error de conexion al cargar datos. Verifica la conexion con el servidor.</div>';
   }
 }
 
