@@ -920,6 +920,16 @@ function desglosarReporte(r) {
   };
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // ── Lista de reportes ─────────────────────────────────────────────
 function renderLista() {
   const lista = document.getElementById('lista-reportes');
@@ -938,7 +948,7 @@ function renderLista() {
 
     const autorBadge = des.esDemo
       ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
-      : `<span class="badge-autor badge-autor-oficial">Cuenta: ${des.usuarioLabel}</span>`;
+      : `<span class="badge-autor badge-autor-oficial">Cuenta: ${escapeHtml(des.usuarioLabel)}</span>`;
 
     const thumbHtml = des.fotoUrl
       ? `<div class="card-thumb-box" title="Clic para ampliar foto" onclick="event.stopPropagation(); abrirModalFotoId(${r.id})">
@@ -952,7 +962,7 @@ function renderLista() {
          </div>`;
 
     const refHtml = des.referencia
-      ? `<div class="card-ref-box"><span class="card-ref-label">Referencia:</span> ${des.referencia}</div>`
+      ? `<div class="card-ref-box"><span class="card-ref-label">Referencia:</span> ${escapeHtml(des.referencia)}</div>`
       : '';
 
     return `<div class="reporte-card" id="card-${r.id}" onclick="seleccionarReporte(${r.id})">
@@ -963,7 +973,7 @@ function renderLista() {
           ${autorBadge}
         </div>
         <div class="card-falla-box">
-          <span class="card-falla-label">Falla reportada:</span>${des.fallaEscrita}
+          <span class="card-falla-label">Falla reportada:</span>${escapeHtml(des.fallaEscrita)}
         </div>
         ${refHtml}
         <div class="card-meta">
@@ -996,14 +1006,14 @@ function renderMapa() {
 
     const autorBadge = des.esDemo
       ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
-      : `<span class="badge-autor badge-autor-oficial">Cuenta: ${des.usuarioLabel}</span>`;
+      : `<span class="badge-autor badge-autor-oficial">Cuenta: ${escapeHtml(des.usuarioLabel)}</span>`;
 
     const fotoImg = des.fotoUrl
       ? `<img src="${des.fotoUrl}" alt="Evidencia" title="Clic para ampliar foto" onclick="abrirModalFotoId(${r.id})" onerror="this.style.display='none';">`
       : '';
 
     const refP = des.referencia
-      ? `<p style="font-size:11px; margin-top:3px;"><strong style="color:var(--dorado-accent);">Referencia:</strong> ${des.referencia}</p>`
+      ? `<p style="font-size:11px; margin-top:3px;"><strong style="color:var(--dorado-accent);">Referencia:</strong> ${escapeHtml(des.referencia)}</p>`
       : '';
 
     marker.bindPopup(`
@@ -1013,7 +1023,7 @@ function renderMapa() {
         </div>
         <h4>Reporte de Luminaria #${r.id}</h4>
         <div class="popup-falla-box">
-          <strong style="color:#ff809b;">Falla:</strong> ${des.fallaEscrita}
+          <strong style="color:#ff809b;">Falla:</strong> ${escapeHtml(des.fallaEscrita)}
         </div>
         ${refP}
         <p style="font-size:10px; margin-top:4px; color:var(--text-muted);">${hora}</p>

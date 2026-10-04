@@ -607,52 +607,148 @@ function cambiarAuthTab(tab) {
   }
 }
 
-// Iniciar sesión (por Correo o CURP)
-function handleLoginSubmit(e) {
+// ================================================================
+// 🛡️ SEGURIDAD FRONTEND KUCHE (Anti-DDoS, Brute-Force y Sanitización)
+// ================================================================
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+const REGEX_CURP_SEGOB = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[B-DF-HJ-NP-TV-Z]{3}[A-Z0-9]\d$/;
+
+// Contadores de intentos y temporizadores de bloqueo
+let loginIntentosFallidos = 0;
+let loginBloqueadoHasta = 0;
+let otpIntentosFallidos = 0;
+let otpBloqueadoHasta = 0;
+let reenvioCooldownTimer = null;
+
+// Iniciar sesión (por Correo o CURP) con Anti-Fuerza Bruta
+async function handleLoginSubmit(e) {
   e.preventDefault();
+  const btnSubmit = document.querySelector('#form-login button[type="submit"]');
   const inputIdentificador = document.getElementById('login-user').value.trim();
   const pwd = document.getElementById('login-password').value;
   const remember = document.getElementById('login-remember').checked;
+
+  const ahora = Date.now();
+  if (loginBloqueadoHasta > ahora) {
+    const restante = Math.ceil((loginBloqueadoHasta - ahora) / 1000);
+    alert(`Acceso bloqueado por seguridad tras reiterados intentos fallidos.\nPor favor espera ${restante} segundos.`);
+    return;
+  }
 
   if (!inputIdentificador || !pwd) {
     alert('Por favor ingresa tu Correo Electrónico o CURP y tu contraseña.');
     return;
   }
 
-  const limpio = inputIdentificador.toLowerCase();
-  const limpioCurp = inputIdentificador.toUpperCase();
-
-  // Buscar en cuentas registradas locales
-  const cuentasRaw = localStorage.getItem('kuche_cuentas_registradas') || '[]';
-  let nombreEncontrado = inputIdentificador.includes('@') ? inputIdentificador.split('@')[0] : inputIdentificador;
-  let correoEncontrado = '';
-  let curpEncontrada = '';
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Verificando credenciales...';
+  }
 
   try {
-    const cuentas = JSON.parse(cuentasRaw);
-    const c = cuentas.find(item => 
-      (item.correo && item.correo.toLowerCase() === limpio) ||
-      (item.curp && item.curp.toUpperCase() === limpioCurp) ||
-      (item.user && item.user.toLowerCase() === limpio) ||
-      (item.user && item.user.toUpperCase() === limpioCurp)
-    );
+    // 1. Intentar validar en Backend Seguro (FastAPI + SQLite con PBKDF2)
+    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/auth/login') : '/api/auth/login';
+    const resp = await fetch(targetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identificador: inputIdentificador, password: pwd })
+    });
 
-    if (c) {
-      if (c.password && c.password !== pwd) {
-        alert('Contraseña incorrecta. Por favor verifica tus credenciales.');
-        return;
-      }
-      nombreEncontrado = c.nombre || c.user;
-      correoEncontrado = c.correo || '';
-      curpEncontrada = c.curp || '';
+    const resJson = await resp.json().catch(() => null);
+
+    if (resp.status === 429) {
+      // Bloqueo temporal por Anti-Fuerza Bruta del Backend
+      const retrySec = (resJson && resJson.retry_after) ? resJson.retry_after : 60;
+      loginBloqueadoHasta = Date.now() + (retrySec * 1000);
+      iniciarCuentaRegresivaLogin(retrySec);
+      alert(`Acceso temporalmente restringido.\n${(resJson && resJson.mensaje) || 'Demasiados intentos fallidos. Espera 60 segundos.'}`);
+      return;
     }
-  } catch(err) {}
 
+    if (resp.status === 401) {
+      loginIntentosFallidos++;
+      if (loginIntentosFallidos >= 5) {
+        loginBloqueadoHasta = Date.now() + (60 * 1000);
+        iniciarCuentaRegresivaLogin(60);
+        alert('Has alcanzado el límite de 5 intentos fallidos.\nPor seguridad, el acceso queda bloqueado por 60 segundos.');
+      } else {
+        const restantes = 5 - loginIntentosFallidos;
+        alert(`Credenciales incorrectas.\nTe quedan ${restantes} intento(s) antes del bloqueo de seguridad.`);
+      }
+      return;
+    }
+
+    if (resp.ok && resJson && resJson.exito) {
+      loginIntentosFallidos = 0;
+      const usr = resJson.usuario || {};
+      sesionActual = {
+        user: inputIdentificador,
+        nombre: usr.nombre || inputIdentificador.split('@')[0],
+        correo: usr.correo || (inputIdentificador.includes('@') ? inputIdentificador : ''),
+        curp: usr.curp || (!inputIdentificador.includes('@') ? inputIdentificador : ''),
+        remember: remember,
+        loginAt: new Date().toISOString()
+      };
+      if (remember) {
+        localStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
+      } else {
+        sessionStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
+      }
+      activarVistaApp(sesionActual);
+      return;
+    }
+  } catch(err) {
+    console.warn('[Auth Kuche] Servidor backend no alcanzable, validando almacenamiento local:', err);
+  } finally {
+    if (btnSubmit && loginBloqueadoHasta <= Date.now()) {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Iniciar Sesión';
+    }
+  }
+
+  // 2. Validación de emergencia local si el backend está desconectado
+  const limpio = inputIdentificador.toLowerCase();
+  const limpioCurp = inputIdentificador.toUpperCase();
+  const cuentasRaw = localStorage.getItem('kuche_cuentas_registradas') || '[]';
+  let cuentas = [];
+  try { cuentas = JSON.parse(cuentasRaw); } catch(e) { cuentas = []; }
+
+  const c = cuentas.find(item => 
+    (item.correo && item.correo.toLowerCase() === limpio) ||
+    (item.curp && item.curp.toUpperCase() === limpioCurp) ||
+    (item.user && item.user.toLowerCase() === limpio) ||
+    (item.user && item.user.toUpperCase() === limpioCurp)
+  );
+
+  if (c) {
+    if (c.password && c.password !== pwd) {
+      loginIntentosFallidos++;
+      if (loginIntentosFallidos >= 5) {
+        loginBloqueadoHasta = Date.now() + (60 * 1000);
+        iniciarCuentaRegresivaLogin(60);
+        alert('Has alcanzado el límite de 5 intentos fallidos.\nPor seguridad, el acceso queda bloqueado por 60 segundos.');
+      } else {
+        alert(`Contraseña incorrecta. Te quedan ${5 - loginIntentosFallidos} intento(s).`);
+      }
+      return;
+    }
+  }
+
+  loginIntentosFallidos = 0;
   sesionActual = {
     user: inputIdentificador,
-    nombre: nombreEncontrado,
-    correo: correoEncontrado,
-    curp: curpEncontrada,
+    nombre: c ? (c.nombre || c.user) : (inputIdentificador.includes('@') ? inputIdentificador.split('@')[0] : inputIdentificador),
+    correo: c ? c.correo : (inputIdentificador.includes('@') ? inputIdentificador : ''),
+    curp: c ? c.curp : (!inputIdentificador.includes('@') ? inputIdentificador : ''),
     remember: remember,
     loginAt: new Date().toISOString()
   };
@@ -666,30 +762,62 @@ function handleLoginSubmit(e) {
   activarVistaApp(sesionActual);
 }
 
+function iniciarCuentaRegresivaLogin(segundos) {
+  const btn = document.querySelector('#form-login button[type="submit"]');
+  if (!btn) return;
+  btn.disabled = true;
+  let restante = segundos;
+  btn.textContent = `Bloqueado por seguridad (${restante}s)`;
+  const timer = setInterval(() => {
+    restante--;
+    if (restante <= 0) {
+      clearInterval(timer);
+      loginBloqueadoHasta = 0;
+      loginIntentosFallidos = 0;
+      btn.disabled = false;
+      btn.textContent = 'Iniciar Sesión';
+    } else {
+      btn.textContent = `Bloqueado por seguridad (${restante}s)`;
+    }
+  }, 1000);
+}
+
 let authPendiente = null;
 
 // Solicitar código de seguridad y abrir modal
 async function solicitarCodigoSeguridad(datosRegistro) {
   authPendiente = datosRegistro;
+  otpIntentosFallidos = 0;
   const destino = datosRegistro.correo || datosRegistro.curp;
   
   const modal = document.getElementById('modal-codigo-seguridad');
   const msgDestino = document.getElementById('msg-destino-codigo');
   const inputCode = document.getElementById('input-codigo-seguridad');
   const hintSimulado = document.getElementById('hint-codigo-simulado');
+  const btnVerificar = document.getElementById('btn-verificar-codigo');
 
-  if (inputCode) inputCode.value = '';
+  if (inputCode) {
+    inputCode.value = '';
+    inputCode.disabled = false;
+  }
+  if (btnVerificar) {
+    btnVerificar.disabled = false;
+    btnVerificar.textContent = 'Verificar Código e Ingresar';
+  }
   if (hintSimulado) hintSimulado.style.display = 'none';
 
   if (msgDestino) {
     if (datosRegistro.correo) {
-      msgDestino.innerHTML = `Hemos enviado un código de seguridad de 6 dígitos al correo:<br><strong style="color:var(--text); font-size:13px;">${datosRegistro.correo}</strong>`;
+      msgDestino.innerHTML = `Hemos enviado un código de seguridad de 6 dígitos al correo:<br><strong style="color:var(--text); font-size:13px;">${escapeHtml(datosRegistro.correo)}</strong>`;
     } else {
-      msgDestino.innerHTML = `Código de seguridad generado para la CURP:<br><strong style="color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px;">${datosRegistro.curp}</strong>`;
+      msgDestino.innerHTML = `Código de seguridad generado para la CURP:<br><strong style="color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px;">${escapeHtml(datosRegistro.curp)}</strong>`;
     }
   }
 
   if (modal) modal.style.display = 'flex';
+
+  // Iniciar cooldown de 60 segundos para evitar saturación OTP
+  iniciarCooldownReenvio(60);
 
   // Enviar petición al backend FastAPI para generar y despachar código
   try {
@@ -703,6 +831,13 @@ async function solicitarCodigoSeguridad(datosRegistro) {
         nombre: datosRegistro.nombre
       })
     });
+    
+    if (resp.status === 429) {
+      const errJson = await resp.json().catch(() => ({}));
+      alert(`Límite de solicitudes alcanzado.\n${errJson.detail || 'Espera unos minutos antes de solicitar otro código.'}`);
+      return;
+    }
+
     const res = await resp.json();
     if (res && res.codigo_simulado) {
       authPendiente.codigoEsperado = res.codigo_simulado;
@@ -724,6 +859,31 @@ async function solicitarCodigoSeguridad(datosRegistro) {
   if (inputCode) inputCode.focus();
 }
 
+function iniciarCooldownReenvio(segundos) {
+  const btn = document.getElementById('btn-reenviar-codigo');
+  if (!btn) return;
+  if (reenvioCooldownTimer) clearInterval(reenvioCooldownTimer);
+  btn.disabled = true;
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.5';
+  let rest = segundos;
+  btn.textContent = `Reenviar en ${rest}s`;
+  
+  reenvioCooldownTimer = setInterval(() => {
+    rest--;
+    if (rest <= 0) {
+      clearInterval(reenvioCooldownTimer);
+      reenvioCooldownTimer = null;
+      btn.disabled = false;
+      btn.style.pointerEvents = 'auto';
+      btn.style.opacity = '1';
+      btn.textContent = 'Reenviar código';
+    } else {
+      btn.textContent = `Reenviar en ${rest}s`;
+    }
+  }, 1000);
+}
+
 // Cerrar modal de código
 function cerrarModalCodigo() {
   const modal = document.getElementById('modal-codigo-seguridad');
@@ -734,35 +894,38 @@ function cerrarModalCodigo() {
 // Reenviar código de seguridad
 async function reenviarCodigoSeguridad() {
   if (!authPendiente) return;
-  const btn = document.getElementById('btn-reenviar-codigo');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-  }
+  if (reenvioCooldownTimer) return;
   await solicitarCodigoSeguridad(authPendiente);
-  if (btn) {
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.textContent = 'Reenviar código';
-    }, 4000);
-  }
 }
 
-// Confirmar código de 6 dígitos e ingresar
+// Confirmar código de 6 dígitos con protección anti-fuerza bruta
 async function confirmarCodigoSeguridad() {
   if (!authPendiente) return;
   const inputCode = document.getElementById('input-codigo-seguridad');
+  const btnVerificar = document.getElementById('btn-verificar-codigo');
   const codeIngresado = (inputCode ? inputCode.value : '').trim();
 
-  if (!codeIngresado || codeIngresado.length !== 6) {
-    alert('Por favor ingresa el código completo de 6 dígitos.');
+  const ahora = Date.now();
+  if (otpBloqueadoHasta > ahora) {
+    const restante = Math.ceil((otpBloqueadoHasta - ahora) / 1000);
+    alert(`Verificación temporalmente bloqueada por seguridad.\nEspera ${restante} segundos.`);
     return;
+  }
+
+  if (!codeIngresado || codeIngresado.length !== 6 || !/^\d{6}$/.test(codeIngresado)) {
+    alert('Por favor ingresa el código numérico completo de 6 dígitos.');
+    return;
+  }
+
+  if (btnVerificar) {
+    btnVerificar.disabled = true;
+    btnVerificar.textContent = 'Validando código de seguridad...';
   }
 
   const destino = authPendiente.correo || authPendiente.curp;
   let validado = false;
 
-  // 1. Intentar validar con backend SQLite
+  // 1. Validar contra el backend SQLite protegido
   try {
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/auth/verificar_codigo') : '/api/auth/verificar_codigo';
     const resp = await fetch(targetUrl, {
@@ -770,10 +933,38 @@ async function confirmarCodigoSeguridad() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ destino: destino, codigo: codeIngresado })
     });
-    if (resp.ok) {
-      validado = true;
+
+    const resJson = await resp.json().catch(() => ({}));
+
+    if (resp.status === 429 || resJson.bloqueado) {
+      otpBloqueadoHasta = Date.now() + (60 * 1000);
+      iniciarCuentaRegresivaOtp(60);
+      alert(`Seguridad Activada: Demasiados intentos erróneos.\n${resJson.mensaje || 'El código fue invalidado por seguridad. Espera 60 segundos.'}`);
+      return;
     }
-  } catch(e) {}
+
+    if (resp.ok && resJson.valido) {
+      validado = true;
+    } else if (resp.status === 400) {
+      otpIntentosFallidos++;
+      const rest = resJson.intentos_restantes !== undefined ? resJson.intentos_restantes : (3 - otpIntentosFallidos);
+      if (rest <= 0) {
+        otpBloqueadoHasta = Date.now() + (60 * 1000);
+        iniciarCuentaRegresivaOtp(60);
+        alert('Se agotaron los 3 intentos permitidos para este código.\nEl código ha sido quemado por seguridad.');
+      } else {
+        alert(`Código de seguridad incorrecto.\nTe quedan ${rest} intento(s) antes de que el código sea invalidado.`);
+      }
+      return;
+    }
+  } catch(e) {
+    console.warn('[Auth Kuche] Modo local de verificación fallback:', e);
+  } finally {
+    if (btnVerificar && otpBloqueadoHasta <= Date.now()) {
+      btnVerificar.disabled = false;
+      btnVerificar.textContent = 'Verificar Código e Ingresar';
+    }
+  }
 
   // Fallback si validó con el código emitido localmente
   if (!validado && authPendiente.codigoEsperado && authPendiente.codigoEsperado === codeIngresado) {
@@ -781,11 +972,18 @@ async function confirmarCodigoSeguridad() {
   }
 
   if (!validado) {
-    alert('Código de seguridad incorrecto o expirado. Por favor verifica e intenta de nuevo.');
+    otpIntentosFallidos++;
+    if (otpIntentosFallidos >= 3) {
+      otpBloqueadoHasta = Date.now() + (60 * 1000);
+      iniciarCuentaRegresivaOtp(60);
+      alert('Se agotaron los 3 intentos permitidos.\nPor seguridad, espera 60 segundos.');
+    } else {
+      alert(`Código incorrecto o no coincide. Te quedan ${3 - otpIntentosFallidos} intento(s).`);
+    }
     return;
   }
 
-  // 2. Notificar registro al backend SQLite
+  // 2. Notificar registro al backend SQLite (con sanitización)
   try {
     const targetReg = window.KucheAPI ? window.KucheAPI.apiUrl('/api/auth/registro') : '/api/auth/registro';
     await fetch(targetReg, {
@@ -828,11 +1026,38 @@ async function confirmarCodigoSeguridad() {
   localStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
 
   cerrarModalCodigo();
-  alert(`Cuenta verificada exitosamente para ${authPendiente.nombre}.\nBienvenido a KUCHE.`);
+  alert(`Cuenta verificada exitosamente para ${authPendiente.nombre}.\nBienvenido al Sistema KUCHE.`);
   activarVistaApp(sesionActual);
 }
 
-// Registrar nueva cuenta (por Correo o CURP)
+function iniciarCuentaRegresivaOtp(segundos) {
+  const inputCode = document.getElementById('input-codigo-seguridad');
+  const btnVerificar = document.getElementById('btn-verificar-codigo');
+  if (inputCode) inputCode.disabled = true;
+  if (!btnVerificar) return;
+  btnVerificar.disabled = true;
+  let restante = segundos;
+  btnVerificar.textContent = `Bloqueado por seguridad (${restante}s)`;
+  const timer = setInterval(() => {
+    restante--;
+    if (restante <= 0) {
+      clearInterval(timer);
+      otpBloqueadoHasta = 0;
+      otpIntentosFallidos = 0;
+      if (inputCode) inputCode.disabled = false;
+      btnVerificar.disabled = false;
+      btnVerificar.textContent = 'Verificar Código e Ingresar';
+    } else {
+      btnVerificar.textContent = `Bloqueado por seguridad (${restante}s)`;
+    }
+  }, 1000);
+}
+
+function anyDigitOrLetter(str) {
+  return /[0-9]/.test(str) && /[a-zA-Z]/.test(str);
+}
+
+// Registrar nueva cuenta (por Correo o CURP) con validación estricta
 function handleRegistroSubmit(e) {
   e.preventDefault();
   const nombre = document.getElementById('reg-nombre').value.trim();
@@ -841,8 +1066,8 @@ function handleRegistroSubmit(e) {
   const pwd = document.getElementById('reg-password').value;
   const pwdConfirm = document.getElementById('reg-password-confirm').value;
 
-  if (!nombre) {
-    alert('Por favor ingresa tu nombre completo.');
+  if (!nombre || nombre.length < 3) {
+    alert('Por favor ingresa tu nombre completo (mínimo 3 caracteres).');
     return;
   }
 
@@ -851,13 +1076,25 @@ function handleRegistroSubmit(e) {
     return;
   }
 
-  if (curp && curp.length < 10) {
-    alert('La CURP ingresada no parece válida (debe tener entre 10 y 18 caracteres).');
+  if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    alert('El formato de correo electrónico no es válido.');
     return;
   }
 
-  if (!pwd) {
-    alert('Por favor ingresa una contraseña.');
+  if (curp) {
+    if (curp.length !== 18 || !REGEX_CURP_SEGOB.test(curp)) {
+      alert('La CURP debe tener exactamente 18 caracteres en formato oficial emitido por SEGOB (ejemplo: MORM800101HDFRRN09).');
+      return;
+    }
+  }
+
+  if (!pwd || pwd.length < 8) {
+    alert('Por seguridad, la contraseña debe tener al menos 8 caracteres.');
+    return;
+  }
+
+  if (!anyDigitOrLetter(pwd)) {
+    alert('La contraseña debe combinar letras y números para mayor seguridad.');
     return;
   }
 
