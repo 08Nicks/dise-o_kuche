@@ -53,14 +53,9 @@ if (navigator.geolocation) {
 }
 const ubiString = () => ubiActual ? `${ubiActual.lat.toFixed(6)},${ubiActual.lon.toFixed(6)}` : '';
 
-// ─── Mapeo IA → Categoría de Luminaria ────────────────────────────
+// ─── Tipo de Luminaria (Sin categorías genéricas) ──────────────────
 function mapearCategoria(textoIA) {
-  const t = (textoIA || '').toLowerCase();
-  if (t.includes('colonial') || t.includes('farol') || t.includes('ornamental') || t.includes('lantern')) return 'Luminaria Colonial Dañada';
-  if (t.includes('solar') || t.includes('bateria') || t.includes('panel')) return 'Luminaria Solar con Falla';
-  if (t.includes('fotocelda') || t.includes('sensor') || t.includes('intermitente')) return 'Fotocelda Averiada';
-  if (t.includes('brazo') || t.includes('mastil') || t.includes('soporte')) return 'Brazo de Luminaria Dañado';
-  return 'Luminaria LED Vial Apagada';
+  return textoIA || 'Luminaria LED Vial Tipo Cobra';
 }
 
 // ─── WebSocket ───────────────────────────────────────────────────
@@ -495,10 +490,13 @@ if (fileInput) {
   };
 }
 
-// ─── Panel de reporte IA ─────────────────────────────────────────
+// ─── Panel de reporte IA (Obligatorio tras detección) ─────────────────────────
 function mostrarPanelReporte(vista) {
   const panel = document.getElementById('panel-reporte');
   if (!panel) return;
+
+  // Pausar cualquier análisis de video mientras el reporte está activo
+  detenerAnalisisVideo();
 
   // Imagen: mostrar foto garantizando formato Data URI correcto (sin doble prefijo)
   const imgEl = document.getElementById('reporte-img');
@@ -517,44 +515,81 @@ function mostrarPanelReporte(vista) {
     }
   }
 
-  // Categoría detectada
-  const cat = mapearCategoria(vista ? vista.texto : '');
-  const sel = document.getElementById('reporte-categoria');
-  if (sel) sel.value = cat;
+  // Tipo de luminaria exacto detectado por IA
+  const tipoLuminaria = (vista && vista.texto) ? vista.texto : 'Luminaria LED Vial Tipo Cobra';
+  const inpTipo = document.getElementById('reporte-tipo-luminaria');
+  if (inpTipo) {
+    inpTipo.value = tipoLuminaria;
+  }
+  const selCat = document.getElementById('reporte-categoria');
+  if (selCat) {
+    selCat.value = tipoLuminaria;
+  }
 
-  // Confianza
+  // Confianza IA detallada
   const conf = document.getElementById('reporte-conf');
   if (conf) {
     if (vista && vista.conf > 0) {
-      conf.textContent = 'Confianza IA: ' + Math.round(vista.conf * 100) + '% — ' + (vista.texto || '');
+      conf.innerHTML = `<strong>Detección IA:</strong> ${tipoLuminaria} <span style="color:#00ff80;">(${Math.round(vista.conf * 100)}% certeza)</span>`;
     } else {
-      conf.textContent = 'Foto capturada — Verifica la categoría antes de enviar';
+      conf.innerHTML = `<strong>Captura Directa:</strong> ${tipoLuminaria}`;
     }
     conf.style.display = 'block';
   }
 
+  estado('🚨 Luminaria detectada: Generación de reporte obligatoria', '#ffcc00');
   panel.style.display = 'block';
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+// El reporte es OBLIGATORIO: no se permite descartar
 window.descartarReporte = function () {
-  const panel = document.getElementById('panel-reporte');
-  if (panel) panel.style.display = 'none';
-  estado('Buscando fallas...', '#00ff80');
-  if (modo === 'video') iniciarAnalisisVideo();
+  LOG('🚨 El levantamiento del reporte es obligatorio para registrar la evidencia.', '#ff9800');
+  mostrarToast('🚨 El registro del reporte es obligatorio');
 };
 
-// ─── Enviar reporte IA ───────────────────────────────────────────
+// ─── Enviar reporte IA (Obligatorio) ───────────────────────────
 window.enviarReporteIA = async function () {
-  const cat  = document.getElementById('reporte-categoria').value;
+  const inpTipo = document.getElementById('reporte-tipo-luminaria');
+  const selCat  = document.getElementById('reporte-categoria');
+  const tipo    = (inpTipo && inpTipo.value) || (selCat && selCat.value) || 'Luminaria LED Vial';
+  
+  const selCond = document.getElementById('reporte-condicion');
+  const condicion = selCond ? selCond.value : 'Apagada / Foco Fundido';
   const desc = (document.getElementById('reporte-desc').value || '').trim();
+  
   const img  = document.getElementById('reporte-img');
   const imgB64 = (img && img.src && img.src.startsWith('data:')) ? img.src.split(',')[1] : null;
 
-  await _enviarReporte(cat, desc, imgB64);
+  const btnSubmit = document.querySelector('#panel-reporte .btn-submit-report');
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span>Guardando Reporte Oficial...</span>';
+  }
 
-  document.getElementById('panel-reporte').style.display = 'none';
-  if (modo === 'video') iniciarAnalisisVideo();
+  try {
+    const detalleIncidencia = `${condicion}${desc ? ' — ' + desc : ''}`;
+    await _enviarReporte(tipo, detalleIncidencia, imgB64);
+    mostrarToast('✅ Reporte oficial registrado con éxito');
+    
+    document.getElementById('panel-reporte').style.display = 'none';
+    const descEl = document.getElementById('reporte-desc');
+    if (descEl) descEl.value = '';
+    
+    // Reiniciar para la siguiente luminaria
+    if (modo === 'video' && camaraEncendida) {
+      setTimeout(iniciarAnalisisVideo, 800);
+    } else {
+      estado('Reporte guardado — Listo para siguiente luminaria', '#00ff80');
+    }
+  } catch (err) {
+    alert('Error al registrar reporte: ' + err.message);
+  } finally {
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>🚨 Confirmar y Enviar Reporte Oficial</span>`;
+    }
+  }
 };
 
 // ─── Enviar reporte Manual ────────────────────────────────────────
@@ -568,12 +603,23 @@ window.enviarReporteManual = async function () {
 // ─── Función base de envío ────────────────────────────────────────
 async function _enviarReporte(categoria, descripcion, imgB64) {
   const texto = categoria + (descripcion ? ' | ' + descripcion : '');
+  
+  let usuarioActivo = 'Inspector Móvil';
+  try {
+    const ses = localStorage.getItem('kuche_basic_session') || sessionStorage.getItem('kuche_basic_session');
+    if (ses) {
+      const parsed = JSON.parse(ses);
+      if (parsed && (parsed.nombre || parsed.user)) usuarioActivo = parsed.nombre || parsed.user;
+    }
+  } catch(e) {}
+
   try {
     const body = {
-      luminaria: texto,
+      luminaria: categoria,
       incidencia: texto,
       placa: texto,
       tipo: 'Inspección Kuche',
+      usuario: usuarioActivo,
       img: imgB64 || null,
       conf: '1.0',
       lat: ubiActual ? ubiActual.lat : null,
@@ -609,6 +655,11 @@ function mostrarToast(msg) {
 
 // ─── Cambio de modo ───────────────────────────────────────────────
 window.cambiarModo = function (nuevoModo) {
+  const panel = document.getElementById('panel-reporte');
+  if (panel && panel.style.display === 'block') {
+    mostrarToast('🚨 Reporte obligatorio pendiente. Envíe el reporte antes de cambiar de sección.');
+    return;
+  }
   modo = nuevoModo;
   ['video', 'foto', 'manual'].forEach(m => {
     const tab = document.getElementById('tab-' + m);
@@ -643,3 +694,38 @@ window.cambiarModo = function (nuevoModo) {
     else detenerAnalisisVideo();
   }
 };
+
+// ─── PWA: Registro de Service Worker e Instalación ────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./static/sw.js', { scope: './' })
+      .then(r => console.log('[PWA] Service Worker activo en:', r.scope))
+      .catch(e => console.warn('[PWA] Advertencia Service Worker:', e));
+  });
+}
+
+let deferredPWAInstall = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPWAInstall = e;
+  const btns = document.querySelectorAll('.btn-instalar-pwa');
+  btns.forEach(btn => {
+    btn.style.display = 'inline-flex';
+    btn.onclick = async () => {
+      if (deferredPWAInstall) {
+        deferredPWAInstall.prompt();
+        const { outcome } = await deferredPWAInstall.userChoice;
+        if (outcome === 'accepted') {
+          document.querySelectorAll('.btn-instalar-pwa').forEach(b => b.style.display = 'none');
+        }
+        deferredPWAInstall = null;
+      }
+    };
+  });
+});
+
+window.addEventListener('appinstalled', () => {
+  document.querySelectorAll('.btn-instalar-pwa').forEach(b => b.style.display = 'none');
+  LOG('Aplicación PWA KUCHE instalada con éxito en este dispositivo.', '#00ff80');
+});
+

@@ -6,11 +6,14 @@
   <title>KUCHE — App con Inicio de Sesión</title>
   
   <!-- PWA & Meta Tags -->
-  <link rel="manifest" href="./static/manifest.json">
+  <link rel="manifest" href="./static/manifest-portal.json">
   <meta name="theme-color" content="#131113">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="KUCHE App">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KUCHE Oficial">
+  <meta name="application-name" content="KUCHE Oficial">
+  <meta name="msapplication-TileColor" content="#9B2247">
   <link rel="apple-touch-icon" href="./static/icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./static/icons/icon-192.png">
   
@@ -183,7 +186,11 @@
      ================================================================ -->
 <div id="view-auth-container" class="auth-overlay-view">
   <!-- Botón Flotante para Alternar Tema en Pantalla de Login -->
-  <div style="position:fixed; top:18px; right:22px; z-index:10000;">
+  <div style="position:fixed; top:18px; right:22px; z-index:10000; display:flex; align-items:center; gap:8px;">
+    <button id="btn-auth-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+      <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span>Instalar App</span>
+    </button>
     <button id="btn-auth-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro">
       ☀️ Modo Claro
     </button>
@@ -357,48 +364,53 @@
 
   <!-- PANEL MODAL DE REPORTE IA (TRAS DETECCIÓN) -->
   <div id="panel-reporte">
-    <div class="panel-title-badge">
-      <svg class="icon-svg" viewBox="0 0 24 24">
+    <div class="panel-title-badge" style="background: rgba(155, 34, 71, 0.2); border: 1px solid var(--clr-guinda-mexicano); color: #fff; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 10px;">
+      <svg class="icon-svg" viewBox="0 0 24 24" style="color: #ffcc00; width: 18px; height: 18px;">
         <circle cx="12" cy="12" r="10"/>
         <line x1="12" y1="8" x2="12" y2="12"/>
         <line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <span>Luminaria Detectada por IA</span>
+      <span>🚨 Reporte Obligatorio — Luminaria Detectada por IA</span>
     </div>
 
     <!-- Foto congelada con la detección -->
     <img id="reporte-img" alt="Luminaria detectada">
 
-    <!-- Categoría -->
+    <!-- Tipo de Luminaria Identificado por IA -->
     <div style="margin-bottom:8px;">
-      <label class="form-label" for="reporte-categoria">Categoría</label>
-      <select id="reporte-categoria" class="input-select">
-        <option value="Luminaria LED Vial">Luminaria LED Vial Apagada</option>
-        <option value="Luminaria Colonial">Luminaria Colonial Apagada</option>
-        <option value="Luminaria Solar">Luminaria Solar Sin Carga</option>
-        <option value="Fotocelda Averiada">Fotocelda Averiada / Intermitente</option>
-        <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
+      <label class="form-label" for="reporte-tipo-luminaria">Tipo de Luminaria Identificado por IA</label>
+      <input type="text" id="reporte-tipo-luminaria" class="input-text" readonly style="font-weight:700; color:var(--clr-dorado-acento); background:var(--bg-elevated); border:1px solid var(--clr-dorado-acento); padding:8px 10px; border-radius:6px; width:100%;">
+    </div>
+
+    <!-- Estado de la Falla -->
+    <div style="margin-bottom:8px;">
+      <label class="form-label" for="reporte-condicion">Estado de la Falla / Incidencia</label>
+      <select id="reporte-condicion" class="input-select">
+        <option value="Apagada / Foco Fundido">Foco Fundido / Apagada</option>
+        <option value="Intermitente / Parpadeando">Falla Intermitente / Parpadeando</option>
+        <option value="Encendida de Día (Falla Fotocelda)">Lámpara Encendida de Día (Falla Fotocelda)</option>
+        <option value="Gabinete / Difusor Roto">Gabinete / Difusor Roto o Estrellado</option>
+        <option value="Brazo / Mástil Chocado">Brazo / Mástil Chocado o Deformado</option>
+        <option value="Falta de Mantenimiento">Falta de Mantenimiento / Suciedad Extrema</option>
+        <option value="Cable Suelto / Riesgo Eléctrico">Cable Suelto / Riesgo Eléctrico</option>
       </select>
     </div>
 
     <!-- Confianza IA -->
-    <div id="reporte-conf"></div>
+    <div id="reporte-conf" style="margin-bottom:8px; font-size:12px; color:var(--text-muted);"></div>
 
     <!-- Descripción adicional -->
     <div style="margin-bottom:12px;">
-      <label class="form-label" for="reporte-desc">Notas de campo (opcional)</label>
-      <textarea id="reporte-desc" class="input-textarea" placeholder="Crucero o condición del foco..." rows="2"></textarea>
+      <label class="form-label" for="reporte-desc">Notas adicionales de campo (opcional)</label>
+      <textarea id="reporte-desc" class="input-textarea" placeholder="Crucero, esquina o referencia de ubicación..." rows="2"></textarea>
     </div>
 
-    <button onclick="enviarReporteIA()" class="btn-submit-report">
+    <button onclick="enviarReporteIA()" class="btn-submit-report" style="width:100%; padding:14px; font-size:14px; font-weight:700;">
       <svg class="icon-svg" viewBox="0 0 24 24">
         <line x1="22" y1="2" x2="11" y2="13"/>
         <polygon points="22 2 15 22 11 13 2 9 22 2"/>
       </svg>
-      <span>Confirmar y Enviar Reporte</span>
-    </button>
-    <button onclick="descartarReporte()" class="btn-discard-report">
-      Descartar
+      <span>🚨 Confirmar y Enviar Reporte Oficial (Obligatorio)</span>
     </button>
   </div>
 

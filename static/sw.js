@@ -2,18 +2,23 @@
 // KUCHE PWA — SERVICE WORKER (Alumbrado Público y Luminarias)
 // ═══════════════════════════════════════════════════════════════════════
 
-const CACHE_NAME = 'kuche-pwa-v2';
+const CACHE_NAME = 'kuche-pwa-v5';
 
 const PRECACHE_ASSETS = [
   './',
   './index.html',
+  './app.html',
+  './portal.html',
+  './oficial.html',
   './dashboard.html',
   './static/styles.css',
   './static/app.js',
   './static/kuche-api.js',
   './static/manifest.json',
+  './static/manifest-portal.json',
   './static/icons/icon-192.png',
   './static/icons/icon-512.png',
+  './static/icons/icon-maskable.png',
   './static/icons/apple-touch-icon.png'
 ];
 
@@ -78,12 +83,12 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
           return res;
         })
-        .catch(() => caches.match(req).then(cached => cached || caches.match('./index.html')))
+        .catch(() => caches.match(req).then(cached => cached || caches.match('./app.html') || caches.match('./index.html')))
     );
     return;
   }
 
-  // Recursos estáticos: Cache first
+  // Recursos estáticos: Cache first con actualización en segundo plano
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
