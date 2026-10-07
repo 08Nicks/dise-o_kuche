@@ -698,6 +698,10 @@ async function handleLoginSubmit(e) {
         remember: remember,
         loginAt: new Date().toISOString()
       };
+      if (resJson.token) {
+        localStorage.setItem('kuche_jwt_token', resJson.token);
+        sesionActual.token = resJson.token;
+      }
       if (remember) {
         localStorage.setItem('kuche_basic_session', JSON.stringify(sesionActual));
       } else {

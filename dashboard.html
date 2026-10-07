@@ -17,6 +17,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     
@@ -709,6 +712,14 @@
       <span id="count-badge" style="color:var(--cyan); font-family:'JetBrains Mono', monospace;">0</span>
     </div>
 
+    <!-- Filtros por Estado de Ticket Operativo -->
+    <div class="filtros">
+      <button class="filtro-btn active" id="flt-todos" onclick="cambiarFiltro('todos')">Todas</button>
+      <button class="filtro-btn" id="flt-reportada" onclick="cambiarFiltro('Reportada')">Reportadas</button>
+      <button class="filtro-btn" id="flt-revision" onclick="cambiarFiltro('En Revisión')">En Revisión</button>
+      <button class="filtro-btn" id="flt-reparada" onclick="cambiarFiltro('Reparada')">Reparadas</button>
+    </div>
+
     <div id="lista-reportes">
       <div class="empty-state">Cargando luminarias...</div>
     </div>
@@ -797,7 +808,15 @@ function inicializarMapa() {
     }
   });
 
-  markersLayer = L.layerGroup().addTo(mapaActivo);
+  if (typeof L.markerClusterGroup === 'function') {
+    markersLayer = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      maxClusterRadius: 40,
+      spiderfyOnMaxZoom: true
+    }).addTo(mapaActivo);
+  } else {
+    markersLayer = L.layerGroup().addTo(mapaActivo);
+  }
 
   // Asegurar renderizado correcto al redimensionar
   window.addEventListener('resize', () => {
@@ -807,18 +826,22 @@ function inicializarMapa() {
 }
 
 // ── Utilidades de Categoría de Luminaria (Sin emojis) ──────────────
-// ── Icono Institucional para Marcadores en Mapa (Sin tipos de farol) ─
-function getMarkerIcon() {
+// ── Icono Institucional para Marcadores en Mapa según Estado de Ticket ─
+function getMarkerIcon(estadoTicket) {
+  const st = estadoTicket || 'Reportada';
+  const colorBorde = st === 'Reparada' ? '#10b981' : (st === 'En Revisión' ? '#f59e0b' : '#9B2247');
+  const colorGlow = st === 'Reparada' ? 'rgba(16, 185, 129, 0.6)' : (st === 'En Revisión' ? 'rgba(245, 158, 11, 0.6)' : 'rgba(155, 34, 71, 0.7)');
+
   return L.divIcon({
     className: 'custom-map-pin',
     html: `<div style="
       width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(155, 34, 71, 0.25); border: 2px solid #9B2247;
+      background: rgba(19, 17, 19, 0.9); border: 2.5px solid ${colorBorde};
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 12px rgba(155, 34, 71, 0.7);
+      box-shadow: 0 0 12px ${colorGlow};
       cursor: pointer;
     ">
-      <div style="width: 8px; height: 8px; border-radius: 50%; background: #E6D194;"></div>
+      <div style="width: 8px; height: 8px; border-radius: 50%; background: ${colorBorde};"></div>
     </div>`,
     iconSize: [26, 26],
     iconAnchor: [13, 13],
@@ -859,19 +882,42 @@ async function cargarDatos() {
 function actualizarEstadisticas() {
   document.getElementById('stat-total').textContent = todosReportes.length;
   document.getElementById('stat-apagadas').textContent =
-    todosReportes.filter(r => {
-      const txt = (r.luminaria || r.incidencia || r.placa || '').toLowerCase();
-      return txt.includes('apagada') || txt.includes('averiada') || txt.includes('dañ') || txt.includes('falla');
-    }).length;
+    todosReportes.filter(r => (r.estado_ticket || 'Reportada') === 'Reportada').length;
   document.getElementById('stat-operativas').textContent =
-    todosReportes.filter(r => {
-      const txt = (r.luminaria || r.incidencia || r.placa || '').toLowerCase();
-      return !txt.includes('apagada') && !txt.includes('averiada') && !txt.includes('dañ');
-    }).length;
+    todosReportes.filter(r => (r.estado_ticket || '') === 'Reparada').length;
 }
 
 function reportesFiltrados() {
-  return todosReportes;
+  if (filtroActivo === 'todos') return todosReportes;
+  return todosReportes.filter(r => (r.estado_ticket || 'Reportada') === filtroActivo);
+}
+
+function cambiarFiltro(nuevoFiltro) {
+  filtroActivo = nuevoFiltro;
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  const idBtn = nuevoFiltro === 'todos' ? 'flt-todos' :
+                nuevoFiltro === 'Reportada' ? 'flt-reportada' :
+                nuevoFiltro === 'En Revisión' ? 'flt-revision' : 'flt-reparada';
+  const btn = document.getElementById(idBtn);
+  if (btn) btn.classList.add('active');
+  renderLista();
+  renderMapa();
+}
+
+async function cambiarEstadoLuminaria(id, nuevoEstado) {
+  try {
+    const url = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/cambiar_estado') : '/api/infraestructura/cambiar_estado';
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, estado_ticket: nuevoEstado })
+    });
+    if (resp.ok) {
+      await cargarDatos();
+    }
+  } catch(e) {
+    console.error('Error cambiando estado:', e);
+  }
 }
 
 // ── Desglose Inteligente del Reporte ──────────────────────────────
@@ -959,6 +1005,10 @@ function renderLista() {
     const des = desglosarReporte(r);
     const hora = (r.hora || '').substring(0, 16);
     const ubiCorta = r.ubi ? r.ubi.substring(0, 24) : 'Sin GPS';
+    const folioStr = r.folio || ('KUC-' + String(r.id).padStart(5, '0'));
+    const est = r.estado_ticket || 'Reportada';
+    const estColor = est === 'Reparada' ? '#10b981' : (est === 'En Revisión' ? '#f59e0b' : '#9B2247');
+    const estBadge = `<span style="font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; background:${estColor}22; color:${estColor}; border:1px solid ${estColor};">${est}</span>`;
 
     const autorBadge = des.esDemo
       ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
@@ -983,11 +1033,14 @@ function renderLista() {
       ${thumbHtml}
       <div class="card-info">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:4px;">
-          <div class="card-titulo" title="Reporte #${r.id}">Reporte #${r.id}</div>
-          ${autorBadge}
+          <div class="card-titulo" title="Folio ${folioStr}">${folioStr}</div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            ${estBadge}
+            ${autorBadge}
+          </div>
         </div>
         <div class="card-falla-box">
-          <span class="card-falla-label">Falla reportada:</span>${escapeHtml(des.fallaEscrita)}
+          <span class="card-falla-label">Falla:</span>${escapeHtml(des.fallaEscrita)}
         </div>
         ${refHtml}
         <div class="card-meta">
@@ -1015,8 +1068,12 @@ function renderMapa() {
 
     const des = desglosarReporte(r);
     const hora = (r.hora || '').substring(0, 16);
+    const folioStr = r.folio || ('KUC-' + String(r.id).padStart(5, '0'));
+    const est = r.estado_ticket || 'Reportada';
+    const estColor = est === 'Reparada' ? '#10b981' : (est === 'En Revisión' ? '#f59e0b' : '#9B2247');
+    const estBadge = `<span style="font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; background:${estColor}22; color:${estColor}; border:1px solid ${estColor};">${est}</span>`;
 
-    const marker = L.marker([lat, lon], { icon: getMarkerIcon() });
+    const marker = L.marker([lat, lon], { icon: getMarkerIcon(est) });
 
     const autorBadge = des.esDemo
       ? `<span class="badge-autor badge-autor-demo">Versión Demo</span>`
@@ -1032,10 +1089,11 @@ function renderMapa() {
 
     marker.bindPopup(`
       <div class="popup-body">
-        <div class="popup-header-badges">
+        <div class="popup-header-badges" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          ${estBadge}
           ${autorBadge}
         </div>
-        <h4>Reporte de Luminaria #${r.id}</h4>
+        <h4>${folioStr}</h4>
         <div class="popup-falla-box">
           <strong style="color:#ff809b;">Falla:</strong> ${escapeHtml(des.fallaEscrita)}
         </div>
@@ -1046,6 +1104,10 @@ function renderMapa() {
           <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           ${lat.toFixed(5)}, ${lon.toFixed(5)} &mdash; Ver en Google Maps
         </a>
+        <div style="margin-top:10px; pt-2; border-top:1px solid rgba(255,255,255,0.1); display:flex; gap:6px;">
+          <button type="button" onclick="cambiarEstadoLuminaria(${r.id}, 'En Revisión')" style="flex:1; font-size:10px; font-weight:700; padding:5px 6px; border-radius:4px; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; color:#f59e0b; cursor:pointer;">En Revisión</button>
+          <button type="button" onclick="cambiarEstadoLuminaria(${r.id}, 'Reparada')" style="flex:1; font-size:10px; font-weight:700; padding:5px 6px; border-radius:4px; background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#10b981; cursor:pointer;">Reparada</button>
+        </div>
       </div>
     `, { maxWidth: 280 });
 

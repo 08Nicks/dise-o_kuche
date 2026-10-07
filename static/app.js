@@ -639,36 +639,131 @@ async function _enviarReporte(categoria, descripcion, imgB64) {
     }
   } catch(e) {}
 
+  const jwtToken = localStorage.getItem('kuche_jwt_token') || sessionStorage.getItem('kuche_jwt_token') || '';
+  const headers = { 'Content-Type': 'application/json' };
+  if (jwtToken) {
+    headers['Authorization'] = 'Bearer ' + jwtToken;
+  }
+
+  const body = {
+    luminaria: categoria,
+    incidencia: texto,
+    placa: texto,
+    tipo: 'Inspección Kuche',
+    usuario: usuarioActivo,
+    img: imgB64 || null,
+    conf: '1.0',
+    lat: ubiActual ? ubiActual.lat : null,
+    lon: ubiActual ? ubiActual.lon : null
+  };
+
   try {
-    const body = {
-      luminaria: categoria,
-      incidencia: texto,
-      placa: texto,
-      tipo: 'Inspección Kuche',
-      usuario: usuarioActivo,
-      img: imgB64 || null,
-      conf: '1.0',
-      lat: ubiActual ? ubiActual.lat : null,
-      lon: ubiActual ? ubiActual.lon : null
-    };
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/registrar') : '/api/infraestructura/registrar';
     const r = await fetch(targetUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: headers,
       body: JSON.stringify(body)
     });
     if (r.ok) {
-      mostrarToast('Reporte enviado correctamente');
-      LOG('Reporte enviado: ' + texto, '#00ff80');
-      estado('Reporte enviado', '#00ff80');
+      const resJson = await r.json().catch(() => ({}));
+      const aviso = resJson.aviso_proximidad ? ` (${resJson.aviso_proximidad})` : '';
+      mostrarToast('Reporte enviado correctamente' + aviso);
+      LOG('Reporte enviado: ' + texto + aviso, '#00ff80');
+      estado('Reporte enviado con éxito' + aviso, '#00ff80');
+      sincronizarColaOffline();
     } else {
       throw new Error('HTTP ' + r.status);
     }
   } catch (e) {
-    LOG('Error al enviar: ' + e.message, '#ff4444');
-    alert('Error al enviar el reporte: ' + e.message);
+    LOG('Sin conexión al servidor. Encolando reporte en almacenamiento local...', '#ff9800');
+    encolarReporteOffline(body);
+    mostrarToast('⚠️ Sin conexión. Reporte guardado localmente (se enviará automáticamente al reconectar)');
+    estado('Guardado en cola offline', '#ff9800');
   }
 }
+
+// ─── Cola y Sincronización Fuera de Línea (Offline-First) ────────
+function encolarReporteOffline(item) {
+  try {
+    const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
+    item._ts = Date.now();
+    cola.push(item);
+    localStorage.setItem('kuche_cola_offline', JSON.stringify(cola));
+    actualizarInsigniaOffline();
+  } catch(e) {
+    console.error('Error guardando en cola offline:', e);
+  }
+}
+
+async function sincronizarColaOffline() {
+  try {
+    const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
+    if (!cola.length) return;
+    
+    LOG(`Sincronizando ${cola.length} reporte(s) offline pendientes...`, '#00d2ff');
+    const pendientes = [];
+    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/registrar') : '/api/infraestructura/registrar';
+    const jwtToken = localStorage.getItem('kuche_jwt_token') || '';
+    const headers = { 'Content-Type': 'application/json' };
+    if (jwtToken) headers['Authorization'] = 'Bearer ' + jwtToken;
+
+    let subidos = 0;
+    for (const item of cola) {
+      try {
+        const resp = await fetch(targetUrl, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(item)
+        });
+        if (resp.ok) {
+          subidos++;
+        } else {
+          pendientes.push(item);
+        }
+      } catch(err) {
+        pendientes.push(item);
+      }
+    }
+    localStorage.setItem('kuche_cola_offline', JSON.stringify(pendientes));
+    actualizarInsigniaOffline();
+    if (subidos > 0) {
+      mostrarToast(`✅ ${subidos} reporte(s) offline sincronizados con éxito`);
+      LOG(`✅ ${subidos} reporte(s) offline enviados`, '#00ff80');
+    }
+  } catch(e) {
+    console.error('Error en sincronización offline:', e);
+  }
+}
+
+function actualizarInsigniaOffline() {
+  try {
+    const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
+    let badge = document.getElementById('badge-offline-queue');
+    if (cola.length > 0) {
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'badge-offline-queue';
+        badge.style.cssText = 'position:fixed; bottom:14px; left:14px; z-index:9999; background:#9B2247; color:#fff; font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; border:1px solid #E6D194; box-shadow:0 4px 14px rgba(0,0,0,0.6); display:flex; align-items:center; gap:6px; cursor:pointer;';
+        badge.onclick = sincronizarColaOffline;
+        badge.title = 'Clic para intentar sincronizar ahora';
+        document.body.appendChild(badge);
+      }
+      badge.innerHTML = `<span>⏳ ${cola.length} reporte(s) en cola offline</span>`;
+      badge.style.display = 'flex';
+    } else if (badge) {
+      badge.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+window.addEventListener('online', () => {
+  LOG('Conexión a internet restablecida', '#00ff80');
+  sincronizarColaOffline();
+});
+window.addEventListener('DOMContentLoaded', () => {
+  actualizarInsigniaOffline();
+  setTimeout(sincronizarColaOffline, 2500);
+});
 
 // ─── Toast de confirmación ────────────────────────────────────────
 function mostrarToast(msg) {
