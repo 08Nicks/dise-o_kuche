@@ -649,15 +649,244 @@
       text-decoration: underline;
     }
 
-    /* Iconos SVG */
-    .icon-svg {
-      width: 14px;
-      height: 14px;
-      stroke-width: 2;
-      stroke: currentColor;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    /* ── Botón Cuadrilla Waze ── */
+    .btn-cuadrilla-pill {
+      background: rgba(230, 209, 148, 0.12);
+      color: var(--dorado-accent);
+      border: 1px solid rgba(230, 209, 148, 0.35);
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-cuadrilla-pill:hover {
+      background: rgba(230, 209, 148, 0.22);
+      border-color: var(--dorado-accent);
+      transform: translateY(-1px);
+    }
+    .btn-cuadrilla-pill.active {
+      background: var(--dorado-accent);
+      color: #131113;
+      border-color: #FFF;
+      box-shadow: 0 0 16px rgba(230, 209, 148, 0.7);
+    }
+
+    /* ── HUD Flotante Cuadrilla Virtual (Waze de Luminarias) ── */
+    .hud-cuadrilla {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 330px;
+      max-width: calc(100% - 32px);
+      background: rgba(19, 17, 19, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(230, 209, 148, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      color: var(--text);
+      overflow: hidden;
+      animation: slideInDown 0.25s ease-out;
+      font-family: 'Inter', sans-serif;
+    }
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    body.theme-light .hud-cuadrilla {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: #cbd5e1;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+      color: #0f172a;
+    }
+    .hud-header {
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid rgba(230, 209, 148, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    body.theme-light .hud-header {
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .hud-dot-live {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 1.5s infinite;
+      display: inline-block;
+    }
+    .hud-btn-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 4px;
+      line-height: 1;
+      transition: color 0.15s, background 0.15s;
+    }
+    .hud-btn-icon:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .hud-body {
+      padding: 14px;
+    }
+    .hud-dist-box {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 8px 0;
+      padding: 10px 12px;
+      background: rgba(230, 209, 148, 0.08);
+      border: 1px solid rgba(230, 209, 148, 0.25);
+      border-radius: 8px;
+    }
+    body.theme-light .hud-dist-box {
+      background: #fdfaf3;
+      border: 1px solid #f3e8c9;
+    }
+    .hud-dist-val {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--dorado-accent);
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+    }
+    body.theme-light .hud-dist-val {
+      color: #9B2247;
+    }
+    .hud-alerta-proxima {
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      border-radius: 6px;
+      color: #fca5a5;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: pulseAlert 1.2s infinite;
+    }
+    body.theme-light .hud-alerta-proxima {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #f87171;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+    .hud-acciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .hud-btn-action {
+      padding: 7px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+    .hud-btn-action.btn-reparar {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .hud-btn-action.btn-reparar:hover {
+      background: #10b981;
+      color: #000;
+    }
+    .hud-btn-action.btn-enfocar {
+      background: rgba(0, 210, 255, 0.15);
+      color: var(--cyan);
+      border-color: rgba(0, 210, 255, 0.35);
+    }
+    .hud-btn-action.btn-enfocar:hover {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* Marcador de la Cuadrilla en Leaflet */
+    .marker-cuadrilla-wrapper {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      cursor: grab;
+    }
+    .marker-cuadrilla-wrapper:active {
+      cursor: grabbing;
+    }
+    .marker-cuadrilla-pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(230, 209, 148, 0.35);
+      animation: cuadrillaPulse 2s infinite ease-out;
+      pointer-events: none;
+    }
+    .marker-cuadrilla-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1b181b;
+      border: 2px solid #E6D194;
+      box-shadow: 0 0 16px rgba(230, 209, 148, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #FFF;
+      user-select: none;
+    }
+    .marker-cuadrilla-label {
+      position: absolute;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(19, 17, 19, 0.92);
+      color: #E6D194;
+      border: 1px solid #E6D194;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    @keyframes cuadrillaPulse {
+      0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
     }
   </style>
 </head>
@@ -675,6 +904,10 @@
       <div class="dot-live"></div>
       <span>EN VIVO</span>
     </div>
+    <button id="btn-cuadrilla-toggle" class="btn-cuadrilla-pill" onclick="alternarModoCuadrilla()" title="Activar Cuadrilla Virtual y Navegador Waze de Luminarias">
+      <span style="font-size:14px;">🚛</span>
+      <span>Cuadrilla Waze</span>
+    </button>
     <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTemaDashboard()" title="Alternar entre Modo Oscuro y Modo Claro">
       Modo Claro
     </button>
@@ -728,6 +961,23 @@
   <!-- MAPA INTERACTIVO -->
   <div id="map-wrapper">
     <div id="map"></div>
+
+    <!-- HUD NAVEGADOR WAZE DE LUMINARIAS (CUADRILLA VIRTUAL) -->
+    <div id="hud-cuadrilla" class="hud-cuadrilla" style="display:none;">
+      <div class="hud-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="hud-dot-live"></span>
+          <strong style="font-size:12px; letter-spacing:0.5px; color:var(--dorado-accent);">CUADRILLA VIRTUAL K-01</strong>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button type="button" id="btn-hud-audio" onclick="alternarAudioWaze()" class="hud-btn-icon" title="Sonido de radar activado">🔊</button>
+          <button type="button" onclick="desactivarModoCuadrilla()" class="hud-btn-icon" title="Cerrar modo cuadrilla">✕</button>
+        </div>
+      </div>
+      <div id="hud-contenido" class="hud-body">
+        <!-- Render dinámico Waze -->
+      </div>
+    </div>
   </div>
 </main>
 
@@ -872,6 +1122,9 @@ async function cargarDatos() {
     actualizarEstadisticas();
     renderLista();
     renderMapa();
+    if (modoCuadrillaActivo) {
+      actualizarNavegacionCuadrilla();
+    }
   } catch(e) {
     console.error('Error cargando datos:', e);
     document.getElementById('lista-reportes').innerHTML = '<div class="empty-state">Error de conexion al cargar datos. Verifica la conexion con el servidor.</div>';
@@ -1215,6 +1468,355 @@ function aplicarTemaDashboard(tema) {
 
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   if (metaTheme) metaTheme.setAttribute('content', tema === 'light' ? '#FFFFFF' : '#131113');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CUADRILLA VIRTUAL (WAZE DE LUMINARIAS)
+// ═══════════════════════════════════════════════════════════════════
+let modoCuadrillaActivo = false;
+let cuadrillaMarker = null;
+let lineaRutaLayer = null;
+let haloDestinoLayer = null;
+let posCuadrilla = null; // [lat, lon]
+let audioWazeActivo = true;
+let alertaProximidadDisparada = false;
+let audioCtxWaze = null;
+
+function sonarAlertaProximidad() {
+  if (!audioWazeActivo) return;
+  try {
+    if (!audioCtxWaze) {
+      audioCtxWaze = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtxWaze.state === 'suspended') {
+      audioCtxWaze.resume();
+    }
+    const t = audioCtxWaze.currentTime;
+    const osc = audioCtxWaze.createOscillator();
+    const gain = audioCtxWaze.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(659.25, t); // Mi (E5)
+    osc.frequency.setValueAtTime(880, t + 0.1); // La (A5)
+    gain.gain.setValueAtTime(0.18, t);
+    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+    osc.connect(gain);
+    gain.connect(audioCtxWaze.destination);
+    osc.start(t);
+    osc.stop(t + 0.3);
+  } catch(e) {}
+}
+
+function alternarAudioWaze() {
+  audioWazeActivo = !audioWazeActivo;
+  const btn = document.getElementById('btn-hud-audio');
+  if (btn) {
+    btn.textContent = audioWazeActivo ? '🔊' : '🔇';
+    btn.title = audioWazeActivo ? 'Sonido activado' : 'Sonido silenciado';
+  }
+}
+
+function calcularDistanciaMetros(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return Math.round(R * c);
+}
+
+function calcularRumboWaze(lat1, lon1, lat2, lon2) {
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const y = Math.sin(dLon) * Math.cos(lat2 * Math.PI / 180);
+  const x = Math.cos(lat1 * Math.PI / 180) * Math.sin(lat2 * Math.PI / 180) -
+            Math.sin(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.cos(dLon);
+  let brng = Math.atan2(y, x) * 180 / Math.PI;
+  brng = (brng + 360) % 360;
+
+  if (brng >= 337.5 || brng < 22.5) return { texto: 'Norte', icono: '⬆️' };
+  if (brng >= 22.5 && brng < 67.5) return { texto: 'Noreste', icono: '↗️' };
+  if (brng >= 67.5 && brng < 112.5) return { texto: 'Este', icono: '➡️' };
+  if (brng >= 112.5 && brng < 157.5) return { texto: 'Sureste', icono: '↘️' };
+  if (brng >= 157.5 && brng < 202.5) return { texto: 'Sur', icono: '⬇️' };
+  if (brng >= 202.5 && brng < 247.5) return { texto: 'Suroeste', icono: '↙️' };
+  if (brng >= 247.5 && brng < 292.5) return { texto: 'Oeste', icono: '⬅️' };
+  return { texto: 'Noroeste', icono: '↖️' };
+}
+
+function getCuadrillaIcon() {
+  return L.divIcon({
+    className: 'custom-cuadrilla-pin',
+    html: `
+      <div class="marker-cuadrilla-wrapper">
+        <div class="marker-cuadrilla-pulse"></div>
+        <div class="marker-cuadrilla-icon" title="Cuadrilla Virtual (Arrastra en el mapa)">🚛</div>
+        <div class="marker-cuadrilla-label">K-01</div>
+      </div>
+    `,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -22]
+  });
+}
+
+function alternarModoCuadrilla() {
+  if (modoCuadrillaActivo) {
+    desactivarModoCuadrilla();
+  } else {
+    activarModoCuadrilla();
+  }
+}
+
+function activarModoCuadrilla() {
+  if (!mapaActivo) return;
+  modoCuadrillaActivo = true;
+  document.getElementById('btn-cuadrilla-toggle')?.classList.add('active');
+  const hud = document.getElementById('hud-cuadrilla');
+  if (hud) hud.style.display = 'block';
+
+  // Si no hay posición de cuadrilla, usar el centro del mapa
+  if (!posCuadrilla) {
+    const center = mapaActivo.getCenter();
+    posCuadrilla = [center.lat, center.lng];
+  }
+
+  if (!cuadrillaMarker) {
+    cuadrillaMarker = L.marker(posCuadrilla, {
+      icon: getCuadrillaIcon(),
+      draggable: true,
+      zIndexOffset: 10000
+    }).addTo(mapaActivo);
+
+    cuadrillaMarker.on('drag', (e) => {
+      const p = e.target.getLatLng();
+      posCuadrilla = [p.lat, p.lng];
+      actualizarNavegacionCuadrilla();
+    });
+
+    cuadrillaMarker.on('dragend', () => {
+      actualizarNavegacionCuadrilla(true);
+    });
+  } else {
+    cuadrillaMarker.setLatLng(posCuadrilla);
+    cuadrillaMarker.addTo(mapaActivo);
+  }
+
+  mapaActivo.on('click', onMapaClickCuadrilla);
+  actualizarNavegacionCuadrilla(true);
+}
+
+function desactivarModoCuadrilla() {
+  modoCuadrillaActivo = false;
+  document.getElementById('btn-cuadrilla-toggle')?.classList.remove('active');
+  const hud = document.getElementById('hud-cuadrilla');
+  if (hud) hud.style.display = 'none';
+
+  if (lineaRutaLayer && mapaActivo) {
+    mapaActivo.removeLayer(lineaRutaLayer);
+    lineaRutaLayer = null;
+  }
+  if (haloDestinoLayer && mapaActivo) {
+    mapaActivo.removeLayer(haloDestinoLayer);
+    haloDestinoLayer = null;
+  }
+  if (mapaActivo) {
+    mapaActivo.off('click', onMapaClickCuadrilla);
+  }
+}
+
+function onMapaClickCuadrilla(e) {
+  if (!modoCuadrillaActivo || !cuadrillaMarker) return;
+  posCuadrilla = [e.latlng.lat, e.latlng.lng];
+  cuadrillaMarker.setLatLng(posCuadrilla);
+  actualizarNavegacionCuadrilla(true);
+}
+
+function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
+  if (!modoCuadrillaActivo || !posCuadrilla || !mapaActivo) return;
+
+  const [cLat, cLon] = posCuadrilla;
+
+  // Filtrar luminarias que requieren atención (Reportadas o En Revisión)
+  const pendientes = todosReportes.filter(r => {
+    if (r.estado_registro === 'Borrada') return false;
+    const est = r.estado_ticket || 'Reportada';
+    if (est === 'Reparada') return false;
+    if (!r.ubi || !r.ubi.includes(',')) return false;
+    const [la, lo] = r.ubi.split(',').map(parseFloat);
+    return !isNaN(la) && !isNaN(lo);
+  });
+
+  const hudBody = document.getElementById('hud-contenido');
+  if (!hudBody) return;
+
+  if (pendientes.length === 0) {
+    if (lineaRutaLayer) { mapaActivo.removeLayer(lineaRutaLayer); lineaRutaLayer = null; }
+    if (haloDestinoLayer) { mapaActivo.removeLayer(haloDestinoLayer); haloDestinoLayer = null; }
+
+    hudBody.innerHTML = `
+      <div style="text-align:center; padding:16px 8px;">
+        <div style="font-size:32px; margin-bottom:6px;">🎉</div>
+        <strong style="color:#10b981; font-size:13px; display:block;">¡Zona 100% Operativa!</strong>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">No hay luminarias pendientes de reparación en el sistema.</p>
+        <button type="button" onclick="cargarDatos()" class="hud-btn-action btn-enfocar" style="margin:12px auto 0 auto; width:80%;">Recargar Datos</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Encontrar la más cercana
+  let mejorDistancia = Infinity;
+  let luminariaCercana = null;
+  let targetCoords = null;
+
+  pendientes.forEach(r => {
+    const [la, lo] = r.ubi.split(',').map(parseFloat);
+    const d = calcularDistanciaMetros(cLat, cLon, la, lo);
+    if (d < mejorDistancia) {
+      mejorDistancia = d;
+      luminariaCercana = r;
+      targetCoords = [la, lo];
+    }
+  });
+
+  if (!luminariaCercana || !targetCoords) return;
+
+  const [tLat, tLon] = targetCoords;
+  const folioStr = luminariaCercana.folio || ('KUC-' + String(luminariaCercana.id).padStart(5, '0'));
+  const des = desglosarReporte(luminariaCercana);
+  const rumbo = calcularRumboWaze(cLat, cLon, tLat, tLon);
+
+  // Formato de distancia
+  let distStr = mejorDistancia >= 1000 ? (mejorDistancia / 1000).toFixed(2) + ' km' : mejorDistancia + ' m';
+
+  // Dibujar o actualizar línea de ruta Waze
+  if (!lineaRutaLayer) {
+    lineaRutaLayer = L.polyline([[cLat, cLon], [tLat, tLon]], {
+      color: '#E6D194',
+      weight: 3.5,
+      opacity: 0.85,
+      dashArray: '8, 8'
+    }).addTo(mapaActivo);
+  } else {
+    lineaRutaLayer.setLatLngs([[cLat, cLon], [tLat, tLon]]);
+  }
+
+  // Dibujar o actualizar halo del objetivo
+  if (!haloDestinoLayer) {
+    haloDestinoLayer = L.circleMarker([tLat, tLon], {
+      radius: 18,
+      color: '#E6D194',
+      weight: 2,
+      dashArray: '4, 4',
+      fillColor: '#E6D194',
+      fillOpacity: 0.2
+    }).addTo(mapaActivo);
+  } else {
+    haloDestinoLayer.setLatLng([tLat, tLon]);
+  }
+
+  // Alerta de proximidad (< 50 metros)
+  const esMuyCerca = mejorDistancia <= 50;
+  if (esMuyCerca && !alertaProximidadDisparada && esFinMovimiento) {
+    sonarAlertaProximidad();
+    alertaProximidadDisparada = true;
+  } else if (!esMuyCerca) {
+    alertaProximidadDisparada = false;
+  }
+
+  const alertaHtml = esMuyCerca
+    ? `<div class="hud-alerta-proxima">
+         <span>🚨</span>
+         <span>¡EN RANGO DE TRABAJO! (&lt;50 metros)</span>
+       </div>`
+    : '';
+
+  const estTicket = luminariaCercana.estado_ticket || 'Reportada';
+  const estColor = estTicket === 'En Revisión' ? '#f59e0b' : '#9B2247';
+
+  hudBody.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:11px; font-weight:800; color:var(--text); letter-spacing:0.5px;">DESTINO MÁS CERCANO</span>
+      <span style="font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; background:${estColor}22; color:${estColor}; border:1px solid ${estColor};">${estTicket}</span>
+    </div>
+
+    <div style="font-size:13px; font-weight:800; color:var(--text); margin-top:4px;">${folioStr}</div>
+    
+    <div class="hud-dist-box">
+      <div>
+        <div class="hud-dist-val">${distStr}</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Distancia en línea recta</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:14px; font-weight:800; color:var(--text);">${rumbo.icono} ${rumbo.texto}</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Rumbo estimado</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px; background:rgba(0,0,0,0.25); padding:6px 8px; border-radius:6px; border:1px solid var(--border); margin-top:6px;">
+      <strong style="color:#ff809b;">Falla:</strong> <span style="color:var(--text);">${escapeHtml(des.fallaEscrita)}</span>
+      ${des.referencia ? `<div style="font-size:10px; color:var(--text-muted); margin-top:2px;"><strong style="color:var(--dorado-accent);">Ref:</strong> ${escapeHtml(des.referencia)}</div>` : ''}
+    </div>
+
+    ${alertaHtml}
+
+    <div class="hud-acciones">
+      <button type="button" onclick="marcarLuminariaDesdeWaze(${luminariaCercana.id}, 'Reparada')" class="hud-btn-action btn-reparar" title="Marcar como reparada y pasar a la siguiente luminaria">
+        <span>✅</span>
+        <span>Reparar Ahora</span>
+      </button>
+      <button type="button" onclick="enfocarRutaWaze(${tLat}, ${tLon})" class="hud-btn-action btn-enfocar" title="Centrar mapa en la ruta y luminaria">
+        <span>🎯</span>
+        <span>Enfocar Ruta</span>
+      </button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
+      <button type="button" onclick="ubicarCuadrillaGPS()" style="background:none; border:none; color:var(--cyan); font-size:11px; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;">
+        <span>📍</span>
+        <span>Usar mi GPS real</span>
+      </button>
+      <span style="font-size:10px; color:var(--text-muted);">Arrastra 🚛 en el mapa</span>
+    </div>
+  `;
+}
+
+function enfocarRutaWaze(destLat, destLon) {
+  if (!mapaActivo || !posCuadrilla) return;
+  const bounds = L.latLngBounds([posCuadrilla, [destLat, destLon]]);
+  mapaActivo.fitBounds(bounds, { padding: [80, 80], maxZoom: 17 });
+}
+
+async function marcarLuminariaDesdeWaze(id, nuevoEstado) {
+  await cambiarEstadoLuminaria(id, nuevoEstado);
+  setTimeout(() => {
+    actualizarNavegacionCuadrilla(true);
+  }, 300);
+}
+
+function ubicarCuadrillaGPS() {
+  if (!navigator.geolocation) {
+    alert('Tu navegador no soporta geolocalización.');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      posCuadrilla = [pos.coords.latitude, pos.coords.longitude];
+      if (cuadrillaMarker) {
+        cuadrillaMarker.setLatLng(posCuadrilla);
+      }
+      if (mapaActivo) {
+        mapaActivo.panTo(posCuadrilla);
+      }
+      actualizarNavegacionCuadrilla(true);
+    },
+    err => {
+      console.warn('Error GPS:', err);
+      alert('No se pudo obtener tu ubicación GPS. Puedes arrastrar el camión 🚛 en el mapa manualmente.');
+    },
+    { enableHighAccuracy: true, timeout: 8000 }
+  );
 }
 
 // ── Inicialización ────────────────────────────────────────────────
