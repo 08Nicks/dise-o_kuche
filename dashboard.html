@@ -828,6 +828,18 @@
       background: var(--cyan);
       color: #000;
     }
+    .hud-btn-action.btn-waze {
+      grid-column: 1 / -1;
+      background: rgba(0, 210, 255, 0.12);
+      color: var(--cyan);
+      border-color: rgba(0, 210, 255, 0.35);
+      text-decoration: none;
+      padding: 8px 10px;
+    }
+    .hud-btn-action.btn-waze:hover {
+      background: var(--cyan);
+      color: #090d16;
+    }
 
     /* Marcador de la Cuadrilla en Leaflet */
     .marker-cuadrilla-wrapper {
@@ -1475,7 +1487,7 @@ function aplicarTemaDashboard(tema) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// CUADRILLA VIRTUAL (WAZE DE LUMINARIAS)
+// CUADRILLA VIRTUAL (WAZE DE LUMINARIAS CON ENRUTAMIENTO VIAL OSRM)
 // ═══════════════════════════════════════════════════════════════════
 let modoCuadrillaActivo = false;
 let cuadrillaMarker = null;
@@ -1485,6 +1497,8 @@ let posCuadrilla = null; // [lat, lon]
 let audioWazeActivo = true;
 let alertaProximidadDisparada = false;
 let audioCtxWaze = null;
+let abortControllerOSRM = null;
+let timerDebounceOSRM = null;
 
 function sonarAlertaProximidad() {
   if (!audioWazeActivo) return;
@@ -1550,6 +1564,34 @@ function calcularRumboWaze(lat1, lon1, lat2, lon2) {
   return { texto: 'Noroeste', codigo: 'NO' };
 }
 
+async function consultarRutaVialOSRM(cLat, cLon, tLat, tLon) {
+  try {
+    if (abortControllerOSRM) {
+      abortControllerOSRM.abort();
+    }
+    abortControllerOSRM = new AbortController();
+
+    const url = `https://router.project-osrm.org/route/v1/driving/${cLon},${cLat};${tLon},${tLat}?overview=full&geometries=geojson`;
+    const resp = await fetch(url, { signal: abortControllerOSRM.signal });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    if (data && data.code === 'Ok' && data.routes && data.routes.length > 0) {
+      const ruta = data.routes[0];
+      const puntosLeaflet = ruta.geometry.coordinates.map(pt => [pt[1], pt[0]]);
+      return {
+        puntos: puntosLeaflet,
+        distanciaMetros: Math.round(ruta.distance),
+        duracionSegundos: Math.round(ruta.duration)
+      };
+    }
+  } catch(e) {
+    if (e.name !== 'AbortError') {
+      console.warn('Ruta OSRM no disponible, usando trazado directo:', e);
+    }
+  }
+  return null;
+}
+
 function getCuadrillaIcon() {
   return L.divIcon({
     className: 'custom-cuadrilla-pin',
@@ -1599,7 +1641,7 @@ function activarModoCuadrilla() {
     cuadrillaMarker.on('drag', (e) => {
       const p = e.target.getLatLng();
       posCuadrilla = [p.lat, p.lng];
-      actualizarNavegacionCuadrilla();
+      actualizarNavegacionCuadrilla(false);
     });
 
     cuadrillaMarker.on('dragend', () => {
@@ -1675,7 +1717,7 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
     return;
   }
 
-  // Encontrar la más cercana
+  // Encontrar la más cercana por proximidad inicial
   let mejorDistancia = Infinity;
   let luminariaCercana = null;
   let targetCoords = null;
@@ -1697,10 +1739,12 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
   const des = desglosarReporte(luminariaCercana);
   const rumbo = calcularRumboWaze(cLat, cLon, tLat, tLon);
 
-  // Formato de distancia
+  // Formato inicial de distancia (en línea recta mientras se mueve)
   let distStr = mejorDistancia >= 1000 ? (mejorDistancia / 1000).toFixed(2) + ' km' : mejorDistancia + ' m';
+  let subDistTexto = esFinMovimiento ? 'Calculando ruta por calles...' : 'Trazado rapido en linea recta';
+  let etaTexto = 'Rumbo estimado';
 
-  // Dibujar o actualizar línea de ruta Waze
+  // Trazado de ruta (en línea recta durante arrastre activo)
   if (!lineaRutaLayer) {
     lineaRutaLayer = L.polyline([[cLat, cLon], [tLat, tLon]], {
       color: '#E6D194',
@@ -1708,8 +1752,9 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
       opacity: 0.85,
       dashArray: '8, 8'
     }).addTo(mapaActivo);
-  } else {
+  } else if (!esFinMovimiento) {
     lineaRutaLayer.setLatLngs([[cLat, cLon], [tLat, tLon]]);
+    lineaRutaLayer.setStyle({ color: '#E6D194', weight: 3.5, opacity: 0.85, dashArray: '8, 8' });
   }
 
   // Dibujar o actualizar halo del objetivo
@@ -1755,15 +1800,15 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
     
     <div class="hud-dist-box">
       <div>
-        <div class="hud-dist-val">${distStr}</div>
-        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Distancia en linea recta</div>
+        <div class="hud-dist-val" id="hud-dist-val">${distStr}</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;" id="hud-dist-sub">${subDistTexto}</div>
       </div>
       <div style="text-align:right;">
         <div style="font-size:12px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:flex-end; gap:4px;">
           <span style="font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:800; color:var(--cyan); border:1px solid rgba(0,210,255,0.35); padding:1px 5px; border-radius:4px;">${rumbo.codigo}</span>
           <span>${rumbo.texto}</span>
         </div>
-        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Rumbo estimado</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;" id="hud-tiempo-val">${etaTexto}</div>
       </div>
     </div>
 
@@ -1779,10 +1824,14 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
         <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         <span>Reparar Ahora</span>
       </button>
-      <button type="button" onclick="enfocarRutaWaze(${tLat}, ${tLon})" class="hud-btn-action btn-enfocar" title="Centrar mapa en la ruta y luminaria">
+      <button type="button" onclick="enfocarRutaWaze()" class="hud-btn-action btn-enfocar" title="Centrar mapa en la ruta y luminaria">
         <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
         <span>Enfocar Ruta</span>
       </button>
+      <a href="https://www.waze.com/ul?ll=${tLat},${tLon}&navigate=yes" target="_blank" rel="noopener noreferrer" class="hud-btn-action btn-waze" title="Abrir navegacion GPS paso a paso en Waze">
+        <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        <span>Navegar en Waze (GPS)</span>
+      </a>
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
@@ -1793,12 +1842,37 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
       <span style="font-size:10px; color:var(--text-muted);">Arrastre cuadrilla en el mapa</span>
     </div>
   `;
+
+  // Consulta asíncrona de ruta vial real por calles con motor OSRM
+  if (esFinMovimiento) {
+    if (timerDebounceOSRM) clearTimeout(timerDebounceOSRM);
+    timerDebounceOSRM = setTimeout(async () => {
+      const rutaOSRM = await consultarRutaVialOSRM(cLat, cLon, tLat, tLon);
+      if (rutaOSRM && rutaOSRM.puntos && rutaOSRM.puntos.length > 0) {
+        if (lineaRutaLayer) {
+          lineaRutaLayer.setLatLngs(rutaOSRM.puntos);
+          lineaRutaLayer.setStyle({ color: '#00d2ff', weight: 4.5, opacity: 0.9, dashArray: null });
+        }
+        const dM = rutaOSRM.distanciaMetros;
+        const dStr = dM >= 1000 ? (dM / 1000).toFixed(2) + ' km' : dM + ' m';
+        const minEstimados = Math.max(1, Math.ceil(rutaOSRM.duracionSegundos / 60));
+
+        const elDist = document.getElementById('hud-dist-val');
+        const elSub = document.getElementById('hud-dist-sub');
+        const elEta = document.getElementById('hud-tiempo-val');
+        if (elDist) elDist.textContent = dStr;
+        if (elSub) elSub.textContent = 'Ruta vial por calles (OSM)';
+        if (elEta) elEta.textContent = `~${minEstimados} min en vehiculo`;
+      }
+    }, 150);
+  }
 }
 
-function enfocarRutaWaze(destLat, destLon) {
+function enfocarRutaWaze() {
   if (!mapaActivo || !posCuadrilla) return;
-  const bounds = L.latLngBounds([posCuadrilla, [destLat, destLon]]);
-  mapaActivo.fitBounds(bounds, { padding: [80, 80], maxZoom: 17 });
+  if (lineaRutaLayer && lineaRutaLayer.getLatLngs().length > 0) {
+    mapaActivo.fitBounds(lineaRutaLayer.getBounds(), { padding: [60, 60], maxZoom: 17 });
+  }
 }
 
 async function marcarLuminariaDesdeWaze(id, nuevoEstado) {
