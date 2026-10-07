@@ -48,22 +48,24 @@
        1. HEADER Y NAVEGACIÓN STICKY
        ═════════════════════════════════════════════════════════════════════ */
     .site-header { position: sticky; top: 0; z-index: 1000; background: rgba(97, 18, 50, 0.96); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 3px solid var(--clr-dorado-metalico); transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
-    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 76px; }
-    .brand-link { display: flex; flex-direction: column; text-decoration: none; }
-    .brand-wordmark { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 900; letter-spacing: 3.5px; color: var(--clr-dorado-arena); line-height: 1; text-transform: uppercase; transition: color 0.2s; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; width: 100%; max-width: 1360px; margin: 0 auto; padding: 0 24px; gap: 16px; }
+    .brand-link { display: flex; flex-direction: column; text-decoration: none; flex-shrink: 0; }
+    .brand-wordmark { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 3px; color: var(--clr-dorado-arena); line-height: 1; text-transform: uppercase; transition: color 0.2s; }
     .brand-wordmark:hover { color: #FFFFFF; }
-    .brand-tagline { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: #FFFFFF; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 4px; opacity: 0.9; }
-    .nav-menu { display: flex; align-items: center; gap: 20px; list-style: none; }
-    .nav-link { font-size: 13px; font-weight: 600; color: #FFFFFF; text-decoration: none; padding: 6px 4px; position: relative; transition: color 0.2s ease; letter-spacing: 0.2px; }
-    .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--clr-dorado-arena); transition: width 0.25s ease; }
-    .nav-link:hover { color: var(--clr-dorado-arena); }
-    .nav-link:hover::after { width: 100%; }
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-    .btn-theme { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(230, 209, 148, 0.4); color: var(--clr-dorado-arena); padding: 7px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .brand-tagline { font-family: 'Inter', sans-serif; font-size: 9.5px; font-weight: 600; color: #FFFFFF; letter-spacing: 0.6px; text-transform: uppercase; margin-top: 3px; opacity: 0.9; white-space: nowrap; }
+    .nav-menu { display: flex; align-items: center; gap: 10px; list-style: none; margin: 0; padding: 0; }
+    .nav-link { font-size: 13px; font-weight: 600; color: #FFFFFF; text-decoration: none; padding: 6px 8px; position: relative; transition: all 0.2s ease; letter-spacing: 0.2px; white-space: nowrap; border-radius: 4px; }
+    .nav-link::after { content: ''; position: absolute; bottom: 0; left: 8px; right: 8px; height: 2px; background: var(--clr-dorado-arena); transform: scaleX(0); transition: transform 0.2s ease; }
+    .nav-link:hover { color: var(--clr-dorado-arena); background: rgba(255, 255, 255, 0.06); }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .mobile-only-link { display: none; }
+    .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-theme { background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(230, 209, 148, 0.4); color: var(--clr-dorado-arena); padding: 7px 11px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
     .btn-theme:hover { background: rgba(230, 209, 148, 0.22); border-color: var(--clr-dorado-arena); color: #FFFFFF; }
-    .btn-nav-cta { background: var(--clr-dorado-metalico); color: #131113; font-size: 12px; font-weight: 800; padding: 9px 18px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+    .btn-nav-cta { background: var(--clr-dorado-metalico); color: #131113; font-size: 12px; font-weight: 800; padding: 8px 15px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); white-space: nowrap; }
     .btn-nav-cta:hover { background: var(--clr-dorado-arena); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(230, 209, 148, 0.35); }
-    .menu-toggle { display: none; background: transparent; border: none; color: #FFFFFF; cursor: pointer; padding: 8px; }
+    .menu-toggle { display: none; background: transparent; border: none; color: #FFFFFF; cursor: pointer; padding: 6px; border-radius: 4px; }
+    .menu-toggle:hover { background: rgba(255, 255, 255, 0.1); }
     /* ═════════════════════════════════════════════════════════════════════
        2. HERO SECTION
        ═════════════════════════════════════════════════════════════════════ */
@@ -268,10 +270,16 @@
     .electrohack-action-box { flex-direction: column; align-items: flex-start; }
     .footer-top { grid-template-columns: 1fr; }
     }
-    @media (max-width: 768px) {
-    .nav-menu { display: none; position: absolute; top: 76px; left: 0; right: 0; background: #611232; flex-direction: column; padding: 24px; border-bottom: 2px solid var(--clr-dorado-metalico); gap: 16px; }
+    @media (max-width: 1100px) {
+    .nav-menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: rgba(97, 18, 50, 0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); flex-direction: column; padding: 20px 24px; border-bottom: 2px solid var(--clr-dorado-metalico); gap: 10px; box-shadow: 0 16px 30px rgba(0, 0, 0, 0.5); z-index: 999; }
     .nav-menu.open { display: flex; }
-    .menu-toggle { display: block; }
+    .nav-menu li { width: 100%; }
+    .nav-menu .nav-link { display: block; width: 100%; padding: 10px 14px; font-size: 15px; border-radius: 6px; }
+    .nav-menu .nav-link:hover { background: rgba(230, 209, 148, 0.15); }
+    .mobile-only-link { display: block; }
+    .menu-toggle { display: flex; align-items: center; justify-content: center; }
+    }
+    @media (max-width: 768px) {
     .hero-title { font-size: 46px; }
     .hero-metrics-grid { grid-template-columns: 1fr; gap: 16px; }
     .problems-grid { grid-template-columns: 1fr; }
@@ -281,6 +289,13 @@
     .analysis-grid { grid-template-columns: 1fr; }
     .about-cards-grid { grid-template-columns: 1fr; }
     .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    }
+    @media (max-width: 600px) {
+    .brand-wordmark { font-size: 20px; }
+    .brand-tagline { font-size: 8px; max-width: 175px; overflow: hidden; text-overflow: ellipsis; }
+    .btn-theme span { display: none; }
+    .btn-theme { padding: 8px; }
+    .btn-nav-cta { padding: 7px 11px; font-size: 11px; }
     }
     @media (max-width: 480px) {
     .hero-title { font-size: 36px; }
@@ -300,7 +315,7 @@
        1. HEADER / NAVEGACIÓN STICKY
        ═══════════════════════════════════════════════════════════════════ -->
   <header class="site-header">
-    <div class="container header-inner">
+    <div class="header-inner">
       <a href="#inicio" class="brand-link" title="Ir al inicio de KUCHE">
         <span class="brand-wordmark">KUCHE</span>
         <span class="brand-tagline">Sistema de Monitoreo de Luminarias y Alumbrado Público</span>
@@ -310,13 +325,13 @@
       <nav>
         <ul class="nav-menu" id="nav-menu">
           <li><a href="#inicio" class="nav-link">Inicio</a></li>
-          <li><a href="#que-es" class="nav-link">Qué es KUCHE</a></li>
+          <li><a href="#que-es" class="nav-link">Qué es</a></li>
           <li><a href="#problemas" class="nav-link">Problemas</a></li>
           <li><a href="#capacidades" class="nav-link">Capacidades</a></li>
           <li><a href="#objetivos" class="nav-link">Objetivos</a></li>
           <li><a href="#beneficiarios" class="nav-link">Beneficiarios</a></li>
           <li><a href="#analisis" class="nav-link">Análisis</a></li>
-          <li><a href="#electrohack" class="nav-link">ElectroHack 2026</a></li>
+          <li class="mobile-only-link"><a href="#electrohack" class="nav-link">Convocatoria ElectroHack</a></li>
         </ul>
       </nav>
 
