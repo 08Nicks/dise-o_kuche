@@ -2,7 +2,7 @@
 // KUCHE PWA — SERVICE WORKER (Alumbrado Público y Luminarias)
 // ═══════════════════════════════════════════════════════════════════════
 
-const CACHE_NAME = 'kuche-pwa-v6-live';
+const CACHE_NAME = 'kuche-pwa-v7-live';
 
 const PRECACHE_ASSETS = [
   './',
