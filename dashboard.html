@@ -201,6 +201,18 @@
       transform: translateY(-1px);
     }
 
+    .badge-db {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     #btn-refresh {
       background: var(--card);
       color: var(--text);
@@ -218,6 +230,13 @@
     #btn-refresh:hover {
       border-color: var(--cyan);
       color: var(--cyan);
+    }
+    #btn-refresh.loading svg {
+      animation: spin-refresh 0.8s linear infinite;
+    }
+    @keyframes spin-refresh {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     /* ── Layout principal ── */
@@ -912,6 +931,10 @@
     </div>
   </div>
   <div class="header-right">
+    <div class="badge-db" title="Conexión directa a base de datos SQLite persistente (kuche_alumbrado.db)">
+      <svg class="icon-svg" style="width:13px; height:13px; color:#BC955C;" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+      <span style="font-size:11px; font-weight:600; color:var(--text-muted);">BD: <strong style="color:#BC955C;">SQLite</strong></span>
+    </div>
     <div class="badge-live">
       <div class="dot-live"></div>
       <span>EN VIVO</span>
@@ -953,8 +976,15 @@
     </div>
  
     <div class="sidebar-title">
-      <span>LUMINARIAS REGISTRADAS</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <svg class="icon-svg" style="width:13px; height:13px; color:#BC955C;" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        <span>REPORTES EN BASE DE DATOS</span>
+      </div>
       <span id="count-badge" style="color:var(--cyan); font-family:'JetBrains Mono', monospace;">0</span>
+    </div>
+    <div style="font-size:10px; color:var(--text-muted); padding:2px 14px 8px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border);">
+      <span>Fuente: SQLite (kuche_alumbrado.db)</span>
+      <span style="color:#10b981; font-weight:600;">Persistencia Total</span>
     </div>
 
     <!-- Filtros por Estado de Ticket Operativo -->
@@ -1117,8 +1147,10 @@ function getMarkerIcon(estadoTicket) {
 
 // ── Cargar datos del servidor ─────────────────────────────────────
 async function cargarDatos() {
+  const btnRefresh = document.getElementById('btn-refresh');
+  if (btnRefresh) btnRefresh.classList.add('loading');
   try {
-    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/historial?page=0') : '/api/infraestructura/historial?page=0';
+    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/historial?page=0&limit=10000') : '/api/infraestructura/historial?page=0&limit=10000';
     const resp = await fetch(targetUrl);
     if (!resp.ok) {
       console.warn('Respuesta no exitosa del servidor:', resp.status);
@@ -1134,6 +1166,7 @@ async function cargarDatos() {
     } else if (j.historial && Array.isArray(j.historial.historial)) {
       lista = j.historial.historial;
     }
+    // Todos los reportes almacenados en la base de datos sin restriccion de usuarios ni sesiones
     todosReportes = lista.filter(r => r.estado_registro !== 'Borrada');
     actualizarEstadisticas();
     renderLista();
@@ -1144,6 +1177,8 @@ async function cargarDatos() {
   } catch(e) {
     console.error('Error cargando datos:', e);
     document.getElementById('lista-reportes').innerHTML = '<div class="empty-state">Error de conexion al cargar datos. Verifica la conexion con el servidor.</div>';
+  } finally {
+    if (btnRefresh) btnRefresh.classList.remove('loading');
   }
 }
 
@@ -1266,11 +1301,11 @@ function renderLista() {
   document.getElementById('count-badge').textContent = datos.length;
 
   if (!datos.length) {
-    lista.innerHTML = '<div class="empty-state">No hay luminarias registradas.</div>';
+    lista.innerHTML = '<div class="empty-state">No hay luminarias registradas en la base de datos.</div>';
     return;
   }
 
-  lista.innerHTML = datos.slice(0, 150).map(r => {
+  lista.innerHTML = datos.map(r => {
     const des = desglosarReporte(r);
     const hora = (r.hora || '').substring(0, 16);
     const ubiCorta = r.ubi ? r.ubi.substring(0, 24) : 'Sin GPS';
@@ -1912,7 +1947,15 @@ window.addEventListener('DOMContentLoaded', () => {
   aplicarTemaDashboard(guardado);
   inicializarMapa();
   cargarDatos();
-  setInterval(cargarDatos, 15000);
+  // Sondeo continuo cada 8 segundos directo a SQLite kuche_alumbrado.db
+  setInterval(cargarDatos, 8000);
+  if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
+    window.KucheAPI.onStateChange((state) => {
+      if (state && state.online) {
+        cargarDatos();
+      }
+    });
+  }
 });
 
 window.addEventListener('storage', (e) => {
