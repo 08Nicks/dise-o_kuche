@@ -216,25 +216,28 @@
     .analysis-card h3 { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 16px; }
     .analysis-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
     /* ═════════════════════════════════════════════════════════════════════
-       9. SECCIÓN: CONTACTO & CTA
+       9. SECCIÓN: PROYECTO ELECTROHACK 2026 (DIFUSIÓN)
        ═════════════════════════════════════════════════════════════════════ */
-    .contact-section { background: var(--clr-guinda-profundo); color: #FFFFFF; padding: 100px 0; position: relative; }
-    .contact-layout { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px; align-items: center; }
-    .contact-info h2 { font-family: 'Montserrat', sans-serif; font-size: 40px; font-weight: 900; color: var(--clr-dorado-arena); line-height: 1.15; margin-bottom: 20px; }
-    .contact-info p { font-size: 16px; color: #F1ECEE; line-height: 1.75; margin-bottom: 30px; }
-    .contact-details { display: flex; flex-direction: column; gap: 16px; }
-    .contact-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #E2D3D8; }
-    .contact-item svg { color: var(--clr-dorado-arena); }
-    /* Formulario de Contacto Elegante */
-    .contact-form-box { background: rgba(19, 17, 19, 0.95); border: 1.5px solid var(--clr-dorado-metalico); border-radius: 12px; padding: 38px 32px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); }
-    .form-group { margin-bottom: 20px; }
-    .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--clr-dorado-arena); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-    .form-input, .form-select, .form-textarea { width: 100%; background: #1B181A; border: 1px solid #3E373A; border-radius: 6px; padding: 12px 14px; color: #FFFFFF; font-family: 'Inter', sans-serif; font-size: 14px; transition: all 0.25s ease; outline: none; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--clr-dorado-arena); box-shadow: 0 0 0 3px rgba(230, 209, 148, 0.2); }
-    .form-textarea { resize: vertical; min-height: 110px; }
-    .btn-submit { width: 100%; background: var(--clr-dorado-metalico); color: #131113; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 800; padding: 15px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.25s ease; text-transform: uppercase; letter-spacing: 0.5px; }
-    .btn-submit:hover { background: var(--clr-dorado-arena); box-shadow: 0 8px 24px rgba(230, 209, 148, 0.35); transform: translateY(-2px); }
-    .form-status-msg { display: none; margin-top: 16px; padding: 12px; border-radius: 6px; font-size: 13px; text-align: center; font-weight: 600; }
+    .electrohack-section { background: radial-gradient(circle at 50% 20%, rgba(155, 34, 71, 0.35) 0%, #100C0E 80%); color: #FFFFFF; padding: 100px 0; position: relative; border-top: 1px solid rgba(188, 149, 92, 0.25); }
+    .electrohack-card { background: rgba(22, 17, 20, 0.95); border: 2px solid var(--clr-dorado-metalico); border-radius: 16px; padding: 48px 40px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); position: relative; overflow: hidden; }
+    .electrohack-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--clr-guinda-profundo), var(--clr-guinda-primario), var(--clr-dorado-metalico), var(--clr-dorado-arena)); }
+    .electrohack-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(188, 149, 92, 0.15); border: 1px solid var(--clr-dorado-metalico); color: var(--clr-dorado-arena); font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 6px 14px; border-radius: 999px; margin-bottom: 20px; }
+    .electrohack-header h2 { font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 900; color: #FFFFFF; line-height: 1.2; margin-bottom: 18px; }
+    .electrohack-desc { font-size: 16px; color: #D5CAD0; line-height: 1.75; max-width: 900px; margin-bottom: 36px; }
+    .electrohack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+    .eh-feature { background: #181216; border: 1px solid #33262D; border-radius: 10px; padding: 24px; transition: border-color 0.25s, transform 0.25s; }
+    .eh-feature:hover { border-color: var(--clr-dorado-metalico); transform: translateY(-3px); }
+    .eh-icon-box { width: 44px; height: 44px; border-radius: 8px; background: rgba(155, 34, 71, 0.25); border: 1px solid var(--clr-guinda-primario); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: var(--clr-dorado-arena); }
+    .eh-feature h4 { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; }
+    .eh-feature p { font-size: 13.5px; color: #A89CA2; line-height: 1.6; }
+    .electrohack-action-box { background: linear-gradient(135deg, rgba(97, 18, 50, 0.45) 0%, rgba(22, 17, 20, 0.9) 100%); border: 1px solid rgba(188, 149, 92, 0.4); border-radius: 12px; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .action-text h3 { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 800; color: var(--clr-dorado-arena); margin-bottom: 6px; }
+    .action-text p { font-size: 14px; color: #E0D6DC; margin: 0; }
+    .action-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-electrohack-official { background: var(--clr-dorado-metalico); color: #130E11; font-family: 'Montserrat', sans-serif; font-size: 13.5px; font-weight: 800; padding: 14px 24px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: all 0.25s ease; letter-spacing: 0.4px; }
+    .btn-electrohack-official:hover { background: var(--clr-dorado-arena); box-shadow: 0 8px 24px rgba(230, 209, 148, 0.35); transform: translateY(-2px); color: #130E11; }
+    .btn-electrohack-back { background: transparent; border: 1.5px solid rgba(230, 209, 148, 0.4); color: var(--clr-dorado-arena); font-family: 'Montserrat', sans-serif; font-size: 13.5px; font-weight: 700; padding: 14px 22px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s ease; }
+    .btn-electrohack-back:hover { background: rgba(230, 209, 148, 0.1); border-color: var(--clr-dorado-arena); color: #FFFFFF; }
     /* ═════════════════════════════════════════════════════════════════════
        10. FOOTER INSTITUCIONAL
        ═════════════════════════════════════════════════════════════════════ */
@@ -261,7 +264,8 @@
     .objectives-grid { grid-template-columns: repeat(2, 1fr); }
     .objective-card.main-objective { grid-column: span 2; }
     .zigzag-row, .zigzag-row.reverse { grid-template-columns: 1fr; direction: ltr; gap: 30px; }
-    .contact-layout { grid-template-columns: 1fr; }
+    .electrohack-grid { grid-template-columns: 1fr; }
+    .electrohack-action-box { flex-direction: column; align-items: flex-start; }
     .footer-top { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
@@ -283,6 +287,10 @@
     .hero-subtitle { font-size: 17px; }
     .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; }
     .section-title { font-size: 30px; }
+    .electrohack-card { padding: 28px 20px; }
+    .electrohack-header h2 { font-size: 26px; }
+    .action-buttons { width: 100%; }
+    .btn-electrohack-official, .btn-electrohack-back { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -308,7 +316,7 @@
           <li><a href="#objetivos" class="nav-link">Objetivos</a></li>
           <li><a href="#beneficiarios" class="nav-link">Beneficiarios</a></li>
           <li><a href="#analisis" class="nav-link">Análisis</a></li>
-          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+          <li><a href="#electrohack" class="nav-link">ElectroHack 2026</a></li>
         </ul>
       </nav>
 
@@ -319,10 +327,11 @@
           <span id="theme-label-text">Modo Oscuro</span>
         </button>
 
-        <!-- Botón de contacto interno -->
-        <a href="#contacto" class="btn-nav-cta">
-          <svg class="icon-svg" style="width:15px; height:15px;" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <span>Contactar</span>
+        <!-- Enlace Oficial Concurso ElectroHack 2026 -->
+        <a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" class="btn-nav-cta" title="Ver convocatoria oficial del concurso ElectroHack 2026">
+          <svg class="icon-svg" style="width:14px; height:14px;" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>ElectroHack 2026</span>
+          <svg class="icon-svg" style="width:11px; height:11px; margin-left:1px;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
 
         <!-- Botón menú hamburguesa móvil -->
@@ -983,65 +992,63 @@
     </section>
 
     <!-- ═════════════════════════════════════════════════════════════════
-         9. SECCIÓN: CONTACTO & CTA
+         9. SECCIÓN: CONCURSO ELECTROHACK 2026 (DIFUSIÓN)
          ═════════════════════════════════════════════════════════════════ -->
-    <section id="contacto" class="contact-section">
+    <section id="electrohack" class="electrohack-section">
       <div class="container">
-        <div class="contact-layout">
-          <div class="contact-info">
-            <h2>Únete a KUCHE</h2>
-            <p>
-              ¿Representas a un ayuntamiento, una junta auxiliar o una institución académica interesada en implementar o evaluar el sistema? Ponte en contacto con el equipo desarrollador del Proyecto ElectroHack Puebla.
+        <div class="electrohack-card">
+          <div class="electrohack-header">
+            <div class="electrohack-badge">
+              <svg class="icon-svg" style="width:15px; height:15px;" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Iniciativa de Innovación · Estado de Puebla</span>
+            </div>
+            <h2>Proyecto Desarrollado para el Concurso ElectroHack 2026</h2>
+            <p class="electrohack-desc">
+              KUCHE es una propuesta integral concebida para los retos tecnológicos y de eficiencia energética convocados en el concurso <strong>ElectroHack 2026</strong> por la <strong>Agencia de Energía del Estado de Puebla</strong>. Mediante visión artificial aplicada (YOLO-World), cartografía geoespacial soberana y monitoreo en tiempo real, el proyecto moderniza la supervisión del alumbrado público y fortalece el bienestar de las comunidades poblanas.
             </p>
+          </div>
 
-            <div class="contact-details">
-              <div class="contact-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                <span>Iniciativa de Innovación Cívica ElectroHack Puebla</span>
+          <div class="electrohack-grid">
+            <div class="eh-feature">
+              <div class="eh-icon-box">
+                <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               </div>
-              <div class="contact-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <span>Contacto Directo: vinculacion@kuche-puebla.org</span>
+              <h4>Agencia de Energía de Puebla</h4>
+              <p>Iniciativa pública que impulsa el talento técnico y proyectos de vanguardia en sustentabilidad energética e infraestructura inteligente para los municipios de Puebla.</p>
+            </div>
+
+            <div class="eh-feature">
+              <div class="eh-icon-box">
+                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
+              <h4>Edición ElectroHack 2026</h4>
+              <p>Reto de innovación donde KUCHE demuestra detección autónoma de fallas en luminarias, geolocalización de incidencias y optimización del gasto operativo municipal.</p>
+            </div>
+
+            <div class="eh-feature">
+              <div class="eh-icon-box">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+              <h4>Identidad Biocultural y Técnica</h4>
+              <p>Inspirado en la raíz popoloca (Ngigua/Ngwa) para significar "Luz", fusionando soberanía técnica 100% de código abierto con pertinencia social comunitaria.</p>
             </div>
           </div>
 
-          <!-- Formulario de Contacto -->
-          <div class="contact-form-box">
-            <form id="kuche-lead-form" onsubmit="enviarFormularioContacto(event)">
-              <div class="form-group">
-                <label for="lead-name" class="form-label">Nombre Completo o Cargo</label>
-                <input type="text" id="lead-name" class="form-input" placeholder="Ej. Ing. Martín Rodríguez" required>
-              </div>
-
-              <div class="form-group">
-                <label for="lead-email" class="form-label">Correo Electrónico Institucional</label>
-                <input type="email" id="lead-email" class="form-input" placeholder="nombre@municipio.gob.mx" required>
-              </div>
-
-              <div class="form-group">
-                <label for="lead-interest" class="form-label">Área de Interés Principal</label>
-                <select id="lead-interest" class="form-select" required>
-                  <option value="" disabled selected>Selecciona una opción</option>
-                  <option value="municipio">Implementación en Municipio / Ayuntamiento</option>
-                  <option value="demo">Solicitud de Demostración Técnica</option>
-                  <option value="academica">Colaboración Académica o Investigación</option>
-                  <option value="ciudadana">Propuesta Comunitaria / Vecinal</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="lead-message" class="form-label">Mensaje o Requerimiento Técnico</label>
-                <textarea id="lead-message" class="form-textarea" placeholder="Describa brevemente las necesidades de alumbrado público en su demarcación..." required></textarea>
-              </div>
-
-              <button type="submit" class="btn-submit" id="btn-submit-lead">
-                <svg class="icon-svg" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                <span>Enviar Solicitud Institucional</span>
-              </button>
-
-              <div id="form-status" class="form-status-msg"></div>
-            </form>
+          <div class="electrohack-action-box">
+            <div class="action-text">
+              <h3>Conoce la Convocatoria Oficial</h3>
+              <p>Consulta las bases, categorías y objetivos del concurso en el portal oficial de la Agencia de Energía del Estado de Puebla.</p>
+            </div>
+            <div class="action-buttons">
+              <a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" class="btn-electrohack-official" title="Ir a la página del Concurso ElectroHack">
+                <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Concurso ElectroHack 2026</span>
+                <svg class="icon-svg" style="width:14px; height:14px;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+              <a href="#que-es" class="btn-electrohack-back">
+                <span>Conocer Más Sobre KUCHE</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -1082,7 +1089,8 @@
             <li><a href="#problemas">Problemática Municipal</a></li>
             <li><a href="#capacidades">Capacidades Técnicas</a></li>
             <li><a href="#objetivos">Objetivos y Beneficiarios</a></li>
-            <li><a href="#contacto">Contacto Institucional</a></li>
+            <li><a href="#electrohack">ElectroHack 2026</a></li>
+            <li><a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" style="color:var(--clr-dorado-arena);">Convocatoria ElectroHack</a></li>
           </ul>
         </div>
       </div>
@@ -1143,37 +1151,6 @@
       const guardado = localStorage.getItem('kuche_landing_theme') || 'light';
       aplicarTemaLanding(guardado);
     });
-
-    // Envío elegante del formulario de contacto
-    function enviarFormularioContacto(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btn-submit-lead');
-      const status = document.getElementById('form-status');
-      const name = document.getElementById('lead-name').value;
-      const email = document.getElementById('lead-email').value;
-
-      btn.disabled = true;
-      btn.style.opacity = '0.7';
-      btn.innerHTML = '<span>Procesando solicitud...</span>';
-
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>Enviar Solicitud Institucional</span>`;
-
-        status.style.display = 'block';
-        status.style.background = 'rgba(16, 185, 129, 0.15)';
-        status.style.color = '#10B981';
-        status.style.border = '1px solid #10B981';
-        status.textContent = `Gracias ${name}. Su solicitud de contacto ha sido recibida exitosamente. Un especialista del Proyecto ElectroHack Puebla le contactará en ${email}.`;
-
-        document.getElementById('kuche-lead-form').reset();
-
-        setTimeout(() => {
-          status.style.display = 'none';
-        }, 8000);
-      }, 900);
-    }
 
     // Efecto de aparición suave de elementos al hacer scroll (Intersection Observer)
     if ('IntersectionObserver' in window) {
