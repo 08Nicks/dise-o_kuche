@@ -43,7 +43,7 @@ dise-o_kuche/
 ├── index.html                      # Índice general del portal y accesos rápidos
 ├── propuestas.html                 # Matriz 3x3 de layouts y cédulas técnicas
 ├── PROPUESTAS_VISUALES_KUCHE.html  # Acervo histórico y propuesta biocultural popoloca
-├── backend_url.json                # Sincronización automática de túnel Cloudflare
+├── backend_url.json                # Configuración estática y desacoplamiento de red
 └── DOCUMENTACION_KUCHE_FRONTEND.md # Especificación técnica exhaustiva de frontend
 ```
 
@@ -81,9 +81,9 @@ dise-o_kuche/
 
 ## 4. Conexión con el Backend (RepoInf)
 
-El frontend detecta automáticamente el entorno de ejecución:
-1. Si existe un túnel activo de Cloudflare registrado en `backend_url.json`, se comunica por HTTPS/WSS cifrado hacia el servidor remoto.
-2. Si se ejecuta en local, se conecta a `http://localhost:8000`.
+El frontend opera con arquitectura híbrida y tolerante a fallos:
+1. En **GitHub Pages**, funciona en modo 100% estático e institucional con dataset geoespacial interactivo y persistencia local offline.
+2. Si se ejecuta en local, se conecta de forma directa a `http://localhost:8000`.
 
 El backend **RepoInf** provee:
 * Base de datos relacional **SQLite** (`kuche_alumbrado.db`) en modo **WAL**.

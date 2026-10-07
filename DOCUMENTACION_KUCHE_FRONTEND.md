@@ -31,7 +31,7 @@ dise-o_kuche/
 ├── index.html                     # Portal principal e índice de acceso rápido
 ├── propuestas.html                # Matriz interactiva de variantes visuales y cédulas técnicas
 ├── PROPUESTAS_VISUALES_KUCHE.html # Catálogo biocultural y acervo de códices popolocas
-├── backend_url.json               # Configuración dinámica del túnel activo (Cloudflare Tunnel / Local)
+├── backend_url.json               # Configuración estática y desacoplamiento de red
 └── static/ & icons/               # Manifiesto PWA, iconos vectoriales y activos estáticos
 ```
 
@@ -140,10 +140,10 @@ Herramienta analítica de monitoreo en tiempo real pensada para pantallas de con
 El frontend está alojado y publicado mediante **GitHub Pages** en la rama `gh-pages` y `main`:
 
 * **URL Pública:** [https://08nicks.github.io/dise-o_kuche/](https://08nicks.github.io/dise-o_kuche/)
-* **Detección Automática de Backend:**
-  - Al cargar la página, el frontend realiza una consulta asíncrona a `backend_url.json`.
-  - Si el archivo contiene una URL de Cloudflare Tunnel válida (ej. `https://intense-shield-dress-spare.trycloudflare.com`), todas las peticiones a la API y WebSockets se dirigen dinámicamente a ese túnel seguro con cifrado TLS/HTTPS.
-  - Si no hay túnel configurado o se trabaja en entorno local, conmuta automáticamente a `http://localhost:8000`.
+* **Arquitectura Estática Institucional:**
+  - El frontend opera de forma 100% estática e independiente en GitHub Pages sin dependencias de túneles externos de Cloudflare.
+  - Soporta modo demostración interactivo y persistencia local de reportes en cola offline (`localStorage`).
+  - En entorno de red local o desarrollo, puede conectarse de forma nativa a `http://localhost:8000`.
 
 ---
 

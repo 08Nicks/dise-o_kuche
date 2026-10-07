@@ -1141,28 +1141,105 @@ function getMarkerIcon(estadoTicket) {
   });
 }
 
-// ── Cargar datos del servidor ─────────────────────────────────────
+// ── Reportes de respaldo institucional para modo estático en GitHub Pages ──
+const REPORTES_DEMO_PUEBLA = [
+  {
+    id: 101,
+    folio: "KUC-00101",
+    luminaria: "Luminaria LED Vial Tipo Cobra | Falla en fotocelda — Referencia: Frente a Catedral",
+    incidencia: "Falla en fotocelda — Referencia: Frente a Catedral",
+    falla: "Luminaria encendida de día por falla en sensor fotosensible",
+    referencia: "Zócalo de Puebla, Av. Juan de Palafox y Mendoza",
+    estado_ticket: "En Revisión",
+    ubi: "19.0433,-98.1983",
+    hora: "2026-10-07 10:15:00",
+    usuario: "Versión Demo",
+    foto: "./fotos/demo_caso_1.jpg"
+  },
+  {
+    id: 102,
+    folio: "KUC-00102",
+    luminaria: "Luminaria LED Suburbana | Luminaria desprendida — Referencia: Esquina 11 Sur",
+    incidencia: "Luminaria desprendida — Referencia: Esquina 11 Sur",
+    falla: "Luminaria desprendida con peligro de caída a la vialidad",
+    referencia: "Paseo Bravo, 11 Sur y Av. Reforma",
+    estado_ticket: "Reportada",
+    ubi: "19.0456,-98.2078",
+    hora: "2026-10-07 11:30:00",
+    usuario: "Versión Demo",
+    foto: "./fotos/luminaria_desprendida.jpg"
+  },
+  {
+    id: 103,
+    folio: "KUC-00103",
+    luminaria: "Luminaria Vapor de Sodio | Apagada en horario nocturno",
+    incidencia: "Apagada en horario nocturno — Referencia: Callejón 3 Oriente",
+    falla: "Circuito desconectado, apagada en horario nocturno",
+    referencia: "Barrio de Analco, 3 Oriente y 10 Sur",
+    estado_ticket: "Reparada",
+    ubi: "19.0402,-98.1925",
+    hora: "2026-10-06 21:40:00",
+    usuario: "Ing. Operaciones",
+    foto: "./fotos/demo_caso_2.jpg"
+  },
+  {
+    id: 104,
+    folio: "KUC-00104",
+    luminaria: "Luminaria LED Vial Tipo Cobra | Intermitencia en balastro",
+    incidencia: "Intermitencia en balastro — Referencia: Camellón Central",
+    falla: "Parpadeo constante por fluctuación de voltaje",
+    referencia: "Av. Juárez y 19 Sur, La Paz",
+    estado_ticket: "Reportada",
+    ubi: "19.0498,-98.2165",
+    hora: "2026-10-07 08:20:00",
+    usuario: "Versión Demo",
+    foto: "./fotos/demo_caso_1.jpg"
+  }
+];
+
+function cargarReportesFallback() {
+  let locales = [];
+  try {
+    const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
+    locales = cola.map((c, idx) => ({
+      id: 200 + idx,
+      folio: `KUC-00${200 + idx}`,
+      luminaria: c.luminaria || 'Luminaria Registrada',
+      incidencia: c.incidencia || '',
+      falla: c.incidencia ? (c.incidencia.split(' | ')[1] || c.incidencia) : 'Falla reportada',
+      referencia: 'Reporte Reciente de Campo',
+      estado_ticket: 'Reportada',
+      ubi: (c.lat && c.lon) ? `${c.lat},${c.lon}` : '19.0425,-98.2010',
+      hora: new Date(c._ts || Date.now()).toISOString().replace('T', ' ').substring(0, 19),
+      usuario: c.usuario || 'Versión Demo',
+      foto: c.img ? (c.img.startsWith('data:') ? c.img : 'data:image/jpeg;base64,' + c.img) : ''
+    }));
+  } catch(e) {}
+  return [...locales, ...REPORTES_DEMO_PUEBLA];
+}
+
+// ── Cargar datos del servidor (con soporte híbrido estático/servidor) ──
 async function cargarDatos() {
   const btnRefresh = document.getElementById('btn-refresh');
   if (btnRefresh) btnRefresh.classList.add('loading');
   try {
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/historial?page=0&limit=10000') : '/api/infraestructura/historial?page=0&limit=10000';
-    const resp = await fetch(targetUrl);
-    if (!resp.ok) {
-      console.warn('Respuesta no exitosa del servidor:', resp.status);
-      document.getElementById('lista-reportes').innerHTML = '<div class="empty-state">No se pudieron cargar los datos (HTTP ' + resp.status + '). Reintentando...</div>';
-      return;
-    }
-    const j = await resp.json();
     let lista = [];
-    if (Array.isArray(j)) {
-      lista = j;
-    } else if (Array.isArray(j.historial)) {
-      lista = j.historial;
-    } else if (j.historial && Array.isArray(j.historial.historial)) {
-      lista = j.historial.historial;
+    try {
+      const resp = await fetch(targetUrl);
+      if (resp.ok) {
+        const j = await resp.json();
+        if (Array.isArray(j)) lista = j;
+        else if (Array.isArray(j.historial)) lista = j.historial;
+        else if (j.historial && Array.isArray(j.historial.historial)) lista = j.historial.historial;
+      }
+    } catch(fetchErr) {}
+
+    // Si no hay respuesta del servidor (ej. modo estático en GitHub Pages), usar datos de respaldo
+    if (!lista || lista.length === 0) {
+      lista = cargarReportesFallback();
     }
-    // Todos los reportes almacenados en la base de datos sin restriccion de usuarios ni sesiones
+
     todosReportes = lista.filter(r => r.estado_registro !== 'Borrada');
     actualizarEstadisticas();
     renderLista();
@@ -1171,8 +1248,11 @@ async function cargarDatos() {
       actualizarNavegacionCuadrilla();
     }
   } catch(e) {
-    console.error('Error cargando datos:', e);
-    document.getElementById('lista-reportes').innerHTML = '<div class="empty-state">Error de conexion al cargar datos. Verifica la conexion con el servidor.</div>';
+    console.warn('Cargando dataset institucional de respaldo:', e);
+    todosReportes = cargarReportesFallback();
+    actualizarEstadisticas();
+    renderLista();
+    renderMapa();
   } finally {
     if (btnRefresh) btnRefresh.classList.remove('loading');
   }
@@ -1214,9 +1294,17 @@ async function cambiarEstadoLuminaria(id, nuevoEstado) {
     });
     if (resp.ok) {
       await cargarDatos();
+      return;
     }
-  } catch(e) {
-    console.error('Error cambiando estado:', e);
+  } catch(e) {}
+
+  // Fallback interactivo local para modo estático en GitHub Pages
+  const rep = todosReportes.find(r => r.id === id);
+  if (rep) {
+    rep.estado_ticket = nuevoEstado;
+    actualizarEstadisticas();
+    renderLista();
+    renderMapa();
   }
 }
 
@@ -1963,7 +2051,7 @@ window.addEventListener('storage', (e) => {
 // Registro de Service Worker para PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/static/sw.js')
+    navigator.serviceWorker.register('./static/sw.js')
       .then(reg => console.log('[PWA Dashboard Kuche] Service Worker activo:', reg.scope))
       .catch(err => console.warn('[PWA Dashboard Kuche] Error:', err));
   });

@@ -1,39 +1,43 @@
 /**
  * =====================================================================
- * KUCHE API BRIDGE (kuche-api.js) — v5.0 Bulletproof
- * Sincronización dinámica ultra-resistente entre GitHub Pages y Cloudflare.
- * Resuelve la URL aunque el túnel se reinicie 100 veces.
+ * KUCHE API BRIDGE (kuche-api.js) — v6.0 Static & Resilient
+ * Conexión institucional 100% estática para GitHub Pages.
+ * Desacoplado de túneles externos. Soporte híbrido local y offline.
  * =====================================================================
  */
 (function() {
-  const GITHUB_RAW_URL  = 'https://raw.githubusercontent.com/08Nicks/dise-o_kuche/gh-pages/backend_url.json';
-  const GITHUB_REPO_API = 'https://api.github.com/repos/08Nicks/dise-o_kuche/contents/backend_url.json?ref=gh-pages';
   const LOCAL_JSON_PATH = './backend_url.json';
 
   let backendUrl = localStorage.getItem('kuche_backend_url') || '';
-  let isOnline = false;
+  
+  // Limpiar cualquier URL obsoleta de Cloudflare almacenada en localStorage
+  if (backendUrl && (backendUrl.includes('trycloudflare.com') || backendUrl.includes('cloudflare'))) {
+    try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
+    backendUrl = '';
+  }
+
+  let isOnline = true; // En GitHub Pages el sitio está siempre en línea
   let listeners = [];
   let sincronizando = false;
 
-  // 0. Si la URL contiene parámetro directo de API (?api=https://... o ?backend=https://...)
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const paramApi = params.get('api') || params.get('backend');
-    if (paramApi && paramApi.startsWith('http')) {
-      const limpia = paramApi.trim().replace(/\/+$/, '');
-      backendUrl = limpia;
-      localStorage.setItem('kuche_backend_url', backendUrl);
-    }
-  } catch(e) {}
-
-  // Si estamos navegando directamente en localhost o puerto 8000, usar origen actual
+  const isGitHubPages = window.location.hostname.includes('github.io');
   const isDirectBackend = window.location.port === '8000' || 
                           window.location.hostname === 'localhost' || 
                           window.location.hostname === '127.0.0.1';
 
+  // 0. Si se proporciona un endpoint explícito en la URL para desarrollo local (?api=http://...)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const paramApi = params.get('api') || params.get('backend');
+    if (paramApi && paramApi.startsWith('http') && !paramApi.includes('trycloudflare.com')) {
+      backendUrl = paramApi.trim().replace(/\/+$/, '');
+      localStorage.setItem('kuche_backend_url', backendUrl);
+    }
+  } catch(e) {}
+
   function notificar() {
     listeners.forEach(fn => {
-      try { fn({ url: backendUrl, online: isOnline }); } catch(e) {}
+      try { fn({ url: backendUrl, online: isOnline, staticMode: !backendUrl }); } catch(e) {}
     });
     actualizarBanner();
   }
@@ -42,7 +46,7 @@
     if (!url) return false;
     try {
       const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 3500);
+      const tid = setTimeout(() => ctrl.abort(), 2500);
       const res = await fetch(url.replace(/\/+$/, '') + '/api/ping', { 
         cache: 'no-store',
         signal: ctrl.signal 
@@ -55,9 +59,18 @@
   }
 
   function aplicarConfig(cfg) {
-    if (!cfg || !cfg.backend_url) return false;
-    const nuevaUrl = cfg.backend_url.trim().replace(/\/+$/, '');
-    if (!nuevaUrl || nuevaUrl === 'null') return false;
+    if (!cfg) return false;
+    if (cfg.static_mode || !cfg.backend_url) {
+      backendUrl = '';
+      isOnline = true;
+      return true;
+    }
+    const nuevaUrl = (cfg.backend_url || '').trim().replace(/\/+$/, '');
+    if (!nuevaUrl || nuevaUrl === 'null' || nuevaUrl.includes('trycloudflare.com')) {
+      backendUrl = '';
+      isOnline = true;
+      return true;
+    }
     if (backendUrl !== nuevaUrl) {
       backendUrl = nuevaUrl;
       localStorage.setItem('kuche_backend_url', backendUrl);
@@ -77,65 +90,34 @@
         return backendUrl;
       }
 
-      // Paso 1: Si ya tenemos una URL en memoria o query param, probar si sigue viva
+      // Si estamos en GitHub Pages sin URL específica, operar en modo estático limpio
+      if (isGitHubPages && !backendUrl) {
+        try {
+          const t = Date.now();
+          const r = await fetch(`${LOCAL_JSON_PATH}?_t=${t}`, { cache: 'no-store' });
+          if (r.ok) {
+            const cfg = await r.json();
+            aplicarConfig(cfg);
+          }
+        } catch(e) {}
+        isOnline = true;
+        notificar();
+        return backendUrl;
+      }
+
+      // Si existe una URL configurada, verificar si sigue activa
       if (backendUrl) {
-        isOnline = await verificarPing(backendUrl);
-        if (isOnline) {
+        const sigueViva = await verificarPing(backendUrl);
+        if (sigueViva) {
+          isOnline = true;
           notificar();
           return backendUrl;
         } else {
-          // La URL anterior murió (por ejemplo reiniciaron Cloudflare)
-          console.warn('[KucheAPI] La URL previa ya no responde. Buscando nueva URL de Cloudflare...');
-          localStorage.removeItem('kuche_backend_url');
+          // Desacoplar y volver al modo estático institucional
+          try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
           backendUrl = '';
-          isOnline = false;
+          isOnline = true;
         }
-      }
-
-      let exito = false;
-      const t = Date.now();
-
-      // Paso 2: Intentar GitHub Raw con bust de caché estricto
-      try {
-        const r = await fetch(`${GITHUB_RAW_URL}?_t=${t}`, { cache: 'no-store' });
-        if (r.ok) {
-          const cfg = await r.json();
-          if (aplicarConfig(cfg)) {
-            isOnline = await verificarPing(backendUrl);
-            if (isOnline) exito = true;
-          }
-        }
-      } catch(e) {}
-
-      // Paso 3: Si falló Raw, consultar GitHub API (no tiene caché CDN)
-      if (!exito) {
-        try {
-          const r = await fetch(`${GITHUB_REPO_API}&_t=${t}`, { 
-            cache: 'no-store',
-            headers: { 'Accept': 'application/vnd.github.v3.raw' }
-          });
-          if (r.ok) {
-            const cfg = await r.json();
-            if (aplicarConfig(cfg)) {
-              isOnline = await verificarPing(backendUrl);
-              if (isOnline) exito = true;
-            }
-          }
-        } catch(e) {}
-      }
-
-      // Paso 4: Si falló, intentar archivo local servido en GitHub Pages
-      if (!exito) {
-        try {
-          const r = await fetch(`${LOCAL_JSON_PATH}?_t=${t}`, { cache: 'no-store' });
-          if (r.ok) {
-            const d = await r.json();
-            if (aplicarConfig(d)) {
-              isOnline = await verificarPing(backendUrl);
-              if (isOnline) exito = true;
-            }
-          }
-        } catch(e) {}
       }
 
       notificar();
@@ -153,12 +135,17 @@
   window.KucheAPI = {
     getUrl: () => backendUrl,
     isOnline: () => isOnline,
+    isStaticMode: () => !backendUrl,
     apiUrl: function(path) {
       const p = path.startsWith('/') ? path : '/' + path;
       if (isDirectBackend || !backendUrl) return p;
       return backendUrl.replace(/\/+$/, '') + p;
     },
     wsUrl: function(path) {
+      // En GitHub Pages puramente estático no hay WebSocket
+      if (isGitHubPages && !backendUrl) {
+        return null;
+      }
       const p = path.startsWith('/') ? path : '/' + path;
       let host = location.host;
       let proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -168,33 +155,37 @@
           host = u.host;
           proto = u.protocol === 'https:' ? 'wss:' : 'ws:';
         } catch(e) {}
+      } else if (isDirectBackend) {
+        host = location.host;
+        proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      } else {
+        return null;
       }
       return `${proto}//${host}${p}`;
     },
     onStateChange: function(fn) {
       listeners.push(fn);
-      fn({ url: backendUrl, online: isOnline });
+      fn({ url: backendUrl, online: isOnline, staticMode: !backendUrl });
     },
     sincronizarUrl: sincronizarUrl,
     reportarErrorConexion: async function() {
-      console.warn('[KucheAPI] Error de túnel reportado. Forzando búsqueda de nueva URL...');
-      localStorage.removeItem('kuche_backend_url');
+      try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
       backendUrl = '';
-      isOnline = false;
+      isOnline = true;
       notificar();
-      return await sincronizarUrl();
+      return backendUrl;
     },
     reintentar: function() {
-      localStorage.removeItem('kuche_backend_url');
+      try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
       backendUrl = '';
       return sincronizarUrl();
     }
   };
 
-  // Ciclo dinámico: sondea cada 3.5s si está offline, o cada 15s si ya está conectado
+  // En modo estático verificar periódicamente de forma ligera (cada 60s)
   async function loopAutosync() {
     await sincronizarUrl();
-    const tiempo = isOnline ? 15000 : 3500;
+    const tiempo = (isGitHubPages && !backendUrl) ? 60000 : (isOnline ? 20000 : 5000);
     setTimeout(loopAutosync, tiempo);
   }
 

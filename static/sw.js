@@ -2,7 +2,7 @@
 // KUCHE PWA — SERVICE WORKER (Alumbrado Público y Luminarias)
 // ═══════════════════════════════════════════════════════════════════════
 
-const CACHE_NAME = 'kuche-pwa-v9-live';
+const CACHE_NAME = 'kuche-pwa-v11-static';
 
 const PRECACHE_ASSETS = [
   './',
@@ -50,7 +50,7 @@ self.addEventListener('fetch', event => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Ignorar peticiones no GET o externas a GitHub / Backend Cloudflare
+  // Ignorar peticiones no GET o externas
   if (req.method !== 'GET') return;
 
   // backend_url.json SIEMPRE directo de la red para frescura en tiempo real
