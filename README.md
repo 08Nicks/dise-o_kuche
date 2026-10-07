@@ -35,9 +35,11 @@
 ```text
 dise-o_kuche/
 │
+├── landing.html                    # Landing Page Corporativa e Institucional de Difusión
 ├── portal.html                     # Acceso Ciudadano / Oficial con selector y modal OTP
 ├── oficial.html                    # PWA de Campo con cámara WebRTC, GPS y reporte obligatorio
-├── dashboard.html                  # Centro de Mando GIS con Leaflet multi-capa y visor modal
+├── app.html                        # App Móvil Demo con subida de fotografía y reporte
+├── dashboard.html                  # Centro de Mando GIS con Leaflet multi-capa y Cuadrilla
 ├── index.html                      # Índice general del portal y accesos rápidos
 ├── propuestas.html                 # Matriz 3x3 de layouts y cédulas técnicas
 ├── PROPUESTAS_VISUALES_KUCHE.html  # Acervo histórico y propuesta biocultural popoloca
