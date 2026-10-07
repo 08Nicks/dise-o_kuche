@@ -20,6 +20,21 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./static/icons/icon-192.png">
   <link rel="apple-touch-icon" href="./static/icons/apple-touch-icon.png">
 
+  <!-- Control estricto de caché y frescura de datos -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>
+    // Limpieza forzada de Service Worker y cachés previas
+    if ('caches' in window) {
+      caches.keys().then(keys => {
+        keys.forEach(k => {
+          if (k !== 'kuche-pwa-v6-live') caches.delete(k);
+        });
+      });
+    }
+  </script>
+
   <!-- Tipografías Oficiales: Montserrat, Inter y JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
