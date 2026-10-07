@@ -656,9 +656,19 @@ window.cargarFotoManual = function (event) {
     if (prompt) prompt.style.display = 'none';
     if (label) label.textContent = 'Cambiar Fotografía';
 
+    // Habilitar envío del reporte únicamente cuando la imagen está cargada
+    const btnSubmit = document.getElementById('btn-enviar-manual') || document.querySelector('#sec-manual .btn-primary-action');
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.style.opacity = '1';
+      btnSubmit.style.cursor = 'pointer';
+    }
+    const avisoFoto = document.getElementById('manual-foto-requerida-msg');
+    if (avisoFoto) avisoFoto.style.display = 'none';
+
     const resBox = document.getElementById('manual-resultado-exito');
     if (resBox) resBox.style.display = 'none';
-    estado('Foto cargada en el visor de cámara', '#10b981');
+    estado('Foto cargada — Puede enviar el reporte', '#10b981');
   };
   reader.readAsDataURL(file);
 };
@@ -675,14 +685,30 @@ window.eliminarFotoManual = function () {
   if (prompt) prompt.style.display = 'flex';
   if (input) input.value = '';
   if (label) label.textContent = 'Seleccionar Evidencia';
+
+  // Deshabilitar envío del reporte hasta que se vuelva a cargar una foto
+  const btnSubmit = document.getElementById('btn-enviar-manual') || document.querySelector('#sec-manual .btn-primary-action');
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.style.opacity = '0.5';
+    btnSubmit.style.cursor = 'not-allowed';
+  }
+  const avisoFoto = document.getElementById('manual-foto-requerida-msg');
+  if (avisoFoto) avisoFoto.style.display = 'flex';
+
   estado('Foto removida', '#aaa');
 };
 
 // ─── Enviar reporte Manual ────────────────────────────────────────
 window.enviarReporteManual = async function () {
+  if (!fotoManualBase64) {
+    alert('Debe cargar una fotografía de la luminaria antes de enviar el reporte.');
+    return;
+  }
+
   const cat  = document.getElementById('infra-categoria-manual').value;
   const desc = (document.getElementById('desc-manual').value || '').trim();
-  const btnSubmit = document.querySelector('#sec-manual .btn-primary-action');
+  const btnSubmit = document.getElementById('btn-enviar-manual') || document.querySelector('#sec-manual .btn-primary-action');
   
   if (btnSubmit) {
     btnSubmit.disabled = true;
@@ -717,7 +743,7 @@ window.enviarReporteManual = async function () {
     document.getElementById('desc-manual').value = '';
     eliminarFotoManual();
   } finally {
-    if (btnSubmit) {
+    if (btnSubmit && fotoManualBase64) {
       btnSubmit.disabled = false;
       btnSubmit.style.opacity = '1';
     }
@@ -914,7 +940,17 @@ window.cambiarModo = function (nuevoModo) {
         if (prompt) prompt.style.display = 'flex';
       }
     }
-    estado('Modo Manual: adjunta o toma foto en el visor de cámara', '#aaa');
+    const btnSubmit = document.getElementById('btn-enviar-manual') || document.querySelector('#sec-manual .btn-primary-action');
+    const avisoFoto = document.getElementById('manual-foto-requerida-msg');
+    if (fotoManualBase64) {
+      if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.style.opacity = '1'; btnSubmit.style.cursor = 'pointer'; }
+      if (avisoFoto) avisoFoto.style.display = 'none';
+      estado('Modo Demo: foto cargada, listo para enviar reporte', '#10b981');
+    } else {
+      if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.style.opacity = '0.5'; btnSubmit.style.cursor = 'not-allowed'; }
+      if (avisoFoto) avisoFoto.style.display = 'flex';
+      estado('Modo Demo: cargue una foto ya tomada para habilitar el reporte', '#aaa');
+    }
   } else if (nuevoModo === 'foto') {
     detenerAnalisisVideo();
     if (visor) visor.style.display = 'block';

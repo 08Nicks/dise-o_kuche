@@ -430,13 +430,14 @@
     <div id="manual-upload-prompt" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; width:100%; height:100%; min-height:220px; padding:20px; cursor:pointer;" onclick="document.getElementById('manual-foto-input').click()">
       <div style="width:54px; height:54px; border-radius:50%; background:rgba(188,149,92,0.18); border:1.5px solid var(--clr-dorado-acento, #BC955C); display:flex; align-items:center; justify-content:center; color:var(--clr-dorado-acento, #BC955C);">
         <svg class="icon-svg" style="width:28px; height:28px;" viewBox="0 0 24 24">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-          <circle cx="12" cy="13" r="4"/>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
       </div>
       <div style="text-align:center;">
-        <span style="display:block; font-size:14px; font-weight:800; color:#fff; letter-spacing:0.3px;">Adjuntar o Tomar Fotografía</span>
-        <small style="font-size:11px; color:var(--clr-texto-muted, #aaa);">Toca aquí para abrir la cámara o seleccionar de galería</small>
+        <span style="display:block; font-size:14px; font-weight:800; color:#fff; letter-spacing:0.3px;">Cargar Fotografía de Evidencia</span>
+        <small style="font-size:11px; color:var(--clr-texto-muted, #aaa);">Selecciona una imagen ya tomada desde tus archivos o galería</small>
       </div>
       <div class="btn-file-upload" style="margin-top:4px; pointer-events:none; padding:7px 16px; font-size:12px; display:inline-flex; align-items:center; gap:6px;">
         <svg class="icon-svg" viewBox="0 0 24 24" style="width:14px; height:14px;">
@@ -444,7 +445,7 @@
           <polyline points="17 8 12 3 7 8"/>
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
-        <span id="manual-file-label">Seleccionar Evidencia</span>
+        <span id="manual-file-label">Seleccionar Imagen</span>
       </div>
     </div>
 
@@ -453,7 +454,7 @@
       <img id="manual-preview-img" src="" alt="Previsualización de evidencia" style="width:100%; height:100%; max-height:240px; object-fit:contain; display:block;">
       <div style="position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.8); border:1px solid #10b981; border-radius:4px; padding:3px 8px; font-size:10px; font-weight:700; color:#10b981; display:flex; align-items:center; gap:4px;">
         <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        <span>Foto Lista</span>
+        <span>Foto Cargada</span>
       </div>
       <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px;">
         <button type="button" onclick="document.getElementById('manual-foto-input').click()" style="background:rgba(0,0,0,0.85); border:1px solid var(--clr-dorado-acento, #BC955C); color:var(--clr-dorado-acento, #BC955C); padding:5px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Cambiar</button>
@@ -461,7 +462,7 @@
       </div>
     </div>
 
-    <input type="file" id="manual-foto-input" accept="image/*" capture="environment" hidden onchange="cargarFotoManual(event)">
+    <input type="file" id="manual-foto-input" accept="image/*" hidden onchange="cargarFotoManual(event)">
   </div>
 
   <!-- CONTROL DE MODO VIDEO (MÁXIMO 10 SEGUNDOS) -->
@@ -527,7 +528,12 @@
       <div id="manual-resultado-detalle" style="font-size: 11px; color: var(--clr-texto-muted, #ccc);"></div>
     </div>
 
-    <button onclick="enviarReporteManual()" class="btn-primary-action">
+    <div id="manual-foto-requerida-msg" style="font-size:11px; color:#f59e0b; text-align:center; margin-top:2px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:6px;">
+      <svg class="icon-svg" style="width:13px; height:13px; stroke:#f59e0b;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Cargue una fotografía para habilitar el reporte</span>
+    </div>
+
+    <button onclick="enviarReporteManual()" class="btn-primary-action" id="btn-enviar-manual" disabled style="opacity:0.5; cursor:not-allowed;">
       <svg class="icon-svg" viewBox="0 0 24 24">
         <line x1="22" y1="2" x2="11" y2="13"/>
         <polygon points="22 2 15 22 11 13 2 9 22 2"/>
