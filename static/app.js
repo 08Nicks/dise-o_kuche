@@ -253,14 +253,32 @@ async function toggleCamara() {
     btn.textContent = 'Camara: OFF';
     canvas.style.display = 'none';
     const mp = document.getElementById('manual-preview');
-    if (mp) { mp.style.display = 'flex'; mp.textContent = 'Cámara pausada'; }
+    if (modo !== 'manual' && mp) {
+      mp.style.display = 'flex';
+      const prompt = document.getElementById('manual-upload-prompt');
+      const prevBox = document.getElementById('manual-preview-container');
+      if (prompt) prompt.style.display = 'none';
+      if (prevBox) prevBox.style.display = 'none';
+      let pausedEl = document.getElementById('cam-paused-msg');
+      if (!pausedEl) {
+        pausedEl = document.createElement('div');
+        pausedEl.id = 'cam-paused-msg';
+        pausedEl.style.cssText = 'display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--text-muted); font-size:13px; padding:20px;';
+        pausedEl.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="width:32px; height:32px; opacity:0.4;"><path d="M1 1l22 22"/><path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"/></svg><span>Cámara desactivada</span>`;
+        mp.appendChild(pausedEl);
+      } else {
+        pausedEl.style.display = 'flex';
+      }
+    }
     estado('Cámara pausada');
   } else {
     camaraEncendida = true;
     btn.textContent = 'Camara: ON';
     canvas.style.display = 'block';
     const mp = document.getElementById('manual-preview');
-    if (mp) mp.style.display = 'none';
+    const pausedEl = document.getElementById('cam-paused-msg');
+    if (pausedEl) pausedEl.style.display = 'none';
+    if (modo !== 'manual' && mp) mp.style.display = 'none';
     const ok = await iniciarCamara();
     if (ok && modo === 'video') iniciarAnalisisVideo();
   }
@@ -629,15 +647,18 @@ window.cargarFotoManual = function (event) {
     fotoManualBase64 = evt.target.result;
     const prevBox = document.getElementById('manual-preview-container');
     const prevImg = document.getElementById('manual-preview-img');
+    const prompt = document.getElementById('manual-upload-prompt');
     const label = document.getElementById('manual-file-label');
     if (prevBox && prevImg) {
       prevImg.src = fotoManualBase64;
       prevBox.style.display = 'block';
     }
-    if (label) label.textContent = 'Cambiar Fotografía Adjunta';
+    if (prompt) prompt.style.display = 'none';
+    if (label) label.textContent = 'Cambiar Fotografía';
 
     const resBox = document.getElementById('manual-resultado-exito');
     if (resBox) resBox.style.display = 'none';
+    estado('Foto cargada en el visor de cámara', '#10b981');
   };
   reader.readAsDataURL(file);
 };
@@ -646,12 +667,15 @@ window.eliminarFotoManual = function () {
   fotoManualBase64 = null;
   const prevBox = document.getElementById('manual-preview-container');
   const prevImg = document.getElementById('manual-preview-img');
+  const prompt = document.getElementById('manual-upload-prompt');
   const input = document.getElementById('manual-foto-input');
   const label = document.getElementById('manual-file-label');
   if (prevBox) prevBox.style.display = 'none';
   if (prevImg) prevImg.src = '';
+  if (prompt) prompt.style.display = 'flex';
   if (input) input.value = '';
-  if (label) label.textContent = 'Adjuntar o Tomar Fotografía';
+  if (label) label.textContent = 'Seleccionar Evidencia';
+  estado('Foto removida', '#aaa');
 };
 
 // ─── Enviar reporte Manual ────────────────────────────────────────
@@ -876,8 +900,21 @@ window.cambiarModo = function (nuevoModo) {
   if (nuevoModo === 'manual') {
     detenerAnalisisVideo();
     if (visor) visor.style.display = 'none';
-    if (manPrev) { manPrev.style.display = 'flex'; manPrev.textContent = 'Modo Manual — sin cámara'; }
-    estado('Modo Manual: elige categoría y envía', '#aaa');
+    if (manPrev) {
+      manPrev.style.display = 'flex';
+      const pausedEl = document.getElementById('cam-paused-msg');
+      if (pausedEl) pausedEl.style.display = 'none';
+      const prompt = document.getElementById('manual-upload-prompt');
+      const prevBox = document.getElementById('manual-preview-container');
+      if (fotoManualBase64) {
+        if (prevBox) prevBox.style.display = 'block';
+        if (prompt) prompt.style.display = 'none';
+      } else {
+        if (prevBox) prevBox.style.display = 'none';
+        if (prompt) prompt.style.display = 'flex';
+      }
+    }
+    estado('Modo Manual: adjunta o toma foto en el visor de cámara', '#aaa');
   } else if (nuevoModo === 'foto') {
     detenerAnalisisVideo();
     if (visor) visor.style.display = 'block';

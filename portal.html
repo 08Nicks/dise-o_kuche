@@ -424,12 +424,44 @@
     <canvas id="canvas"></canvas>
     <div id="progress-bar"></div>
   </div>
-  <div id="manual-preview" style="display:none">
-    <svg class="icon-svg" viewBox="0 0 24 24" style="width:32px; height:32px; opacity:0.4;">
-      <path d="M1 1l22 22"/>
-      <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34m-7.72-2.06a4 4 0 1 1-5.56-5.56"/>
-    </svg>
-    <span>Camara desactivada</span>
+  <!-- ÁREA DE CÁMARA EN MODO MANUAL (ADJUNTAR / TOMAR FOTO) -->
+  <div id="manual-preview" style="display:none; position:relative; overflow:hidden;">
+    <!-- Vista inicial: Botón de adjuntar / tomar foto en el visor de cámara -->
+    <div id="manual-upload-prompt" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; width:100%; height:100%; min-height:220px; padding:20px; cursor:pointer;" onclick="document.getElementById('manual-foto-input').click()">
+      <div style="width:54px; height:54px; border-radius:50%; background:rgba(188,149,92,0.18); border:1.5px solid var(--clr-dorado-acento, #BC955C); display:flex; align-items:center; justify-content:center; color:var(--clr-dorado-acento, #BC955C);">
+        <svg class="icon-svg" style="width:28px; height:28px;" viewBox="0 0 24 24">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <div style="text-align:center;">
+        <span style="display:block; font-size:14px; font-weight:800; color:#fff; letter-spacing:0.3px;">Adjuntar o Tomar Fotografía</span>
+        <small style="font-size:11px; color:var(--clr-texto-muted, #aaa);">Toca aquí para abrir la cámara o seleccionar de galería</small>
+      </div>
+      <div class="btn-file-upload" style="margin-top:4px; pointer-events:none; padding:7px 16px; font-size:12px; display:inline-flex; align-items:center; gap:6px;">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:14px; height:14px;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <span id="manual-file-label">Seleccionar Evidencia</span>
+      </div>
+    </div>
+
+    <!-- Previsualización de la foto dentro de la zona de cámara -->
+    <div id="manual-preview-container" style="display:none; width:100%; height:100%; min-height:220px; position:relative; background:#000;">
+      <img id="manual-preview-img" src="" alt="Previsualización de evidencia" style="width:100%; height:100%; max-height:240px; object-fit:contain; display:block;">
+      <div style="position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.8); border:1px solid #10b981; border-radius:4px; padding:3px 8px; font-size:10px; font-weight:700; color:#10b981; display:flex; align-items:center; gap:4px;">
+        <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>Foto Lista</span>
+      </div>
+      <div style="position:absolute; top:8px; right:8px; display:flex; gap:6px;">
+        <button type="button" onclick="document.getElementById('manual-foto-input').click()" style="background:rgba(0,0,0,0.85); border:1px solid var(--clr-dorado-acento, #BC955C); color:var(--clr-dorado-acento, #BC955C); padding:5px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Cambiar</button>
+        <button type="button" onclick="eliminarFotoManual()" style="background:rgba(0,0,0,0.85); border:1px solid #ef4444; color:#ef4444; padding:5px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">Quitar</button>
+      </div>
+    </div>
+
+    <input type="file" id="manual-foto-input" accept="image/*" capture="environment" hidden onchange="cargarFotoManual(event)">
   </div>
 
   <!-- CONTROL DE MODO VIDEO (MÁXIMO 10 SEGUNDOS) -->
@@ -478,28 +510,6 @@
     <div>
       <label class="form-label" for="desc-manual">Crucero o Notas de Campo</label>
       <textarea id="desc-manual" class="input-textarea" placeholder="Ej. Av. Reforma esquina Calle 5 de Mayo..."></textarea>
-    </div>
-
-    <!-- SELECCIÓN Y SUBIDA DE FOTO MANUAL -->
-    <div>
-      <label class="form-label">Evidencia Fotográfica</label>
-      <label class="btn-file-upload" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
-        <svg class="icon-svg" viewBox="0 0 24 24">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-        <span id="manual-file-label">Adjuntar o Tomar Fotografía</span>
-        <input type="file" id="manual-foto-input" accept="image/*" capture="environment" hidden onchange="cargarFotoManual(event)">
-      </label>
-    </div>
-
-    <!-- PREVISUALIZACIÓN DE FOTO ANTES DE ENVIAR -->
-    <div id="manual-preview-container" style="display: none; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--clr-dorado-acento); background: #000; text-align: center;">
-      <img id="manual-preview-img" src="" alt="Previsualización de imagen" style="width: 100%; max-height: 200px; object-fit: contain; display: block;">
-      <div style="position: absolute; top: 6px; right: 6px;">
-        <button type="button" onclick="eliminarFotoManual()" style="background: rgba(0,0,0,0.8); border: 1px solid #ef4444; color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">Quitar Foto</button>
-      </div>
     </div>
 
     <!-- CONFIRMACIÓN CON LA FOTO YA SUBIDA -->
