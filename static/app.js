@@ -23,18 +23,9 @@ let grabacionActiva      = false;
 let segundosRestantes    = 10;
 let timerCuentaRegresiva = null;
 
-// ─── Logger visible en pantalla ──────────────────────────────────
+// ─── Logger en consola (oculto de la interfaz) ────────────────────
 function LOG(msg, color) {
-  color = color || '#aaa';
-  console.log('[AGY] ' + msg);
-  const panel = document.getElementById('log-panel');
-  if (!panel) return;
-  const line = document.createElement('div');
-  line.style.cssText = 'font-size:10px; padding:1px 0; border-bottom:1px solid #111;';
-  line.style.color = color;
-  line.textContent = new Date().toLocaleTimeString() + ' — ' + msg;
-  panel.appendChild(line);
-  panel.scrollTop = panel.scrollHeight;
+  console.log('[KUCHE] ' + msg);
 }
 
 // ─── Estado / status bar ─────────────────────────────────────────
@@ -567,6 +558,17 @@ function mostrarPanelReporte(vista) {
     conf.style.display = 'block';
   }
 
+  // Detección de condición horaria: Día o Noche
+  const horaActual = new Date().getHours();
+  const esDia = horaActual >= 6 && horaActual < 19;
+  const condicionHoraria = (vista && vista.horario) ? vista.horario : (esDia ? 'Día' : 'Noche');
+  const inpCond = document.getElementById('reporte-condicion-horaria');
+  if (inpCond) {
+    inpCond.value = condicionHoraria;
+    inpCond.style.color = (condicionHoraria === 'Día') ? '#10b981' : '#38bdf8';
+    inpCond.style.borderColor = (condicionHoraria === 'Día') ? '#10b981' : '#38bdf8';
+  }
+
   const inpFalla = document.getElementById('reporte-falla');
   if (inpFalla) {
     inpFalla.value = '';
@@ -599,8 +601,8 @@ window.enviarReporteIA = async function () {
     return;
   }
 
-  const inpDesc = document.getElementById('reporte-desc');
-  const ref = (inpDesc && inpDesc.value ? inpDesc.value.trim() : '');
+  const inpCond = document.getElementById('reporte-condicion-horaria');
+  const cond = (inpCond && inpCond.value ? inpCond.value : '');
   
   const img  = document.getElementById('reporte-img');
   const imgB64 = (img && img.src && img.src.startsWith('data:')) ? img.src.split(',')[1] : null;
@@ -612,13 +614,12 @@ window.enviarReporteIA = async function () {
   }
 
   try {
-    const detalleIncidencia = `${falla}${ref ? ' — Referencia: ' + ref : ''}`;
+    const detalleIncidencia = `${falla}${cond ? ' [' + cond + ']' : ''}`;
     await _enviarReporte(tipo, detalleIncidencia, imgB64);
     mostrarToast('Reporte oficial registrado con éxito');
     
     document.getElementById('panel-reporte').style.display = 'none';
     if (inpFalla) inpFalla.value = '';
-    if (inpDesc) inpDesc.value = '';
     
     // Reiniciar para la siguiente luminaria
     if (modo === 'video' && camaraEncendida) {

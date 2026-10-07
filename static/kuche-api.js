@@ -146,40 +146,8 @@
   }
 
   function actualizarBanner() {
-    let banner = document.getElementById('kuche-server-status-banner');
-    if (!banner) {
-      banner = document.createElement('div');
-      banner.id = 'kuche-server-status-banner';
-      banner.style.cssText = `
-        position: fixed; bottom: 8px; left: 8px; right: 8px; z-index: 99999;
-        padding: 7px 14px; border-radius: 8px; font-size: 11px; font-weight: 600;
-        display: flex; align-items: center; justify-content: space-between;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.35); backdrop-filter: blur(8px);
-        font-family: 'Montserrat', system-ui, sans-serif; transition: all 0.3s ease;
-      `;
-      document.body.appendChild(banner);
-    }
-
-    if (isOnline && backendUrl) {
-      banner.style.background = 'rgba(16, 185, 129, 0.95)';
-      banner.style.color = '#ffffff';
-      banner.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="width:8px; height:8px; border-radius:50%; background:#ffffff; display:inline-block; box-shadow:0 0 6px #fff;"></span>
-          <span>PC Conectada &bull; IA Kuche Lista para Detección</span>
-        </div>
-      `;
-    } else {
-      banner.style.background = 'rgba(155, 34, 71, 0.95)';
-      banner.style.color = '#ffffff';
-      banner.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="width:8px; height:8px; border-radius:50%; background:#E6D194; display:inline-block;"></span>
-          <span>Buscando Servidor IA Kuche en vivo...</span>
-        </div>
-        <button onclick="window.KucheAPI.reintentar()" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; border-radius:4px; padding:3px 10px; font-size:10px; font-weight:bold; cursor:pointer;">Reintentar</button>
-      `;
-    }
+    const banner = document.getElementById('kuche-server-status-banner');
+    if (banner) banner.remove();
   }
 
   window.KucheAPI = {
@@ -217,8 +185,6 @@
       return await sincronizarUrl();
     },
     reintentar: function() {
-      const b = document.getElementById('kuche-server-status-banner');
-      if (b) b.innerText = 'Sincronizando con el servidor de la PC...';
       localStorage.removeItem('kuche_backend_url');
       backendUrl = '';
       return sincronizarUrl();

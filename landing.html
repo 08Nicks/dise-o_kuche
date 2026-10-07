@@ -29,7 +29,7 @@
     if ('caches' in window) {
       caches.keys().then(keys => {
         keys.forEach(k => {
-          if (k !== 'kuche-pwa-v8-live') caches.delete(k);
+          if (k !== 'kuche-pwa-v9-live') caches.delete(k);
         });
       });
     }
@@ -1492,10 +1492,7 @@
                     <span class="report-label">Folio de Detección</span>
                     <span class="report-val" id="rep-folio">PUE-2026-DET-01</span>
                   </div>
-                  <div class="report-row">
-                    <span class="report-label">Municipio / Ubicación</span>
-                    <span class="report-val" id="rep-lugar">Puebla, México</span>
-                  </div>
+
                   <div class="report-row">
                     <span class="report-label">Tipo de Lámpara</span>
                     <span class="report-val" id="rep-tipo" style="color:var(--clr-dorado-brillo); font-weight:700;">Luminaria Convencional (Vapor de Sodio)</span>
@@ -1730,7 +1727,6 @@
         tag: 'Luminaria Convencional',
         sub: 'Detección Activa',
         folio: 'PUE-2026-DET-01',
-        lugar: 'Puebla, México',
         tipo: 'Luminaria Convencional (Vapor de Sodio)',
         horario: 'Día',
         statusClass: 'status-badge critical',
@@ -1743,7 +1739,6 @@
         tag: 'Luminaria LED Vial',
         sub: 'Detección Activa',
         folio: 'PUE-2026-DET-02',
-        lugar: 'Puebla, México',
         tipo: 'Luminaria LED Vial Moderna',
         horario: 'Día',
         statusClass: 'status-badge optimal',
@@ -1777,7 +1772,6 @@
       if (boxSub) boxSub.textContent = data.sub;
 
       document.getElementById('rep-folio').textContent = data.folio;
-      document.getElementById('rep-lugar').textContent = data.lugar;
       document.getElementById('rep-tipo').textContent = data.tipo;
       document.getElementById('rep-horario').textContent = data.horario;
       

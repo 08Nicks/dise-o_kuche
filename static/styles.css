@@ -420,27 +420,9 @@ canvas#canvas {
   flex-shrink: 0;
 }
 
-/* ─── Consola de Diagnóstico (Log) ───────────────────────────── */
+/* ─── Consola de Diagnóstico (Oculta de la interfaz) ────────── */
 #log-panel {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 6px 10px;
-  height: 64px;
-  overflow-y: auto;
-  font-family: 'JetBrains Mono', Consolas, monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-  line-height: 1.4;
-  margin-bottom: 10px;
-}
-
-#log-panel::-webkit-scrollbar {
-  width: 4px;
-}
-#log-panel::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
-  border-radius: 2px;
+  display: none !important;
 }
 
 /* ─── Sección Modo Foto ──────────────────────────────────────── */

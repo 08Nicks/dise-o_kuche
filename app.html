@@ -168,10 +168,7 @@
         <option value="Brazo de Luminaria Dañado">Brazo / Soporte de Luminaria Afectado</option>
       </select>
     </div>
-    <div>
-      <label class="form-label" for="desc-manual">Crucero o Notas de Campo</label>
-      <textarea id="desc-manual" class="input-textarea" placeholder="Ej. Av. Juárez esquina 5 de Mayo, poste #08..."></textarea>
-    </div>
+
 
     <!-- CONFIRMACIÓN CON LA FOTO YA SUBIDA -->
     <div id="manual-resultado-exito" style="display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px;">
@@ -236,10 +233,10 @@
       </div>
     </div>
 
-    <!-- Ubicación o referencia adicional -->
+    <!-- Condición Horaria: Día o Noche detectada por IA -->
     <div style="margin-bottom:12px;">
-      <label class="form-label" for="reporte-desc">Ubicación / Referencia de campo (opcional)</label>
-      <input type="text" id="reporte-desc" class="input-text" placeholder="Crucero, esquina, número de poste o referencia...">
+      <label class="form-label" for="reporte-condicion-horaria">Condición Horaria (Detectada por IA)</label>
+      <input type="text" id="reporte-condicion-horaria" class="input-text" readonly value="Día" style="font-weight:700; color:#10b981; background:var(--bg-elevated); border:1px solid #10b981; padding:8px 10px; border-radius:6px; width:100%;">
     </div>
 
     <button onclick="enviarReporteIA()" class="btn-submit-report" style="width:100%; padding:14px; font-size:14px; font-weight:700;">
@@ -250,9 +247,6 @@
       <span>Confirmar y Enviar Reporte Oficial (Obligatorio)</span>
     </button>
   </div>
-
-  <!-- CONSOLA DE DIAGNÓSTICO -->
-  <div id="log-panel"></div>
 
   <!-- TOAST DE CONFIRMACIÓN -->
   <div id="toast-ok">
