@@ -618,12 +618,86 @@ window.enviarReporteIA = async function () {
   }
 };
 
+let fotoManualBase64 = null;
+
+window.cargarFotoManual = function (event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (evt) {
+    fotoManualBase64 = evt.target.result;
+    const prevBox = document.getElementById('manual-preview-container');
+    const prevImg = document.getElementById('manual-preview-img');
+    const label = document.getElementById('manual-file-label');
+    if (prevBox && prevImg) {
+      prevImg.src = fotoManualBase64;
+      prevBox.style.display = 'block';
+    }
+    if (label) label.textContent = 'Cambiar Fotografía Adjunta';
+
+    const resBox = document.getElementById('manual-resultado-exito');
+    if (resBox) resBox.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.eliminarFotoManual = function () {
+  fotoManualBase64 = null;
+  const prevBox = document.getElementById('manual-preview-container');
+  const prevImg = document.getElementById('manual-preview-img');
+  const input = document.getElementById('manual-foto-input');
+  const label = document.getElementById('manual-file-label');
+  if (prevBox) prevBox.style.display = 'none';
+  if (prevImg) prevImg.src = '';
+  if (input) input.value = '';
+  if (label) label.textContent = 'Adjuntar o Tomar Fotografía';
+};
+
 // ─── Enviar reporte Manual ────────────────────────────────────────
 window.enviarReporteManual = async function () {
   const cat  = document.getElementById('infra-categoria-manual').value;
   const desc = (document.getElementById('desc-manual').value || '').trim();
-  await _enviarReporte(cat, desc, null);
-  document.getElementById('desc-manual').value = '';
+  const btnSubmit = document.querySelector('#sec-manual .btn-primary-action');
+  
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.style.opacity = '0.6';
+  }
+
+  const fotoEnviada = fotoManualBase64;
+
+  try {
+    const resp = await _enviarReporte(cat, desc, fotoEnviada);
+
+    // Mostrar la foto y la confirmación en el modo manual una vez subida
+    const resBox = document.getElementById('manual-resultado-exito');
+    const resImg = document.getElementById('manual-resultado-img');
+    const resFolio = document.getElementById('manual-resultado-folio');
+    const resDetalle = document.getElementById('manual-resultado-detalle');
+
+    if (resBox) {
+      const folio = (resp && (resp.folio || (resp.item && resp.item.folio))) ? (resp.folio || resp.item.folio) : 'Registrado';
+      if (resFolio) resFolio.textContent = folio;
+      if (resDetalle) resDetalle.textContent = `${cat} — ${desc || 'Sin notas adicionales'}`;
+
+      if (fotoEnviada && resImg) {
+        resImg.src = fotoEnviada;
+        resImg.parentElement.style.display = 'block';
+      } else if (resImg) {
+        resImg.parentElement.style.display = 'none';
+      }
+      resBox.style.display = 'block';
+    }
+
+    document.getElementById('desc-manual').value = '';
+    eliminarFotoManual();
+  } finally {
+    if (btnSubmit) {
+      btnSubmit.disabled = false;
+      btnSubmit.style.opacity = '1';
+    }
+  }
 };
 
 // ─── Función base de envío ────────────────────────────────────────
@@ -671,14 +745,16 @@ async function _enviarReporte(categoria, descripcion, imgB64) {
       LOG('Reporte enviado: ' + texto + aviso, '#00ff80');
       estado('Reporte enviado con éxito' + aviso, '#00ff80');
       sincronizarColaOffline();
+      return { ok: true, ...resJson };
     } else {
       throw new Error('HTTP ' + r.status);
     }
   } catch (e) {
     LOG('Sin conexión al servidor. Encolando reporte en almacenamiento local...', '#ff9800');
     encolarReporteOffline(body);
-    mostrarToast('⚠️ Sin conexión. Reporte guardado localmente (se enviará automáticamente al reconectar)');
+    mostrarToast('Sin conexion al servidor. Reporte guardado localmente');
     estado('Guardado en cola offline', '#ff9800');
+    return { ok: true, offline: true };
   }
 }
 
@@ -727,8 +803,8 @@ async function sincronizarColaOffline() {
     localStorage.setItem('kuche_cola_offline', JSON.stringify(pendientes));
     actualizarInsigniaOffline();
     if (subidos > 0) {
-      mostrarToast(`✅ ${subidos} reporte(s) offline sincronizados con éxito`);
-      LOG(`✅ ${subidos} reporte(s) offline enviados`, '#00ff80');
+      mostrarToast(`${subidos} reporte(s) offline sincronizados con éxito`);
+      LOG(`${subidos} reporte(s) offline enviados`, '#00ff80');
     }
   } catch(e) {
     console.error('Error en sincronización offline:', e);

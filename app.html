@@ -139,6 +139,44 @@
       <label class="form-label" for="desc-manual">Crucero o Notas de Campo</label>
       <textarea id="desc-manual" class="input-textarea" placeholder="Ej. Av. Juárez esquina 5 de Mayo, poste #08..."></textarea>
     </div>
+
+    <!-- SELECCIÓN Y SUBIDA DE FOTO MANUAL -->
+    <div>
+      <label class="form-label">Evidencia Fotográfica</label>
+      <label class="btn-file-upload" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <span id="manual-file-label">Adjuntar o Tomar Fotografía</span>
+        <input type="file" id="manual-foto-input" accept="image/*" capture="environment" hidden onchange="cargarFotoManual(event)">
+      </label>
+    </div>
+
+    <!-- PREVISUALIZACIÓN DE FOTO ANTES DE ENVIAR -->
+    <div id="manual-preview-container" style="display: none; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--clr-dorado-acento); background: #000; text-align: center;">
+      <img id="manual-preview-img" src="" alt="Previsualización de imagen" style="width: 100%; max-height: 200px; object-fit: contain; display: block;">
+      <div style="position: absolute; top: 6px; right: 6px;">
+        <button type="button" onclick="eliminarFotoManual()" style="background: rgba(0,0,0,0.8); border: 1px solid #ef4444; color: #ef4444; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">Quitar Foto</button>
+      </div>
+    </div>
+
+    <!-- CONFIRMACIÓN CON LA FOTO YA SUBIDA -->
+    <div id="manual-resultado-exito" style="display: none; padding: 12px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; border-radius: 8px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span style="color: #10b981; font-weight: 800; font-size: 12px; display: flex; align-items: center; gap: 5px;">
+          <svg class="icon-svg" style="width: 14px; height: 14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Reporte Registrado con Éxito
+        </span>
+        <span id="manual-resultado-folio" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 800; color: var(--clr-dorado-acento);"></span>
+      </div>
+      <div style="text-align: center; background: #000; border-radius: 6px; overflow: hidden; max-height: 180px; margin-bottom: 8px;">
+        <img id="manual-resultado-img" src="" alt="Foto registrada" style="width: 100%; max-height: 180px; object-fit: contain; display: block;">
+      </div>
+      <div id="manual-resultado-detalle" style="font-size: 11px; color: var(--clr-texto-muted, #ccc);"></div>
+    </div>
+
     <button onclick="enviarReporteManual()" class="btn-primary-action">
       <svg class="icon-svg" viewBox="0 0 24 24">
         <line x1="22" y1="2" x2="11" y2="13"/>
