@@ -905,7 +905,7 @@
       <span>EN VIVO</span>
     </div>
     <button id="btn-cuadrilla-toggle" class="btn-cuadrilla-pill" onclick="alternarModoCuadrilla()" title="Activar Cuadrilla Virtual y Navegador Waze de Luminarias">
-      <span style="font-size:14px;">🚛</span>
+      <svg class="icon-svg" style="width:14px; height:14px;" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
       <span>Cuadrilla Waze</span>
     </button>
     <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTemaDashboard()" title="Alternar entre Modo Oscuro y Modo Claro">
@@ -970,8 +970,12 @@
           <strong style="font-size:12px; letter-spacing:0.5px; color:var(--dorado-accent);">CUADRILLA VIRTUAL K-01</strong>
         </div>
         <div style="display:flex; align-items:center; gap:6px;">
-          <button type="button" id="btn-hud-audio" onclick="alternarAudioWaze()" class="hud-btn-icon" title="Sonido de radar activado">🔊</button>
-          <button type="button" onclick="desactivarModoCuadrilla()" class="hud-btn-icon" title="Cerrar modo cuadrilla">✕</button>
+          <button type="button" id="btn-hud-audio" onclick="alternarAudioWaze()" class="hud-btn-icon" title="Sonido de radar activado">
+            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          </button>
+          <button type="button" onclick="desactivarModoCuadrilla()" class="hud-btn-icon" title="Cerrar modo cuadrilla">
+            <svg class="icon-svg" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
       </div>
       <div id="hud-contenido" class="hud-body">
@@ -1510,7 +1514,9 @@ function alternarAudioWaze() {
   audioWazeActivo = !audioWazeActivo;
   const btn = document.getElementById('btn-hud-audio');
   if (btn) {
-    btn.textContent = audioWazeActivo ? '🔊' : '🔇';
+    btn.innerHTML = audioWazeActivo
+      ? `<svg class="icon-svg" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`
+      : `<svg class="icon-svg" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`;
     btn.title = audioWazeActivo ? 'Sonido activado' : 'Sonido silenciado';
   }
 }
@@ -1534,14 +1540,14 @@ function calcularRumboWaze(lat1, lon1, lat2, lon2) {
   let brng = Math.atan2(y, x) * 180 / Math.PI;
   brng = (brng + 360) % 360;
 
-  if (brng >= 337.5 || brng < 22.5) return { texto: 'Norte', icono: '⬆️' };
-  if (brng >= 22.5 && brng < 67.5) return { texto: 'Noreste', icono: '↗️' };
-  if (brng >= 67.5 && brng < 112.5) return { texto: 'Este', icono: '➡️' };
-  if (brng >= 112.5 && brng < 157.5) return { texto: 'Sureste', icono: '↘️' };
-  if (brng >= 157.5 && brng < 202.5) return { texto: 'Sur', icono: '⬇️' };
-  if (brng >= 202.5 && brng < 247.5) return { texto: 'Suroeste', icono: '↙️' };
-  if (brng >= 247.5 && brng < 292.5) return { texto: 'Oeste', icono: '⬅️' };
-  return { texto: 'Noroeste', icono: '↖️' };
+  if (brng >= 337.5 || brng < 22.5) return { texto: 'Norte', codigo: 'N' };
+  if (brng >= 22.5 && brng < 67.5) return { texto: 'Noreste', codigo: 'NE' };
+  if (brng >= 67.5 && brng < 112.5) return { texto: 'Este', codigo: 'E' };
+  if (brng >= 112.5 && brng < 157.5) return { texto: 'Sureste', codigo: 'SE' };
+  if (brng >= 157.5 && brng < 202.5) return { texto: 'Sur', codigo: 'S' };
+  if (brng >= 202.5 && brng < 247.5) return { texto: 'Suroeste', codigo: 'SO' };
+  if (brng >= 247.5 && brng < 292.5) return { texto: 'Oeste', codigo: 'O' };
+  return { texto: 'Noroeste', codigo: 'NO' };
 }
 
 function getCuadrillaIcon() {
@@ -1550,7 +1556,9 @@ function getCuadrillaIcon() {
     html: `
       <div class="marker-cuadrilla-wrapper">
         <div class="marker-cuadrilla-pulse"></div>
-        <div class="marker-cuadrilla-icon" title="Cuadrilla Virtual (Arrastra en el mapa)">🚛</div>
+        <div class="marker-cuadrilla-icon" title="Cuadrilla Virtual K-01 (Arrastre en el mapa)">
+          <svg class="icon-svg" style="width:16px; height:16px; stroke:#E6D194;" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        </div>
         <div class="marker-cuadrilla-label">K-01</div>
       </div>
     `,
@@ -1656,10 +1664,12 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
 
     hudBody.innerHTML = `
       <div style="text-align:center; padding:16px 8px;">
-        <div style="font-size:32px; margin-bottom:6px;">🎉</div>
-        <strong style="color:#10b981; font-size:13px; display:block;">¡Zona 100% Operativa!</strong>
-        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">No hay luminarias pendientes de reparación en el sistema.</p>
-        <button type="button" onclick="cargarDatos()" class="hud-btn-action btn-enfocar" style="margin:12px auto 0 auto; width:80%;">Recargar Datos</button>
+        <div style="margin-bottom:8px; display:inline-flex; padding:10px; border-radius:50%; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.35);">
+          <svg class="icon-svg" style="width:24px; height:24px; stroke:#10b981;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <strong style="color:#10b981; font-size:13px; display:block;">Zona 100% Operativa</strong>
+        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">No hay luminarias pendientes de reparacion en el sector.</p>
+        <button type="button" onclick="cargarDatos()" class="hud-btn-action btn-enfocar" style="margin:12px auto 0 auto; width:80%;">Actualizar Datos</button>
       </div>
     `;
     return;
@@ -1727,8 +1737,8 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
 
   const alertaHtml = esMuyCerca
     ? `<div class="hud-alerta-proxima">
-         <span>🚨</span>
-         <span>¡EN RANGO DE TRABAJO! (&lt;50 metros)</span>
+         <svg class="icon-svg" style="width:14px; height:14px; stroke:#f87171;" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+         <span>EN RANGO DE REPARACION (&lt;50 m)</span>
        </div>`
     : '';
 
@@ -1737,7 +1747,7 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
 
   hudBody.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-size:11px; font-weight:800; color:var(--text); letter-spacing:0.5px;">DESTINO MÁS CERCANO</span>
+      <span style="font-size:11px; font-weight:800; color:var(--text); letter-spacing:0.5px;">DESTINO MAS CERCANO</span>
       <span style="font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; background:${estColor}22; color:${estColor}; border:1px solid ${estColor};">${estTicket}</span>
     </div>
 
@@ -1746,10 +1756,13 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
     <div class="hud-dist-box">
       <div>
         <div class="hud-dist-val">${distStr}</div>
-        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Distancia en línea recta</div>
+        <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Distancia en linea recta</div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:14px; font-weight:800; color:var(--text);">${rumbo.icono} ${rumbo.texto}</div>
+        <div style="font-size:12px; font-weight:800; color:var(--text); display:flex; align-items:center; justify-content:flex-end; gap:4px;">
+          <span style="font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:800; color:var(--cyan); border:1px solid rgba(0,210,255,0.35); padding:1px 5px; border-radius:4px;">${rumbo.codigo}</span>
+          <span>${rumbo.texto}</span>
+        </div>
         <div style="font-size:10px; color:var(--text-muted); margin-top:2px;">Rumbo estimado</div>
       </div>
     </div>
@@ -1763,21 +1776,21 @@ function actualizarNavegacionCuadrilla(esFinMovimiento = false) {
 
     <div class="hud-acciones">
       <button type="button" onclick="marcarLuminariaDesdeWaze(${luminariaCercana.id}, 'Reparada')" class="hud-btn-action btn-reparar" title="Marcar como reparada y pasar a la siguiente luminaria">
-        <span>✅</span>
+        <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         <span>Reparar Ahora</span>
       </button>
       <button type="button" onclick="enfocarRutaWaze(${tLat}, ${tLon})" class="hud-btn-action btn-enfocar" title="Centrar mapa en la ruta y luminaria">
-        <span>🎯</span>
+        <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
         <span>Enfocar Ruta</span>
       </button>
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:8px; border-top:1px solid var(--border);">
-      <button type="button" onclick="ubicarCuadrillaGPS()" style="background:none; border:none; color:var(--cyan); font-size:11px; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px;">
-        <span>📍</span>
-        <span>Usar mi GPS real</span>
+      <button type="button" onclick="ubicarCuadrillaGPS()" style="background:none; border:none; color:var(--cyan); font-size:11px; font-weight:600; cursor:pointer; padding:0; display:flex; align-items:center; gap:5px;">
+        <svg class="icon-svg" style="width:12px; height:12px;" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span>Usar GPS real</span>
       </button>
-      <span style="font-size:10px; color:var(--text-muted);">Arrastra 🚛 en el mapa</span>
+      <span style="font-size:10px; color:var(--text-muted);">Arrastre cuadrilla en el mapa</span>
     </div>
   `;
 }
@@ -1797,7 +1810,7 @@ async function marcarLuminariaDesdeWaze(id, nuevoEstado) {
 
 function ubicarCuadrillaGPS() {
   if (!navigator.geolocation) {
-    alert('Tu navegador no soporta geolocalización.');
+    alert('Tu navegador no soporta geolocalizacion.');
     return;
   }
   navigator.geolocation.getCurrentPosition(
@@ -1813,7 +1826,7 @@ function ubicarCuadrillaGPS() {
     },
     err => {
       console.warn('Error GPS:', err);
-      alert('No se pudo obtener tu ubicación GPS. Puedes arrastrar el camión 🚛 en el mapa manualmente.');
+      alert('No se pudo obtener la ubicacion GPS. Puede arrastrar el marcador de la cuadrilla en el mapa manualmente.');
     },
     { enableHighAccuracy: true, timeout: 8000 }
   );
