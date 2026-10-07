@@ -6,7 +6,7 @@
   <title>KUCHE — Inteligencia Artificial y Eficiencia Energética en Alumbrado Público</title>
   
   <meta name="description" content="KUCHE es la propuesta de innovación universitaria para el concurso ElectroHack 2026 de la Agencia de Energía del Estado de Puebla. Diagnóstico del parque lumínico, visión artificial y eficiencia energética.">
-  <meta name="keywords" content="KUCHE, ElectroHack 2026, Agencia de Energia de Puebla, eficiencia energetica, alumbrado publico, vision artificial, YOLO, Puebla, Smart Cities, Popoloca">
+  <meta name="keywords" content="KUCHE, ElectroHack 2026, Agencia de Energia de Puebla, eficiencia energetica, alumbrado publico, vision artificial, modelo de deteccion a tiempo real, Puebla, Smart Cities, Popoloca">
   <meta name="author" content="Equipo KUCHE">
   
   <!-- Open Graph -->
@@ -29,7 +29,7 @@
     if ('caches' in window) {
       caches.keys().then(keys => {
         keys.forEach(k => {
-          if (k !== 'kuche-pwa-v7-live') caches.delete(k);
+          if (k !== 'kuche-pwa-v8-live') caches.delete(k);
         });
       });
     }
@@ -1321,7 +1321,7 @@
               <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
               <span>Inspección Automatizada IA</span>
             </div>
-            <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:#10B981; font-weight:700;">MODELO: YOLO-WORLD</span>
+            <span style="font-family:'JetBrains Mono', monospace; font-size:10px; color:#10B981; font-weight:700;">MODELO DE DETECCIÓN A TIEMPO REAL</span>
           </div>
 
           <div class="hero-preview-box">
@@ -1435,10 +1435,10 @@
     <section id="demostrador" class="section-py demo-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-kicker">INTERACCIÓN EN TIEMPO REAL</span>
-          <h2 class="section-title">Demostrador Ligero de Diagnóstico con IA</h2>
+          <span class="section-kicker">VISIÓN ARTIFICIAL EN TIEMPO REAL</span>
+          <h2 class="section-title">Modelo de Detección de Luminarias a Tiempo Real</h2>
           <p class="section-desc">
-            Prueba cómo la visión artificial de KUCHE procesa una fotografía en campo, detecta la luminaria, evalúa el estado del circuito y genera una ficha técnica de inspección energética instantánea.
+            Procesamiento de imagen en campo mediante cámaras web: la IA clasifica el tipo de lámpara e identifica la condición horaria (día o noche) para detectar de forma verídica y verificable anomalías operativas en la vía pública.
           </p>
         </div>
 
@@ -1446,20 +1446,16 @@
           <!-- Selector de Casos de Prueba -->
           <div class="demo-controls-header">
             <div class="demo-presets-label">
-              Selecciona un escenario de prueba en Puebla:
+              Selecciona una captura de cámara en Puebla:
             </div>
             <div class="demo-preset-buttons">
               <button class="btn-preset active" id="btn-case-1" onclick="cargarEscenarioDemo(1)">
-                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/></svg>
-                <span>Caso 1: Falla Diurna (Desperdicio)</span>
+                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+                <span>Caso 1: Luminaria Encendida (Día)</span>
               </button>
               <button class="btn-preset" id="btn-case-2" onclick="cargarEscenarioDemo(2)">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                <span>Caso 2: Inoperativa Nocturna</span>
-              </button>
-              <button class="btn-preset" id="btn-case-3" onclick="cargarEscenarioDemo(3)">
-                <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>Caso 3: Luminaria Eficiente</span>
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M12 18v4"/><circle cx="12" cy="12" r="6"/></svg>
+                <span>Caso 2: Luminaria LED Apagada (Día)</span>
               </button>
             </div>
           </div>
@@ -1475,11 +1471,11 @@
 
               <div id="ai-scan-bar" class="ai-scan-bar"></div>
 
-              <img id="demo-display-img" src="./fotos/1.jpg" alt="Luminaria a diagnosticar" class="demo-screen-img">
+              <img id="demo-display-img" src="./fotos/demo_caso_1.jpg" alt="Luminaria analizada por visión artificial" class="demo-screen-img">
 
-              <div id="demo-bounding-box" class="ai-bounding-box">
-                <span id="demo-box-tag" class="ai-box-tag">LUMINARIA · 97.2%</span>
-                <span style="font-family:'JetBrains Mono', monospace; font-size:9.5px; color:#FFFFFF; background:rgba(0,0,0,0.6); padding:2px 4px; border-radius:2px; align-self:flex-end;" id="demo-box-sub">IA ACTIVA</span>
+              <div id="demo-bounding-box" class="ai-bounding-box" style="top:45%; left:54%; width:18%; height:22%;">
+                <span id="demo-box-tag" class="ai-box-tag">Luminaria Convencional</span>
+                <span style="font-family:'JetBrains Mono', monospace; font-size:9.5px; color:#FFFFFF; background:rgba(0,0,0,0.65); padding:2px 4px; border-radius:2px; align-self:flex-end;" id="demo-box-sub">Detección Activa</span>
               </div>
             </div>
 
@@ -1488,33 +1484,33 @@
               <div>
                 <div class="report-card-title">
                   <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  <span>Ficha Técnica de Incidencia IA</span>
+                  <span>Ficha de Detección en Tiempo Real</span>
                 </div>
 
                 <div class="report-meta-grid">
                   <div class="report-row">
-                    <span class="report-label">Folio de Dictamen</span>
-                    <span class="report-val" id="rep-folio">PUE-2026-EH-0428</span>
+                    <span class="report-label">Folio de Detección</span>
+                    <span class="report-val" id="rep-folio">PUE-2026-DET-01</span>
                   </div>
                   <div class="report-row">
-                    <span class="report-label">Municipio / Demarcación</span>
-                    <span class="report-val" id="rep-lugar">Puebla (Reserva Territorial)</span>
+                    <span class="report-label">Municipio / Ubicación</span>
+                    <span class="report-val" id="rep-lugar">Puebla, México</span>
                   </div>
                   <div class="report-row">
-                    <span class="report-label">Diagnóstico de Red</span>
-                    <span id="rep-status" class="status-badge critical">DESPERDICIO DIURNO</span>
+                    <span class="report-label">Tipo de Lámpara</span>
+                    <span class="report-val" id="rep-tipo" style="color:var(--clr-dorado-brillo); font-weight:700;">Luminaria Convencional (Vapor de Sodio)</span>
                   </div>
                   <div class="report-row">
-                    <span class="report-label">Pérdida Energética</span>
-                    <span class="report-val" id="rep-energia" style="color:#EF4444;">150 W (~1.8 kWh/día)</span>
+                    <span class="report-label">Condición Horaria</span>
+                    <span class="report-val" id="rep-horario">Día</span>
                   </div>
                   <div class="report-row">
-                    <span class="report-label">Certeza Algorítmica</span>
-                    <span class="report-val" id="rep-confianza">97.2% (YOLO-World)</span>
+                    <span class="report-label">Estado de Iluminación</span>
+                    <span id="rep-status" class="status-badge critical">ENCENDIDA (ANOMALÍA DIURNA)</span>
                   </div>
                   <div class="report-row">
-                    <span class="report-label">Dictamen Operativo</span>
-                    <span class="report-val" id="rep-accion" style="font-size:12px; max-width:200px; text-align:right;">Revisión de fotocelda / circuito</span>
+                    <span class="report-label">Modelo de IA</span>
+                    <span class="report-val" id="rep-modelo" style="font-size:11.5px; color:#10B981; font-family:'JetBrains Mono', monospace;">Modelo de detección de luminarias a tiempo real</span>
                   </div>
                 </div>
               </div>
@@ -1522,7 +1518,7 @@
               <div>
                 <button type="button" class="btn-run-analysis" id="btn-analyze" onclick="ejecutarAnalisisIA()">
                   <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  <span>Re-analizar con Visión Artificial</span>
+                  <span>Ejecutar Detección a Tiempo Real</span>
                 </button>
               </div>
             </div>
@@ -1697,7 +1693,7 @@
         <div class="footer-col">
           <h4>Pilares de Innovación</h4>
           <ul class="footer-links">
-            <li>Visión Artificial YOLO-World</li>
+            <li>Modelo de Detección de Luminarias a Tiempo Real</li>
             <li>Auditoría de Ahorro Eléctrico</li>
             <li>Cartografía Geoespacial Soberana</li>
             <li>Escalabilidad para los 217 Municipios</li>
@@ -1729,40 +1725,30 @@
     // ═════════════════════════════════════════════════════════════════════
     const escenariosDemo = {
       1: {
-        img: './fotos/1.jpg',
-        box: { top: '24%', left: '30%', width: '40%', height: '48%' },
-        tag: 'LUMINARIA_ALUMBRADO · 97.2%',
-        folio: 'PUE-2026-EH-0428',
-        lugar: 'Puebla (Reserva Territorial Atlixcáyotl)',
+        img: './fotos/demo_caso_1.jpg',
+        box: { top: '45%', left: '54%', width: '18%', height: '22%' },
+        tag: 'Luminaria Convencional',
+        sub: 'Detección Activa',
+        folio: 'PUE-2026-DET-01',
+        lugar: 'Puebla, México',
+        tipo: 'Luminaria Convencional (Vapor de Sodio)',
+        horario: 'Día',
         statusClass: 'status-badge critical',
-        statusText: 'DESPERDICIO DIURNO ACTIVO',
-        energia: '150 W (~1.8 kWh/día)',
-        confianza: '97.2% (YOLO-World)',
-        accion: 'Sustitución de fotocelda / Inspección de balastro'
+        statusText: 'ENCENDIDA (ANOMALÍA DIURNA)',
+        modelo: 'Modelo de detección de luminarias a tiempo real'
       },
       2: {
-        img: './fotos/2.jpg',
-        box: { top: '18%', left: '34%', width: '36%', height: '52%' },
-        tag: 'LUMINARIA_APAGADA · 95.8%',
-        folio: 'PUE-2026-EH-0891',
-        lugar: 'Tehuacán (Avenida Reforma Sur)',
-        statusClass: 'status-badge warning',
-        statusText: 'INOPERATIVA EN SERVICIO',
-        energia: 'Pérdida de Alumbrado Nocturno',
-        confianza: '95.8% (YOLO-World)',
-        accion: 'Despacho de cuadrilla para cambio de lámpara'
-      },
-      3: {
-        img: './fotos/3.jpg',
-        box: { top: '20%', left: '36%', width: '32%', height: '46%' },
-        tag: 'LUMINARIA_LED · 98.4%',
-        folio: 'PUE-2026-EH-1204',
-        lugar: 'Tepexi de Rodríguez (Plaza Central)',
+        img: './fotos/demo_caso_2.jpg',
+        box: { top: '16%', left: '52%', width: '18%', height: '18%' },
+        tag: 'Luminaria LED Vial',
+        sub: 'Detección Activa',
+        folio: 'PUE-2026-DET-02',
+        lugar: 'Puebla, México',
+        tipo: 'Luminaria LED Vial Moderna',
+        horario: 'Día',
         statusClass: 'status-badge optimal',
-        statusText: 'OPERACIÓN NOMINAL ÓPTIMA',
-        energia: '70 W (LED de Alta Eficiencia)',
-        confianza: '98.4% (YOLO-World)',
-        accion: 'Mantenimiento preventivo programado a 6 meses'
+        statusText: 'APAGADA (OPERACIÓN NORMAL)',
+        modelo: 'Modelo de detección de luminarias a tiempo real'
       }
     };
 
@@ -1780,6 +1766,7 @@
       const img = document.getElementById('demo-display-img');
       const box = document.getElementById('demo-bounding-box');
       const boxTag = document.getElementById('demo-box-tag');
+      const boxSub = document.getElementById('demo-box-sub');
 
       img.src = data.img;
       box.style.top = data.box.top;
@@ -1787,17 +1774,18 @@
       box.style.width = data.box.width;
       box.style.height = data.box.height;
       boxTag.textContent = data.tag;
+      if (boxSub) boxSub.textContent = data.sub;
 
       document.getElementById('rep-folio').textContent = data.folio;
       document.getElementById('rep-lugar').textContent = data.lugar;
+      document.getElementById('rep-tipo').textContent = data.tipo;
+      document.getElementById('rep-horario').textContent = data.horario;
       
       const stEl = document.getElementById('rep-status');
       stEl.className = data.statusClass;
       stEl.textContent = data.statusText;
 
-      document.getElementById('rep-energia').textContent = data.energia;
-      document.getElementById('rep-confianza').textContent = data.confianza;
-      document.getElementById('rep-accion').textContent = data.accion;
+      document.getElementById('rep-modelo').textContent = data.modelo;
 
       // Disparar animación de escaneo
       ejecutarAnimacionEscaneo();
