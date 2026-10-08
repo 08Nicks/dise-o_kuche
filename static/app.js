@@ -23,6 +23,11 @@ let grabacionActiva      = false;
 let segundosRestantes    = 10;
 let timerCuentaRegresiva = null;
 
+// Exponer variables clave para acceso externo (oficial.html, etc.)
+// Usar funciones porque let variables no pueden ser re-definidas en window directamente
+window._kucheGetWS = () => wsDeteccion;
+window._kucheGetModo = () => modo;
+
 // ─── Logger en consola (oculto de la interfaz) ────────────────────
 function LOG(msg, color) {
   console.log('[KUCHE] ' + msg);
@@ -85,7 +90,7 @@ function conectarWS() {
     estado('IA Kuche lista', '#00ff80');
     wsReconnecting = false;
     analizando = false;
-    if (camaraEncendida && modo === 'video' && grabacionActiva) {
+    if (camaraEncendida && modo === 'video') {
       ejecutarAnalisis();
     }
   };
@@ -98,32 +103,32 @@ function conectarWS() {
   wsDeteccion.onmessage = (event) => {
     analizando = false;
     setProgressBar(false);
-    const j = JSON.parse(event.data);
-    cajas = (j.vistas || []).map(c => ({ ...c, ts: Date.now() }));
+    try {
+      const j = JSON.parse(event.data);
+      cajas = (j.vistas || []).map(c => ({ ...c, ts: Date.now() }));
 
-    // Si detectó algo en modo video: DETIENE LA GRABACIÓN INMEDIATAMENTE
-    if (cajas.length > 0 && modo === 'video' && grabacionActiva) {
-      const mejor = cajas.reduce((a, b) => a.conf > b.conf ? a : b);
-      detenerAnalisisVideo(); // <-- Se detiene la grabación al detectar la luminaria
-      mostrarPanelReporte(mejor);
-      const nombres = cajas.map(c => `${c.texto} (${Math.round(c.conf * 100)}%)`).join(', ');
-      estado(`Detectado: ${nombres} — Grabación finalizada`, '#00ff80');
-      LOG(`IA Kuche detecto: ${nombres}`, '#00ff80');
-      return;
-    }
-
-    if (cajas.length > 0) {
-      const mejor = cajas.reduce((a, b) => a.conf > b.conf ? a : b);
-      mostrarPanelReporte(mejor);
-    } else {
-      if (grabacionActiva) {
-        estado(`Grabando video IA (${segundosRestantes}s)... Buscando fallas`, '#00ff80');
+      if (cajas.length > 0) {
+        const nombres = cajas.map(c => `${c.texto} (${Math.round(c.conf * 100)}%)`).join(', ');
+        if (grabacionActiva) {
+          estado(`Grabando (${segundosRestantes}s): ${nombres}`, '#00ff80');
+        } else {
+          estado(`IA Kuche: ${nombres}`, '#00ff80');
+        }
+        LOG(`IA Kuche: ${nombres}`, '#00ff80');
+      } else {
+        if (grabacionActiva) {
+          estado(`Escaneando video IA (${segundosRestantes}s)... Buscando luminarias`, '#00ff80');
+        } else {
+          estado('IA Kuche lista — Escaneando luminarias en vivo', '#00ff80');
+        }
       }
+    } catch(err) {
+      console.warn('Error decodificando respuesta WS:', err);
     }
 
-    // Si sigue grabando dentro del límite de 10s, enviar siguiente frame
-    if (grabacionActiva && camaraEncendida && modo === 'video') {
-      programarAnalisis(20);
+    // Programar siguiente frame (rápido en grabación 60ms, suave en reposo 350ms)
+    if (camaraEncendida && modo === 'video') {
+      programarAnalisis(grabacionActiva ? 60 : 350);
     }
   };
 
@@ -151,7 +156,24 @@ if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
   });
 }
 
+// ─── Calibración de Lienzos y Cámara ──────────────────────────────
+function ajustarDimensionesVideo() {
+  if (!video || !video.videoWidth || !video.videoHeight) return false;
+  const maxDim = Math.max(video.videoWidth, video.videoHeight) || 1280;
+  const s = Math.min(1, 640 / maxDim);
+  sendCanvas.width  = Math.round(video.videoWidth  * s);
+  sendCanvas.height = Math.round(video.videoHeight * s);
+  const sv = Math.min(1, 800 / maxDim);
+  if (canvas) {
+    canvas.width  = Math.round(video.videoWidth  * sv);
+    canvas.height = Math.round(video.videoHeight * sv);
+  }
+  return true;
+}
+
 // ─── Arranque ────────────────────────────────────────────────────
+const _esVistaConLogin = () => !!document.getElementById('view-auth-container');
+
 window.addEventListener('load', async () => {
   LOG('Sistema iniciando...', '#ffcc00');
   if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
@@ -166,19 +188,31 @@ window.addEventListener('load', async () => {
   }
   LOG('API camara disponible', '#00ff80');
 
+  // Si hay pantalla de login (oficial.html), la cámara se arranca después del login
+  if (_esVistaConLogin()) {
+    LOG('Modo con login detectado — esperando autenticación para iniciar cámara', '#ffcc00');
+    return;
+  }
+
   try {
-    const resp = await fetch('/api/ping', { signal: AbortSignal.timeout(3000) });
+    const pingUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/ping') : '/api/ping';
+    const resp = await fetch(pingUrl, { signal: AbortSignal.timeout(3500) });
     LOG('Servidor conectado (HTTP ' + resp.status + ')', '#00ff80');
+    estado('IA Kuche lista para escanear', '#00ff80');
   } catch (e) {
-    LOG('Servidor sin respuesta: ' + e.message, '#ff4444');
-    estado('Sin conexion al servidor', '#ff4444');
+    LOG('Servidor sin respuesta: ' + e.message, '#ff9800');
+    if (window.location.hostname.includes('github.io') && (!window.KucheAPI || !window.KucheAPI.getUrl())) {
+      estado('Sistema en Línea (Modo Local)', '#00ff80');
+    } else {
+      estado('Sin conexion al servidor', '#ff4444');
+    }
   }
 
   LOG('Solicitando cámara...', '#ffcc00');
   const ok = await iniciarCamara();
   if (ok) {
     LOG('Camara activada', '#00ff80');
-    if (modo === 'video') iniciarAnalisisVideo();
+    if (modo === 'video') programarAnalisis(100);
   } else {
     LOG('Camara no disponible', '#ff4444');
   }
@@ -195,20 +229,19 @@ async function iniciarCamara() {
     );
     LOG('Stream: ' + mediaStream.getVideoTracks().length + ' track(s)', '#00ff80');
     video.srcObject = mediaStream;
-    video.play().catch(e => LOG('Autoplay: ' + e.message, '#ff9800'));
+
     video.onloadedmetadata = () => {
-      LOG('Video: ' + video.videoWidth + 'x' + video.videoHeight, '#555');
-      // Tamaño optimizado a 640px para captar luminarias y alumbrado público
-      const maxDim = Math.max(video.videoWidth, video.videoHeight) || 1280;
-      const s = Math.min(1, 640 / maxDim);
-      sendCanvas.width  = Math.round(video.videoWidth  * s);
-      sendCanvas.height = Math.round(video.videoHeight * s);
-      const sv = Math.min(1, 800 / maxDim);
-      canvas.width  = Math.round(video.videoWidth  * sv);
-      canvas.height = Math.round(video.videoHeight * sv);
+      ajustarDimensionesVideo();
     };
+    video.addEventListener('canplay', () => {
+      ajustarDimensionesVideo();
+    });
+
+    await video.play().catch(e => LOG('Autoplay: ' + e.message, '#ff9800'));
+    ajustarDimensionesVideo();
+
     if (!pintarActivo) { pintarActivo = true; requestAnimationFrame(pintar); }
-    estado('Escaneando luminarias...', '#00ff80');
+    estado('IA Kuche lista — Escaneando en vivo', '#00ff80');
     return true;
   } catch (e) {
     LOG('Camara [' + e.name + ']: ' + e.message, '#ff4444');
@@ -261,23 +294,27 @@ async function toggleCamara() {
     if (pausedEl) pausedEl.style.display = 'none';
     if (modo !== 'manual' && mp) mp.style.display = 'none';
     const ok = await iniciarCamara();
-    if (ok && modo === 'video') iniciarAnalisisVideo();
+    if (ok && modo === 'video') programarAnalisis(100);
   }
 }
 
 // ─── Loop de pintura ─────────────────────────────────────────────
 function pintar() {
   if (!pintarActivo) return;
-  if (video.readyState >= 2) {
+  const videoListo = video && video.videoWidth > 0 && (video.readyState >= 2 || video.currentTime > 0);
+  if (videoListo && ctx && canvas) {
+    if (canvas.width === 0 || canvas.width === 300) {
+      ajustarDimensionesVideo();
+    }
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const ahora = Date.now();
     for (const c of cajas) {
-      if (!c.caja || ahora - c.ts > 800) continue;
+      if (!c.caja || ahora - c.ts > 1000) continue;
       const sx = canvas.width / c.w, sy = canvas.height / c.h;
       const [x1, y1, x2, y2] = c.caja;
-      const alpha = Math.max(0, 1 - (ahora - c.ts) / 800).toFixed(2);
+      const alpha = Math.max(0, 1 - (ahora - c.ts) / 1000).toFixed(2);
       ctx.strokeStyle = `rgba(0,255,128,${alpha})`;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.5;
       ctx.strokeRect(x1 * sx, y1 * sy, (x2 - x1) * sx, (y2 - y1) * sy);
       ctx.fillStyle = `rgba(0,255,128,${alpha})`;
       ctx.font = 'bold 13px Arial';
@@ -287,7 +324,7 @@ function pintar() {
   requestAnimationFrame(pintar);
 }
 
-// ─── Análisis video (Máximo 10 Segundos) ──────────────────────────
+// ─── Análisis video (Inspección Guiada de 10 Segundos) ───────────
 function iniciarAnalisisVideo() {
   detenerAnalisisVideo();
   if (!camaraEncendida || modo !== 'video') return;
@@ -312,8 +349,19 @@ function iniciarAnalisisVideo() {
 
 function finalizarPorTiempoVideo() {
   detenerAnalisisVideo();
-  estado('10s completados — Sin fallas detectadas', '#ff9800');
-  LOG('10s transcurridos sin fallas detectadas', '#ff9800');
+  if (cajas && cajas.length > 0) {
+    const mejor = cajas.reduce((a, b) => a.conf > b.conf ? a : b);
+    mostrarPanelReporte(mejor);
+    estado(`10s completados — ${mejor.texto} lista para reporte`, '#00ff80');
+    LOG(`10s completados: reporte generado para ${mejor.texto}`, '#00ff80');
+  } else {
+    estado('10s completados — Sin luminarias detectadas', '#ff9800');
+    LOG('10s transcurridos sin luminarias detectadas', '#ff9800');
+    // Reanudar escaneo en vivo tras la inspección de 10s
+    if (camaraEncendida && modo === 'video') {
+      programarAnalisis(350);
+    }
+  }
 }
 
 function detenerAnalisisVideo() {
@@ -334,20 +382,28 @@ function actualizarBotonGrabacion() {
   if (grabacionActiva) {
     btn.style.background = '#ff4444';
     btn.style.color = '#fff';
-    if (ico) ico.textContent = '';
-    if (txt) txt.textContent = `Detener Grabación (${segundosRestantes}s)`;
+    if (ico) ico.innerHTML = '<span class="rec-pulse-icon"></span>';
+    const extra = (cajas && cajas.length > 0) ? ' [Detectada]' : '';
+    if (txt) txt.textContent = `Detener y Reportar (${segundosRestantes}s)${extra}`;
   } else {
     btn.style.background = '#00d2ff';
     btn.style.color = '#000';
-    if (ico) ico.textContent = '';
-    if (txt) txt.textContent = 'Iniciar Grabación (10s)';
+    if (ico) ico.innerHTML = '<span class="rec-pulse-icon"></span>';
+    if (txt) txt.textContent = 'Iniciar Grabación (10s con IA)';
   }
 }
 
 window.toggleGrabacionVideo = function () {
   if (grabacionActiva) {
     detenerAnalisisVideo();
-    estado('Grabación detenida manualmente', '#aaa');
+    if (cajas && cajas.length > 0) {
+      const mejor = cajas.reduce((a, b) => a.conf > b.conf ? a : b);
+      mostrarPanelReporte(mejor);
+      estado(`Grabación detenida — ${mejor.texto} lista para reporte`, '#00ff80');
+    } else {
+      estado('Grabación detenida — Escaneando en vivo', '#aaa');
+      programarAnalisis(350);
+    }
   } else {
     if (!camaraEncendida) toggleCamara();
     iniciarAnalisisVideo();
@@ -355,24 +411,58 @@ window.toggleGrabacionVideo = function () {
 };
 
 function programarAnalisis(delay) {
-  if (!camaraEncendida || modo !== 'video' || !grabacionActiva) return;
+  if (!camaraEncendida || modo !== 'video') return;
   if (timerAnalisis) clearTimeout(timerAnalisis);
-  timerAnalisis = setTimeout(ejecutarAnalisis, delay !== undefined ? delay : 20);
+  timerAnalisis = setTimeout(ejecutarAnalisis, delay !== undefined ? delay : (grabacionActiva ? 40 : 350));
 }
 
 async function ejecutarAnalisis() {
-  if (analizando || !mediaStream || video.readyState < 2 || !grabacionActiva) { programarAnalisis(20); return; }
-  if (!wsDeteccion || wsDeteccion.readyState !== WebSocket.OPEN) { programarAnalisis(200); return; }
+  if (analizando || !mediaStream) { programarAnalisis(40); return; }
+  const videoListo = video && video.videoWidth > 0 && (video.readyState >= 2 || video.currentTime > 0);
+  if (!videoListo) { programarAnalisis(40); return; }
+  if (!wsDeteccion || wsDeteccion.readyState !== WebSocket.OPEN) { programarAnalisis(300); return; }
+
+  if (sendCanvas.width === 0 || sendCanvas.width === 300) {
+    ajustarDimensionesVideo();
+  }
+
   analizando = true;
-  setProgressBar(true);
+  setProgressBar(grabacionActiva);
+
+  // Watchdog de seguridad (1.8s) para nunca dejar el análisis trabado
+  const watchdog = setTimeout(() => {
+    if (analizando) {
+      analizando = false;
+      setProgressBar(false);
+      if (camaraEncendida && modo === 'video') programarAnalisis(60);
+    }
+  }, 1800);
+
   try {
     sc.drawImage(video, 0, 0, sendCanvas.width, sendCanvas.height);
     const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.55));
-    if (!blob) { analizando = false; setProgressBar(false); programarAnalisis(20); return; }
-    wsDeteccion.send(await blob.arrayBuffer());
+    if (!blob) {
+      clearTimeout(watchdog);
+      analizando = false;
+      setProgressBar(false);
+      programarAnalisis(40);
+      return;
+    }
+    const buf = await blob.arrayBuffer();
+    if (wsDeteccion && wsDeteccion.readyState === WebSocket.OPEN) {
+      wsDeteccion.send(buf);
+    } else {
+      clearTimeout(watchdog);
+      analizando = false;
+      setProgressBar(false);
+      programarAnalisis(300);
+    }
   } catch (e) {
+    clearTimeout(watchdog);
     LOG('Error envío frame: ' + e.message, '#ff4444');
-    analizando = false; setProgressBar(false); programarAnalisis(50);
+    analizando = false;
+    setProgressBar(false);
+    programarAnalisis(100);
   }
 }
 
@@ -432,13 +522,13 @@ window.capturarFoto = async function () {
       LOG('Foto IA Kuche: ' + nombres, '#00ff80');
     } else {
       itemReporte = {
-        texto: 'Luminaria LED Vial Tipo Cobra',
-        conf: 0.94,
+        texto: 'Luminaria de Alumbrado Público',
+        conf: 0.50,
         horario: condHorario,
         imagen: fotoDataUrl
       };
-      estado(`Luminaria detectada: Luminaria LED Vial Tipo Cobra (94%) [${condHorario}]`, '#00ff80');
-      LOG('Captura analizada: lista para confirmación', '#00ff80');
+      estado(`Foto capturada: Sin luminaria detectada automáticamente [${condHorario}]`, '#ff9800');
+      LOG('Captura analizada: sin detecciones automáticas con alta certeza', '#ff9800');
     }
     
     mostrarPanelReporte(itemReporte);
@@ -499,13 +589,13 @@ if (fileInput) {
           LOG('Archivo IA Kuche: ' + nombres, '#00ff80');
         } else {
           itemReporte = {
-            texto: 'Luminaria LED Vial Tipo Cobra',
-            conf: 0.94,
+            texto: 'Luminaria de Alumbrado Público',
+            conf: 0.50,
             horario: condHorario,
             imagen: fotoDataUrl
           };
-          estado(`Detectado en archivo: Luminaria LED Vial Tipo Cobra (94%) [${condHorario}]`, '#00ff80');
-          LOG('Archivo procesado: listo para reporte', '#00ff80');
+          estado(`Archivo cargado: Sin luminarias detectadas automáticamente [${condHorario}]`, '#ff9800');
+          LOG('Archivo procesado: sin detecciones automáticas con alta certeza', '#ff9800');
         }
         
         mostrarPanelReporte(itemReporte);
@@ -588,11 +678,19 @@ function mostrarPanelReporte(vista) {
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// El reporte es OBLIGATORIO: no se permite descartar
-window.descartarReporte = function () {
-  LOG('El levantamiento del reporte es obligatorio para registrar la evidencia.', '#ff9800');
-  mostrarToast('El registro del reporte es obligatorio');
+window.cerrarPanelReporte = function () {
+  const panel = document.getElementById('panel-reporte');
+  if (panel) panel.style.display = 'none';
+  const inpFalla = document.getElementById('reporte-falla');
+  if (inpFalla) inpFalla.value = '';
+  cajas = [];
+  if (modo === 'video' && camaraEncendida) {
+    iniciarAnalisisVideo();
+  } else {
+    estado('IA Kuche lista para escanear', '#00ff80');
+  }
 };
+window.descartarReporte = window.cerrarPanelReporte;
 
 // ─── Enviar reporte IA (Obligatorio con redacción humana de falla) ──
 window.enviarReporteIA = async function () {

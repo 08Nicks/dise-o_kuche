@@ -201,13 +201,18 @@
 
   <!-- PANEL MODAL DE REPORTE IA (TRAS DETECCIÓN) -->
   <div id="panel-reporte">
-    <div class="panel-title-badge" style="background: rgba(155, 34, 71, 0.2); border: 1px solid var(--clr-guinda-mexicano); color: #fff; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; margin-bottom: 10px;">
-      <svg class="icon-svg" viewBox="0 0 24 24" style="color: var(--clr-dorado-acento); width: 18px; height: 18px;">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      <span>Reporte Técnico Obligatorio — Luminaria Detectada por IA</span>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+      <div class="panel-title-badge" style="background: rgba(155, 34, 71, 0.2); border: 1px solid var(--clr-guinda-mexicano); color: #fff; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-weight: 700;">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="color: var(--clr-dorado-acento); width: 18px; height: 18px;">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>Luminaria Detectada por IA</span>
+      </div>
+      <button type="button" onclick="cerrarPanelReporte()" style="background:rgba(255,255,255,0.08); border:1px solid var(--border-medium,#444); color:var(--text-secondary,#ddd); border-radius:6px; padding:6px 12px; font-size:11px; font-weight:700; cursor:pointer;" title="Cerrar y volver a la cámara">
+        ✕ Volver a Cámara
+      </button>
     </div>
 
     <!-- Foto congelada con la detección -->
@@ -239,13 +244,18 @@
       <input type="text" id="reporte-condicion-horaria" class="input-text" readonly value="Día" style="font-weight:700; color:#10b981; background:var(--bg-elevated); border:1px solid #10b981; padding:8px 10px; border-radius:6px; width:100%;">
     </div>
 
-    <button onclick="enviarReporteIA()" class="btn-submit-report" style="width:100%; padding:14px; font-size:14px; font-weight:700;">
-      <svg class="icon-svg" viewBox="0 0 24 24">
-        <line x1="22" y1="2" x2="11" y2="13"/>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
-      <span>Confirmar y Enviar Reporte Oficial (Obligatorio)</span>
-    </button>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button type="button" onclick="cerrarPanelReporte()" class="btn" style="flex:1; padding:12px; font-size:13px; font-weight:700; background:rgba(255,255,255,0.06); border:1px solid var(--border-medium,#444); color:var(--text-secondary,#ddd); border-radius:8px; cursor:pointer;">
+        Cancelar
+      </button>
+      <button onclick="enviarReporteIA()" class="btn-submit-report" style="flex:2; padding:12px; font-size:13px; font-weight:700;">
+        <svg class="icon-svg" viewBox="0 0 24 24">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+        <span>Confirmar y Enviar</span>
+      </button>
+    </div>
   </div>
 
   <!-- TOAST DE CONFIRMACIÓN -->
@@ -256,12 +266,12 @@
     <span>Registro guardado con éxito</span>
   </div>
 
-  <video id="video" autoplay playsinline muted hidden></video>
+  <video id="video" autoplay playsinline muted style="position:fixed;top:-9999px;left:-9999px;width:640px;height:480px;opacity:0;pointer-events:none;z-index:-9999;"></video>
 </div>
 
 <!-- Scripts Kuche: Puente API y Lógica PWA -->
-<script src="./static/kuche-api.js?v=12.0"></script>
-<script src="./static/app.js?v=12.0"></script>
+<script src="./static/kuche-api.js?v=13.0"></script>
+<script src="./static/app.js?v=13.0"></script>
 
 <script>
 // Conmutador de Tema (Modo Oscuro / Modo Claro)
@@ -290,9 +300,8 @@ function aplicarTema(tema) {
 window.addEventListener('DOMContentLoaded', () => {
   const guardadoTema = localStorage.getItem('kuche_theme_pref') || 'dark';
   aplicarTema(guardadoTema);
-  if (typeof iniciarCamara === 'function') {
-    iniciarCamara();
-  }
+  // La cámara y análisis IA se inician desde app.js (window.load event)
+  // No llamar iniciarCamara aquí para evitar doble inicialización
 });
 
 window.addEventListener('storage', (e) => {
