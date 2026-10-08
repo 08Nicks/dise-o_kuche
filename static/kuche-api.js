@@ -98,22 +98,28 @@
         }
       }
 
-      // Caso 3: Probar backend_url.json (remoto o local)
-      try {
-        const t = Date.now();
-        const r = await fetch(`${LOCAL_JSON_PATH}?_t=${t}`, { cache: 'no-store' });
-        if (r.ok) {
-          const cfg = await r.json();
-          if (aplicarConfig(cfg)) {
-            const viva = await verificarPing(backendUrl);
-            if (viva) {
-              isOnline = true;
-              notificar();
-              return backendUrl;
+      // Caso 3: Probar backend_url.json (local y fallback raw GitHub directo)
+      const fuentesJson = [
+        `${LOCAL_JSON_PATH}?_t=${Date.now()}`,
+        `https://raw.githubusercontent.com/08Nicks/dise-o_kuche/main/backend_url.json?_t=${Date.now()}`,
+        `https://raw.githubusercontent.com/08Nicks/dise-o_kuche/gh-pages/backend_url.json?_t=${Date.now()}`
+      ];
+      for (const fuente of fuentesJson) {
+        try {
+          const r = await fetch(fuente, { cache: 'no-store' });
+          if (r.ok) {
+            const cfg = await r.json();
+            if (aplicarConfig(cfg)) {
+              const viva = await verificarPing(backendUrl);
+              if (viva) {
+                isOnline = true;
+                notificar();
+                return backendUrl;
+              }
             }
           }
-        }
-      } catch(e) {}
+        } catch(e) {}
+      }
 
       // Caso 4: Probar conexión directa a localhost:8000 (Private Network Access)
       try {
