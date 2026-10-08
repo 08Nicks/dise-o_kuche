@@ -8,6 +8,12 @@ const ctx       = canvas ? canvas.getContext('2d') : null;
 const sendCanvas = document.createElement('canvas');
 const sc        = sendCanvas.getContext('2d');
 
+// Desocultar video dinámicamente para que el navegador mantenga el flujo de frames activo sin tocar el HTML
+if (video) {
+  video.removeAttribute('hidden');
+  video.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:640px;height:480px;opacity:0;pointer-events:none;z-index:-9999;';
+}
+
 // ─── Estado global ───────────────────────────────────────────────
 let modo                 = 'video';
 let cajas                = [];
