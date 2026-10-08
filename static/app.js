@@ -860,10 +860,22 @@ async function sincronizarColaOffline() {
     let subidos = 0;
     for (const item of cola) {
       try {
+        const payload = {
+          luminaria: item.luminaria || item.incidencia || item.placa || 'Luminaria Registrada',
+          incidencia: item.incidencia || item.luminaria || 'Luminaria Registrada',
+          placa: item.placa || item.luminaria || item.incidencia || 'Luminaria Registrada',
+          tipo: item.tipo || 'Inspección Kuche',
+          usuario: item.usuario || 'Versión Demo',
+          img: item.img || item.imagen_base64 || item.foto || null,
+          conf: item.conf || '1.0',
+          lat: (item.lat !== undefined && item.lat !== null && item.lat !== '') ? Number(item.lat) : (item.ubi && item.ubi.includes(',') ? Number(item.ubi.split(',')[0]) : null),
+          lon: (item.lon !== undefined && item.lon !== null && item.lon !== '') ? Number(item.lon) : (item.ubi && item.ubi.includes(',') ? Number(item.ubi.split(',')[1]) : null),
+          ubi: item.ubi || ((item.lat && item.lon) ? `${item.lat},${item.lon}` : '')
+        };
         const resp = await fetch(targetUrl, {
           method: 'POST',
           headers: headers,
-          body: JSON.stringify(item)
+          body: JSON.stringify(payload)
         });
         if (resp.ok) {
           subidos++;
@@ -896,9 +908,12 @@ function actualizarInsigniaOffline() {
         badge.id = 'badge-offline-queue';
         badge.style.cssText = 'position:fixed; bottom:14px; left:14px; z-index:99999; background:#9B2247; color:#fff; font-size:11px; font-weight:700; padding:6px 14px; border-radius:20px; border:1px solid #E6D194; box-shadow:0 4px 14px rgba(0,0,0,0.6); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:"Montserrat", sans-serif;';
         badge.title = 'Clic para intentar subir ahora';
-        badge.onclick = () => {
+        badge.onclick = async () => {
           mostrarToast('Sincronizando reportes pendientes...');
-          sincronizarColaOffline();
+          if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
+            await window.KucheAPI.sincronizarUrl();
+          }
+          await sincronizarColaOffline();
         };
         document.body.appendChild(badge);
       }

@@ -52,7 +52,7 @@
     if (!url) return false;
     try {
       const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 2500);
+      const tid = setTimeout(() => ctrl.abort(), 4500);
       const res = await fetch(url.replace(/\/+$/, '') + '/api/ping', { 
         cache: 'no-store',
         signal: ctrl.signal 
@@ -146,7 +146,13 @@
     isOnline: () => isOnline,
     isStaticMode: () => !backendUrl,
     apiUrl: function(path) {
-      const p = path.startsWith('/') ? path : '/' + path;
+      if (!path) return '';
+      if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:') || path.startsWith('blob:')) {
+        return path;
+      }
+      let p = path;
+      if (p.startsWith('./')) p = p.substring(1);
+      if (!p.startsWith('/')) p = '/' + p;
       if (isDirectBackend || !backendUrl) return p;
       return backendUrl.replace(/\/+$/, '') + p;
     },

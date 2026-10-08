@@ -1141,61 +1141,8 @@ function getMarkerIcon(estadoTicket) {
   });
 }
 
-// ── Reportes de respaldo institucional para modo estático en GitHub Pages ──
-const REPORTES_DEMO_PUEBLA = [
-  {
-    id: 101,
-    folio: "KUC-00101",
-    luminaria: "Luminaria LED Vial Tipo Cobra | Falla en fotocelda — Referencia: Frente a Catedral",
-    incidencia: "Falla en fotocelda — Referencia: Frente a Catedral",
-    falla: "Luminaria encendida de día por falla en sensor fotosensible",
-    referencia: "Zócalo de Puebla, Av. Juan de Palafox y Mendoza",
-    estado_ticket: "En Revisión",
-    ubi: "19.0433,-98.1983",
-    hora: "2026-10-07 10:15:00",
-    usuario: "Versión Demo",
-    foto: "./fotos/demo_caso_1.jpg"
-  },
-  {
-    id: 102,
-    folio: "KUC-00102",
-    luminaria: "Luminaria LED Suburbana | Luminaria desprendida — Referencia: Esquina 11 Sur",
-    incidencia: "Luminaria desprendida — Referencia: Esquina 11 Sur",
-    falla: "Luminaria desprendida con peligro de caída a la vialidad",
-    referencia: "Paseo Bravo, 11 Sur y Av. Reforma",
-    estado_ticket: "Reportada",
-    ubi: "19.0456,-98.2078",
-    hora: "2026-10-07 11:30:00",
-    usuario: "Versión Demo",
-    foto: "./fotos/luminaria_desprendida.jpg"
-  },
-  {
-    id: 103,
-    folio: "KUC-00103",
-    luminaria: "Luminaria Vapor de Sodio | Apagada en horario nocturno",
-    incidencia: "Apagada en horario nocturno — Referencia: Callejón 3 Oriente",
-    falla: "Circuito desconectado, apagada en horario nocturno",
-    referencia: "Barrio de Analco, 3 Oriente y 10 Sur",
-    estado_ticket: "Reparada",
-    ubi: "19.0402,-98.1925",
-    hora: "2026-10-06 21:40:00",
-    usuario: "Ing. Operaciones",
-    foto: "./fotos/demo_caso_2.jpg"
-  },
-  {
-    id: 104,
-    folio: "KUC-00104",
-    luminaria: "Luminaria LED Vial Tipo Cobra | Intermitencia en balastro",
-    incidencia: "Intermitencia en balastro — Referencia: Camellón Central",
-    falla: "Parpadeo constante por fluctuación de voltaje",
-    referencia: "Av. Juárez y 19 Sur, La Paz",
-    estado_ticket: "Reportada",
-    ubi: "19.0498,-98.2165",
-    hora: "2026-10-07 08:20:00",
-    usuario: "Versión Demo",
-    foto: "./fotos/demo_caso_1.jpg"
-  }
-];
+// ── Sin reportes falsos de muestra (Dashboard limpio y conectado con datos reales) ──
+const REPORTES_DEMO_PUEBLA = [];
 
 function cargarReportesFallback() {
   let locales = [];
@@ -1215,7 +1162,7 @@ function cargarReportesFallback() {
       foto: c.img ? (c.img.startsWith('data:') ? c.img : 'data:image/jpeg;base64,' + c.img) : ''
     }));
   } catch(e) {}
-  return [...locales, ...REPORTES_DEMO_PUEBLA];
+  return [...locales];
 }
 
 // ── Cargar datos del servidor (con soporte híbrido estático/servidor) ──
@@ -1223,11 +1170,17 @@ async function cargarDatos() {
   const btnRefresh = document.getElementById('btn-refresh');
   if (btnRefresh) btnRefresh.classList.add('loading');
   try {
+    if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
+      await window.KucheAPI.sincronizarUrl();
+    }
+
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/historial?page=0&limit=10000') : '/api/infraestructura/historial?page=0&limit=10000';
     let lista = [];
+    let serverOk = false;
     try {
       const resp = await fetch(targetUrl);
       if (resp.ok) {
+        serverOk = true;
         const j = await resp.json();
         if (Array.isArray(j)) lista = j;
         else if (Array.isArray(j.historial)) lista = j.historial;
@@ -1235,8 +1188,30 @@ async function cargarDatos() {
       }
     } catch(fetchErr) {}
 
-    // Si no hay respuesta del servidor (ej. modo estático en GitHub Pages), usar datos de respaldo
-    if (!lista || lista.length === 0) {
+    if (serverOk) {
+      // Combinar reportes guardados en la BD con reportes pendientes locales en este dispositivo si los hay
+      try {
+        const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
+        if (cola.length > 0) {
+          const pendientesLocales = cola.map((c, idx) => ({
+            id: -(idx + 1),
+            folio: `PEND-${idx + 1}`,
+            luminaria: c.luminaria || c.incidencia || 'Reporte pendiente',
+            incidencia: c.incidencia || c.luminaria || '',
+            falla: c.falla || (c.incidencia ? (c.incidencia.split(' | ')[1] || c.incidencia) : 'Pendiente de sincronizar'),
+            referencia: c.referencia || 'En cola de sincronización',
+            estado_ticket: 'Reportada',
+            ubi: (c.lat && c.lon) ? `${c.lat},${c.lon}` : (c.ubi || ''),
+            lat: c.lat ? Number(c.lat) : 0,
+            lon: c.lon ? Number(c.lon) : 0,
+            hora: new Date(c._ts || Date.now()).toISOString().replace('T', ' ').substring(0, 19),
+            usuario: c.usuario || 'Versión Demo',
+            foto: c.img ? (c.img.startsWith('data:') ? c.img : 'data:image/jpeg;base64,' + c.img) : ''
+          }));
+          lista = [...pendientesLocales, ...lista];
+        }
+      } catch(e) {}
+    } else {
       lista = cargarReportesFallback();
     }
 
@@ -1355,7 +1330,11 @@ function desglosarReporte(r) {
   let fotoUrl = '';
   if (r.foto && typeof r.foto === 'string' && r.foto.trim()) {
     const limpia = r.foto.trim();
-    fotoUrl = window.KucheAPI ? window.KucheAPI.apiUrl(limpia) : limpia;
+    if (limpia.startsWith('data:') || limpia.startsWith('blob:') || limpia.startsWith('http://') || limpia.startsWith('https://')) {
+      fotoUrl = limpia;
+    } else {
+      fotoUrl = window.KucheAPI ? window.KucheAPI.apiUrl(limpia) : limpia;
+    }
   }
 
   return {
