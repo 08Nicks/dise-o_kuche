@@ -7,11 +7,21 @@
  * =====================================================================
  */
 (function() {
-  // ─── 1. LIMPIEZA ABSOLUTA DE CLOUDFLARE EN LA BARRA DEL NAVEGADOR ───
-  // Si la URL en GitHub Pages trae parámetros o rastros de Cloudflare (?api=...trycloudflare...),
-  // se remueven al instante sin recargar la página para que la URL sea 100% limpia en GitHub.
+  // ─── 1. CAPTURA TRANSPARENTE DEL BACKEND Y LIMPIEZA DE BARRA DEL NAVEGADOR ───
+  // Si la URL trae parámetros (?api=... o ?backend=...), se extraen para conectar
+  // y se remueven de INMEDIATO de la barra del navegador sin recargar.
+  // La barra del navegador muestra SIEMPRE una URL 100% limpia en GitHub Pages.
+  let backendUrl = localStorage.getItem('kuche_backend_url') || '';
+
   try {
-    if (window.location.search && (window.location.search.toLowerCase().includes('cloudflare') || window.location.search.toLowerCase().includes('trycloudflare'))) {
+    const params = new URLSearchParams(window.location.search);
+    const paramApi = params.get('api') || params.get('backend');
+    if (paramApi && paramApi.startsWith('http')) {
+      backendUrl = paramApi.trim().replace(/\/+$/, '');
+      localStorage.setItem('kuche_backend_url', backendUrl);
+    }
+    // Si había cualquier parámetro en la URL, limpiarlo al instante de la barra del navegador
+    if (window.location.search && (window.location.search.includes('api=') || window.location.search.includes('backend='))) {
       const cleanUrl = new URL(window.location.href);
       cleanUrl.searchParams.delete('api');
       cleanUrl.searchParams.delete('backend');
@@ -22,17 +32,7 @@
   } catch(e) {}
 
   const LOCAL_JSON_PATH = './backend_url.json';
-
-  let backendUrl = localStorage.getItem('kuche_backend_url') || '';
-  
-  // Limpiar cualquier URL obsoleta de Cloudflare almacenada en localStorage o sessionStorage
-  if (backendUrl && (backendUrl.includes('trycloudflare.com') || backendUrl.includes('cloudflare'))) {
-    try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
-    try { sessionStorage.removeItem('kuche_backend_url'); } catch(e) {}
-    backendUrl = '';
-  }
-
-  let isOnline = true; // En GitHub Pages el sitio está siempre en línea
+  let isOnline = false;
   let listeners = [];
   let sincronizando = false;
 
@@ -40,16 +40,6 @@
   const isDirectBackend = window.location.port === '8000' || 
                           window.location.hostname === 'localhost' || 
                           window.location.hostname === '127.0.0.1';
-
-  // Endpoint explícito en la URL para desarrollo local (nunca Cloudflare)
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const paramApi = params.get('api') || params.get('backend');
-    if (paramApi && paramApi.startsWith('http') && !paramApi.includes('cloudflare')) {
-      backendUrl = paramApi.trim().replace(/\/+$/, '');
-      localStorage.setItem('kuche_backend_url', backendUrl);
-    }
-  } catch(e) {}
 
   function notificar() {
     listeners.forEach(fn => {
@@ -76,22 +66,13 @@
 
   function aplicarConfig(cfg) {
     if (!cfg) return false;
-    if (cfg.static_mode || !cfg.backend_url) {
-      backendUrl = '';
-      isOnline = true;
-      return true;
-    }
     const nuevaUrl = (cfg.backend_url || '').trim().replace(/\/+$/, '');
-    if (!nuevaUrl || nuevaUrl === 'null' || nuevaUrl.includes('trycloudflare.com') || nuevaUrl.includes('cloudflare')) {
-      backendUrl = '';
-      isOnline = true;
-      return true;
-    }
-    if (backendUrl !== nuevaUrl) {
+    if (nuevaUrl && nuevaUrl.startsWith('http')) {
       backendUrl = nuevaUrl;
       localStorage.setItem('kuche_backend_url', backendUrl);
+      return true;
     }
-    return true;
+    return false;
   }
 
   async function sincronizarUrl() {
@@ -99,6 +80,7 @@
     sincronizando = true;
 
     try {
+      // Caso 1: Servidor directo local
       if (isDirectBackend) {
         backendUrl = window.location.origin;
         isOnline = true;
@@ -106,35 +88,47 @@
         return backendUrl;
       }
 
-      // Si estamos en GitHub Pages sin URL específica, operar en modo estático limpio
-      if (isGitHubPages && !backendUrl) {
-        try {
-          const t = Date.now();
-          const r = await fetch(`${LOCAL_JSON_PATH}?_t=${t}`, { cache: 'no-store' });
-          if (r.ok) {
-            const cfg = await r.json();
-            aplicarConfig(cfg);
-          }
-        } catch(e) {}
-        isOnline = true;
-        notificar();
-        return backendUrl;
-      }
-
-      // Si existe una URL configurada, verificar si sigue activa
+      // Caso 2: Probar la URL que ya tengamos guardada
       if (backendUrl) {
         const sigueViva = await verificarPing(backendUrl);
         if (sigueViva) {
           isOnline = true;
           notificar();
           return backendUrl;
-        } else {
-          try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
-          backendUrl = '';
-          isOnline = true;
         }
       }
 
+      // Caso 3: Probar backend_url.json (remoto o local)
+      try {
+        const t = Date.now();
+        const r = await fetch(`${LOCAL_JSON_PATH}?_t=${t}`, { cache: 'no-store' });
+        if (r.ok) {
+          const cfg = await r.json();
+          if (aplicarConfig(cfg)) {
+            const viva = await verificarPing(backendUrl);
+            if (viva) {
+              isOnline = true;
+              notificar();
+              return backendUrl;
+            }
+          }
+        }
+      } catch(e) {}
+
+      // Caso 4: Probar conexión directa a localhost:8000 (Private Network Access)
+      try {
+        const vivaLocal = await verificarPing('http://127.0.0.1:8000');
+        if (vivaLocal) {
+          backendUrl = 'http://127.0.0.1:8000';
+          localStorage.setItem('kuche_backend_url', backendUrl);
+          isOnline = true;
+          notificar();
+          return backendUrl;
+        }
+      } catch(e) {}
+
+      // Si no hay respuesta
+      isOnline = false;
       notificar();
       return backendUrl;
     } finally {

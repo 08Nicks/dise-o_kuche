@@ -833,11 +833,26 @@ function encolarReporteOffline(item) {
 async function sincronizarColaOffline() {
   try {
     const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
-    if (!cola.length) return;
+    if (!cola.length) {
+      actualizarInsigniaOffline();
+      return;
+    }
     
-    LOG(`Sincronizando ${cola.length} reporte(s) offline pendientes...`, '#00d2ff');
-    const pendientes = [];
+    // Si KucheAPI puede resolver la URL del backend, invocarlo primero
+    if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
+      await window.KucheAPI.sincronizarUrl();
+    }
+
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/registrar') : '/api/infraestructura/registrar';
+
+    // En GitHub Pages, si no hay backend activo disponible, esperar sin saturar con errores 404
+    if (window.location.hostname.includes('github.io') && (!window.KucheAPI || !window.KucheAPI.getUrl())) {
+      actualizarInsigniaOffline();
+      return;
+    }
+
+    LOG(`Sincronizando ${cola.length} reporte(s) offline pendientes con el servidor...`, '#00d2ff');
+    const pendientes = [];
     const jwtToken = localStorage.getItem('kuche_jwt_token') || '';
     const headers = { 'Content-Type': 'application/json' };
     if (jwtToken) headers['Authorization'] = 'Bearer ' + jwtToken;
@@ -862,8 +877,9 @@ async function sincronizarColaOffline() {
     localStorage.setItem('kuche_cola_offline', JSON.stringify(pendientes));
     actualizarInsigniaOffline();
     if (subidos > 0) {
-      mostrarToast(`${subidos} reporte(s) offline sincronizados con éxito`);
-      LOG(`${subidos} reporte(s) offline enviados`, '#00ff80');
+      mostrarToast(`✅ ${subidos} reporte(s) sincronizados y guardados en la base de datos`);
+      LOG(`${subidos} reporte(s) offline subidos exitosamente`, '#00ff80');
+      estado(`${subidos} reporte(s) sincronizados con éxito`, '#00ff80');
     }
   } catch(e) {
     console.error('Error en sincronización offline:', e);
@@ -878,12 +894,15 @@ function actualizarInsigniaOffline() {
       if (!badge) {
         badge = document.createElement('div');
         badge.id = 'badge-offline-queue';
-        badge.style.cssText = 'position:fixed; bottom:14px; left:14px; z-index:9999; background:#9B2247; color:#fff; font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; border:1px solid #E6D194; box-shadow:0 4px 14px rgba(0,0,0,0.6); display:flex; align-items:center; gap:6px; cursor:pointer;';
-        badge.onclick = sincronizarColaOffline;
-        badge.title = 'Clic para intentar sincronizar ahora';
+        badge.style.cssText = 'position:fixed; bottom:14px; left:14px; z-index:99999; background:#9B2247; color:#fff; font-size:11px; font-weight:700; padding:6px 14px; border-radius:20px; border:1px solid #E6D194; box-shadow:0 4px 14px rgba(0,0,0,0.6); display:flex; align-items:center; gap:8px; cursor:pointer; font-family:"Montserrat", sans-serif;';
+        badge.title = 'Clic para intentar subir ahora';
+        badge.onclick = () => {
+          mostrarToast('Sincronizando reportes pendientes...');
+          sincronizarColaOffline();
+        };
         document.body.appendChild(badge);
       }
-      badge.innerHTML = `<span>⏳ ${cola.length} reporte(s) en cola offline</span>`;
+      badge.innerHTML = `<span>⏳ ${cola.length} reporte(s) en cola offline</span> <span style="background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; font-size:10px; text-decoration:underline;">Subir</span>`;
       badge.style.display = 'flex';
     } else if (badge) {
       badge.style.display = 'none';
@@ -895,10 +914,29 @@ window.addEventListener('online', () => {
   LOG('Conexión a internet restablecida', '#00ff80');
   sincronizarColaOffline();
 });
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) sincronizarColaOffline();
+});
 window.addEventListener('DOMContentLoaded', () => {
   actualizarInsigniaOffline();
-  setTimeout(sincronizarColaOffline, 2500);
+  setTimeout(sincronizarColaOffline, 1500);
 });
+
+// Reintento continuo automático cada 6 segundos si hay reportes pendientes
+setInterval(() => {
+  const cola = JSON.parse(localStorage.getItem('kuche_cola_offline') || '[]');
+  if (cola.length > 0) {
+    sincronizarColaOffline();
+  }
+}, 6000);
+
+if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
+  window.KucheAPI.onStateChange(st => {
+    if (st && st.online) {
+      sincronizarColaOffline();
+    }
+  });
+}
 
 // ─── Toast de confirmación ────────────────────────────────────────
 function mostrarToast(msg) {
