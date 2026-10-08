@@ -1,7 +1,8 @@
 {
-  "name": "KUCHE — Monitoreo de Luminarias",
-  "short_name": "KUCHE",
-  "description": "Sistema de monitoreo, censo y auditoría de luminarias y alumbrado público con IA",
+  "id": "kuche-demo-pwa",
+  "name": "KUCHE — Modo Demo de Luminarias",
+  "short_name": "KUCHE Demo",
+  "description": "Sistema de monitoreo, censo y auditoría de luminarias y alumbrado público con IA — Modo Demo",
   "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",

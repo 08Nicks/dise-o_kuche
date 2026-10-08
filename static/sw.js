@@ -2,7 +2,7 @@
 // KUCHE PWA — SERVICE WORKER (Alumbrado Público y Luminarias)
 // ═══════════════════════════════════════════════════════════════════════
 
-const CACHE_NAME = 'kuche-pwa-v11-static';
+const CACHE_NAME = 'kuche-pwa-v12-static';
 
 const PRECACHE_ASSETS = [
   './',
@@ -74,7 +74,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Navegación HTML: Network first con fallback a caché
+  // Navegación HTML: Network first con fallback inteligente a caché
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
@@ -83,7 +83,13 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
           return res;
         })
-        .catch(() => caches.match(req).then(cached => cached || caches.match('./app.html') || caches.match('./index.html')))
+        .catch(() => caches.match(req).then(cached => {
+          if (cached) return cached;
+          if (req.url.includes('portal') || req.url.includes('oficial')) {
+            return caches.match('./portal.html');
+          }
+          return caches.match('./app.html') || caches.match('./index.html');
+        }))
     );
     return;
   }

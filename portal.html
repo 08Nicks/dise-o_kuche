@@ -232,11 +232,11 @@
      1. PANTALLA DE INICIO DE SESIÓN BÁSICO
      ================================================================ -->
 <div id="view-auth-container" class="auth-overlay-view">
-  <!-- Botón Flotante para Alternar Tema en Pantalla de Login -->
+  <!-- Botón Flotante para Alternar Tema e Instalar en Pantalla de Login -->
   <div style="position:fixed; top:18px; right:22px; z-index:10000; display:flex; align-items:center; gap:8px;">
-    <button id="btn-auth-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+    <button id="btn-auth-instalar-pwa" class="btn-instalar-pwa" onclick="iniciarInstalacionPWA('oficial')" title="Instalar KUCHE Oficial en Pantalla de Inicio">
       <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <span>Instalar App</span>
+      <span>Instalar App Oficial</span>
     </button>
     <button id="btn-auth-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro">
       Modo Claro
@@ -325,6 +325,25 @@
         <span style="color:var(--text-secondary);">¿Ya tienes una cuenta registrada?</span>
         <button type="button" onclick="cambiarAuthTab('login')" style="background:none; border:none; color:var(--dorado-accent); font-weight:700; cursor:pointer; text-decoration:underline; margin-left:4px; font-family:inherit;">Iniciar sesión</button>
       </div>
+    </form>
+
+    <!-- OPCIÓN DE INSTALACIÓN PWA DIRECTA EN EL LOGIN -->
+    <div class="auth-install-prompt-box">
+      <div style="display:flex; align-items:center; gap:9px; text-align:left;">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:20px; height:20px; color:var(--dorado-accent); flex-shrink:0;">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+        <div>
+          <strong style="display:block; font-size:11.5px; color:var(--text-main); line-height:1.2;">Instalar en este celular</strong>
+          <span style="font-size:10px; color:var(--text-secondary);">Acceso rápido directo a pantalla de inicio</span>
+        </div>
+      </div>
+      <button type="button" class="btn-instalar-pwa" onclick="iniciarInstalacionPWA('oficial')" style="padding:5px 11px; font-size:11px;">
+        <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Instalar</span>
+      </button>
+    </div>
   </div>
 
   <!-- MODAL / PASO DE VERIFICACIÓN DE CÓDIGO DE SEGURIDAD -->
@@ -376,9 +395,9 @@
       <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:4px 10px; font-size:10px;">
         Modo Claro
       </button>
-      <button id="btn-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+      <button id="btn-instalar-pwa" class="btn-instalar-pwa" onclick="iniciarInstalacionPWA('oficial')" title="Instalar Aplicación Oficial en Pantalla de Inicio">
         <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Instalar</span>
+        <span>Instalar Oficial</span>
       </button>
       <button onclick="cerrarSesion()" style="background:#ef4444; border:none; color:#fff; border-radius:4px; padding:4px 8px; font-size:10px; font-weight:700; cursor:pointer;" title="Cerrar sesión actual">Salir</button>
     </div>

@@ -2526,11 +2526,14 @@
       </button>
     </nav>
 
-    <!-- Estado y Conexión Operativa + Selector de Tema Institucional -->
-    <div class="header-quick-actions" style="display:flex; align-items:center; gap:12px;">
-      <div class="monitoreo-status-badge">
-        <span>SISTEMA DE GESTIÓN ACTIVO</span>
-      </div>
+    <!-- Acceso Rápido a Apps Instalables + Selector de Tema -->
+    <div class="header-quick-actions" style="display:flex; align-items:center; gap:8px;">
+      <a href="./app.html" class="btn-theme-pill" style="text-decoration:none; color:var(--text); border-color:var(--clr-guinda-std);" title="Abrir App Modo Demo (Instalable)">
+        Demo PWA
+      </a>
+      <a href="./portal.html" class="btn-theme-pill" style="text-decoration:none; color:var(--text); border-color:var(--clr-dorado-acento);" title="Abrir App Oficial con Login (Instalable)">
+        App Oficial (Login)
+      </a>
       <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTemaGlobal()" title="Alternar entre Modo Oscuro y Modo Claro">
         Modo Claro
       </button>

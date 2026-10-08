@@ -1,8 +1,8 @@
 {
   "id": "kuche-oficial-pwa",
-  "name": "KUCHE — App Oficial de Alumbrado",
+  "name": "KUCHE — App Oficial y Acceso",
   "short_name": "KUCHE Oficial",
-  "description": "Estación de auditoría, inspección y reporte técnico de luminarias y alumbrado público con IA",
+  "description": "Estación de auditoría, inspección y reporte técnico de luminarias y alumbrado público — Acceso Oficial",
   "start_url": "./portal.html",
   "scope": "./",
   "display": "standalone",

@@ -975,36 +975,16 @@ window.cambiarModo = function (nuevoModo) {
 };
 
 // ─── PWA: Registro de Service Worker e Instalación ────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./static/sw.js', { scope: './' })
-      .then(r => console.log('[PWA] Service Worker activo en:', r.scope))
-      .catch(e => console.warn('[PWA] Advertencia Service Worker:', e));
-  });
-}
-
-let deferredPWAInstall = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPWAInstall = e;
+document.addEventListener('DOMContentLoaded', () => {
   const btns = document.querySelectorAll('.btn-instalar-pwa');
   btns.forEach(btn => {
-    btn.style.display = 'inline-flex';
-    btn.onclick = async () => {
-      if (deferredPWAInstall) {
-        deferredPWAInstall.prompt();
-        const { outcome } = await deferredPWAInstall.userChoice;
-        if (outcome === 'accepted') {
-          document.querySelectorAll('.btn-instalar-pwa').forEach(b => b.style.display = 'none');
-        }
-        deferredPWAInstall = null;
+    btn.onclick = (e) => {
+      e.preventDefault();
+      if (typeof window.iniciarInstalacionPWA === 'function') {
+        const tipo = window.location.pathname.includes('app.html') ? 'demo' : 'oficial';
+        window.iniciarInstalacionPWA(tipo);
       }
     };
   });
-});
-
-window.addEventListener('appinstalled', () => {
-  document.querySelectorAll('.btn-instalar-pwa').forEach(b => b.style.display = 'none');
-  LOG('Aplicación PWA KUCHE instalada con éxito en este dispositivo.', '#00ff80');
 });
 

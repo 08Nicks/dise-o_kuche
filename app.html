@@ -20,7 +20,7 @@
   <!-- Tipografía Montserrat y JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./static/styles.css?v=8.0">
+  <link rel="stylesheet" href="./static/styles.css?v=12.0">
 </head>
 <body class="theme-dark">
 
@@ -30,16 +30,16 @@
     <div class="brand-group">
       <div class="brand-text">
         <h1 class="brand-kuche-wordmark">KUCHE</h1>
-        <p>Sistema de Monitoreo de Luminarias y Alumbrado Público</p>
+        <p>Sistema de Monitoreo de Luminarias · Modo Demo</p>
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
       <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:4px 10px; font-size:10px;">
         Modo Claro
       </button>
-      <button id="btn-instalar-pwa" class="btn-instalar-pwa" style="display:none;" title="Instalar Aplicación en Pantalla de Inicio">
+      <button id="btn-instalar-pwa" class="btn-instalar-pwa" onclick="iniciarInstalacionPWA('demo')" title="Instalar KUCHE Modo Demo en Pantalla de Inicio" style="display:inline-flex !important;">
         <svg class="icon-svg" viewBox="0 0 24 24" style="width:13px; height:13px; stroke-width:2.5;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Instalar</span>
+        <span>Instalar Demo</span>
       </button>
     </div>
   </header>
@@ -260,8 +260,8 @@
 </div>
 
 <!-- Scripts Kuche: Puente API y Lógica PWA -->
-<script src="./static/kuche-api.js"></script>
-<script src="./static/app.js?v=8.0"></script>
+<script src="./static/kuche-api.js?v=12.0"></script>
+<script src="./static/app.js?v=12.0"></script>
 
 <script>
 // Conmutador de Tema (Modo Oscuro / Modo Claro)
