@@ -121,11 +121,23 @@
         } catch(e) {}
       }
 
-      // Caso 4: Probar conexión directa a localhost:8000 (Private Network Access)
+      // Caso 4: Probar conexión directa a localhost:8000
       try {
         const vivaLocal = await verificarPing('http://127.0.0.1:8000');
         if (vivaLocal) {
           backendUrl = 'http://127.0.0.1:8000';
+          localStorage.setItem('kuche_backend_url', backendUrl);
+          isOnline = true;
+          notificar();
+          return backendUrl;
+        }
+      } catch(e) {}
+
+      // Caso 5: Probar IP local de red Wi-Fi (para celulares y dispositivos en la misma red)
+      try {
+        const vivaLan = await verificarPing('http://192.168.100.13:8000');
+        if (vivaLan) {
+          backendUrl = 'http://192.168.100.13:8000';
           localStorage.setItem('kuche_backend_url', backendUrl);
           isOnline = true;
           notificar();
@@ -467,13 +479,20 @@
             <span class="kuche-pill-dot" style="background:#ef4444; box-shadow:0 0 6px #ef4444;"></span>
             <span>Servidor Desconectado (Offline)</span>
           </div>
-          <div>Esta página no detecta una conexión activa con el servidor local de IA.</div>
-          <div style="margin-top:6px; color:#fecaca;">
-            <strong>Para activar la detección en vivo:</strong>
-            <ul style="margin:4px 0 0 16px; padding:0;">
-              <li>Inicia el sistema ejecutando <code>INICIAR_APP.bat</code> en tu PC.</li>
-              <li>Abre <code>http://localhost:8000</code> o escanea el QR del panel de control.</li>
-            </ul>
+          <div>Esta página no detecta una conexión activa con el backend de IA.</div>
+          <div style="margin-top:8px;">
+            <div style="font-size:11px; font-weight:700; color:#E6D194; margin-bottom:4px;">OPCIONES DE CONEXIÓN RÁPIDA:</div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <button type="button" onclick="window.KucheAPI.probarYConectar('https://undefined-zoloft-pads-curious.trycloudflare.com')" style="background:rgba(155,34,71,0.25); border:1px solid #9B2247; color:#fff; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; text-align:left;">
+                ☁️ Conectar Túnel Seguro (trycloudflare)
+              </button>
+              <button type="button" onclick="window.KucheAPI.probarYConectar('http://192.168.100.13:8000')" style="background:rgba(188,149,92,0.2); border:1px solid #BC955C; color:#E6D194; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; text-align:left;">
+                📶 Conectar Red Wi-Fi Local (192.168.100.13:8000)
+              </button>
+              <a href="http://192.168.100.13:8000/app.html" target="_blank" style="background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#10b981; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; text-decoration:none; display:block; text-align:left;">
+                🚀 Abrir App Directa en Wi-Fi Local
+              </a>
+            </div>
           </div>
         </div>
       `;
@@ -542,6 +561,22 @@
       fn({ url: backendUrl, online: isOnline, staticMode: !backendUrl });
     },
     sincronizarUrl: sincronizarUrl,
+    probarYConectar: async function(url) {
+      if (!url) return false;
+      const target = url.trim().replace(/\/+$/, '');
+      const ok = await verificarPing(target);
+      if (ok) {
+        backendUrl = target;
+        localStorage.setItem('kuche_backend_url', backendUrl);
+        isOnline = true;
+        notificar();
+        cerrarModalServidor();
+        return true;
+      } else {
+        alert('No se pudo conectar a: ' + target + '\nVerifica que el servidor esté activo en ese host.');
+        return false;
+      }
+    },
     reportarErrorConexion: async function() {
       try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
       backendUrl = '';

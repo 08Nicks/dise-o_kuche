@@ -11,7 +11,7 @@ const sc        = sendCanvas.getContext('2d');
 // Desocultar video dinámicamente para que el navegador mantenga el flujo de frames activo sin tocar el HTML
 if (video) {
   video.removeAttribute('hidden');
-  video.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:640px;height:480px;opacity:0;pointer-events:none;z-index:-9999;';
+  video.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.001;pointer-events:none;z-index:-100;';
 }
 
 // ─── Estado global ───────────────────────────────────────────────
@@ -28,6 +28,7 @@ let wsReconnecting       = false;
 let grabacionActiva      = false;
 let segundosRestantes    = 10;
 let timerCuentaRegresiva = null;
+let watchdogAnalisis     = null;
 
 // Exponer variables clave para acceso externo (oficial.html, etc.)
 // Usar funciones porque let variables no pueden ser re-definidas en window directamente
@@ -60,9 +61,17 @@ function mapearCategoria(textoIA) {
   return textoIA || 'Luminaria LED Vial Tipo Cobra';
 }
 
-// ─── WebSocket ───────────────────────────────────────────────────
+// ─── Dual-Transport Engine: WebSocket + HTTP Streaming Fallback ───
+let videoTransporte = 'ws'; // 'ws' o 'http'
+let wsHeartbeatTimer = null;
+
 function conectarWS() {
   const url = window.KucheAPI ? window.KucheAPI.wsUrl('/api/infraestructura/ws/detectar') : null;
+
+  if (wsHeartbeatTimer) {
+    clearInterval(wsHeartbeatTimer);
+    wsHeartbeatTimer = null;
+  }
 
   if (wsDeteccion) {
     if (wsDeteccion.url === url && (wsDeteccion.readyState === WebSocket.OPEN || wsDeteccion.readyState === WebSocket.CONNECTING)) {
@@ -76,27 +85,41 @@ function conectarWS() {
     wsDeteccion = null;
   }
 
-  // En modo desconectado / sin URL de backend válida
+  // Si no hay URL o el backend está marcado offline, cambiar a fallback HTTP
   if (!url || url.includes('undefined') || url === 'wss://' || url === 'ws://') {
-    estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
+    videoTransporte = 'http';
+    if (window.KucheAPI && window.KucheAPI.isOnline()) {
+      estado('IA Kuche lista — Modo HTTP Streaming', '#00ff80');
+    } else {
+      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA', '#ef4444');
+    }
     return;
   }
 
-  LOG('Conectando WS → ' + url, '#ffcc00');
+  LOG('Conectando WS IA → ' + url, '#ffcc00');
   try {
     wsDeteccion = new WebSocket(url);
     wsDeteccion.binaryType = 'arraybuffer';
   } catch (err) {
-    LOG('WS no disponible en este entorno', '#aaa');
-    estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
+    LOG('WS no disponible, usando fallback HTTP streaming', '#aaa');
+    videoTransporte = 'http';
     return;
   }
 
   wsDeteccion.onopen = () => {
-    LOG('WebSocket conectado con éxito', '#00ff80');
-    estado('IA Kuche lista — Escaneando en vivo', '#00ff80');
+    LOG('✅ WebSocket conectado con éxito', '#00ff80');
+    videoTransporte = 'ws';
+    estado('IA Kuche lista — Escaneando en vivo (WS)', '#00ff80');
     wsReconnecting = false;
     analizando = false;
+
+    // Heartbeat ping cada 12 segundos para mantener el túnel vivo
+    wsHeartbeatTimer = setInterval(() => {
+      if (wsDeteccion && wsDeteccion.readyState === WebSocket.OPEN) {
+        try { wsDeteccion.send(JSON.stringify({ type: 'ping' })); } catch(e) {}
+      }
+    }, 12000);
+
     if (camaraEncendida && modo === 'video') {
       ejecutarAnalisis();
     }
@@ -105,17 +128,33 @@ function conectarWS() {
   wsDeteccion.onerror = (e) => {
     analizando = false;
     setProgressBar(false);
-    estado('⚠️ Error de conexión con el Servidor IA', '#ef4444');
+    if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
+    LOG('Aviso WS: activando fallback HTTP streaming', '#ff9800');
+    videoTransporte = 'http';
+    if (camaraEncendida && modo === 'video') {
+      programarAnalisis(150);
+    }
   };
 
   wsDeteccion.onmessage = (event) => {
     analizando = false;
     setProgressBar(false);
+    if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
     try {
       const j = JSON.parse(event.data);
+      if (j.type === 'pong') {
+        // Heartbeat pong: continuar bucle de análisis en video
+        if (camaraEncendida && modo === 'video') {
+          programarAnalisis(grabacionActiva ? 60 : 300);
+        }
+        return;
+      }
       const nuevasVistas = j.vistas || [];
       if (nuevasVistas.length > 0) {
         cajas = nuevasVistas.map(c => ({ ...c, ts: Date.now() }));
+        if (grabacionActiva) {
+          deteccionesAcumuladas.push(...cajas);
+        }
         const nombres = cajas.map(c => `${c.texto} (${Math.round(c.conf * 100)}%)`).join(', ');
         if (grabacionActiva) {
           estado(`Grabando (${segundosRestantes}s): ${nombres}`, '#00ff80');
@@ -136,18 +175,24 @@ function conectarWS() {
       console.warn('Error decodificando respuesta WS:', err);
     }
 
-    // Programar siguiente frame (rápido en grabación 60ms, suave en reposo 350ms)
+    // Programar siguiente frame (rápido en grabación 60ms, suave en reposo 300ms)
     if (camaraEncendida && modo === 'video') {
-      programarAnalisis(grabacionActiva ? 60 : 350);
+      programarAnalisis(grabacionActiva ? 60 : 300);
     }
   };
 
   wsDeteccion.onclose = (e) => {
     analizando = false;
-    if (window.KucheAPI && !window.KucheAPI.isOnline()) {
-      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
-    } else {
-      estado('⚠️ Conexión cerrada — Reconectando...', '#ff9800');
+    setProgressBar(false);
+    if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
+    if (wsHeartbeatTimer) {
+      clearInterval(wsHeartbeatTimer);
+      wsHeartbeatTimer = null;
+    }
+    // Si WS cierra, activar de inmediato fallback HTTP para que la cámara no se congele
+    videoTransporte = 'http';
+    if (camaraEncendida && modo === 'video') {
+      programarAnalisis(150);
     }
     if (!wsReconnecting) {
       wsReconnecting = true;
@@ -156,7 +201,7 @@ function conectarWS() {
         if (window.KucheAPI && window.KucheAPI.isOnline()) {
           conectarWS();
         }
-      }, 4000);
+      }, 5000);
     }
   };
 }
@@ -165,20 +210,13 @@ function conectarWS() {
 if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
   window.KucheAPI.onStateChange(({ url, online }) => {
     if (url && online) {
-      const targetWs = window.KucheAPI.wsUrl('/api/infraestructura/ws/detectar');
-      if (!wsDeteccion || wsDeteccion.url !== targetWs || wsDeteccion.readyState > 1) {
-        conectarWS();
+      conectarWS();
+      if (camaraEncendida && modo === 'video' && !analizando) {
+        programarAnalisis(100);
       }
     } else if (!online) {
-      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
-      if (wsDeteccion) {
-        try {
-          wsDeteccion.onclose = null;
-          wsDeteccion.onerror = null;
-          wsDeteccion.close();
-        } catch(e) {}
-        wsDeteccion = null;
-      }
+      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA', '#ef4444');
+      videoTransporte = 'http';
     }
   });
 }
@@ -325,42 +363,137 @@ async function toggleCamara() {
   }
 }
 
-// ─── Loop de pintura ─────────────────────────────────────────────
+// ─── Loop de pintura AR y Renderizado Futurista ──────────────────
+function dibujarCajaHUD(c, ahora) {
+  if (!c.caja || !canvas || !ctx) return;
+  const edad = ahora - c.ts;
+  if (edad > 1400) return;
+  
+  // Desvanecimiento suave tras 800ms
+  const alpha = edad < 800 ? 1 : Math.max(0.1, 1 - (edad - 800) / 600);
+  const sx = canvas.width / (c.w || canvas.width);
+  const sy = canvas.height / (c.h || canvas.height);
+  const [x1, y1, x2, y2] = c.caja;
+  
+  const rx = x1 * sx;
+  const ry = y1 * sy;
+  const rw = (x2 - x1) * sx;
+  const rh = (y2 - y1) * sy;
+  
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  
+  // 1. Marco exterior con esquinas HUD iluminadas
+  ctx.strokeStyle = '#00ff80';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#00ff80';
+  ctx.shadowBlur = 10;
+  
+  // Dibujar caja redondeada o rectangular
+  if (ctx.roundRect) {
+    ctx.beginPath();
+    ctx.roundRect(rx, ry, rw, rh, 8);
+    ctx.stroke();
+  } else {
+    ctx.strokeRect(rx, ry, rw, rh);
+  }
+  
+  // 2. Corchetes angulares en las 4 esquinas (estilo visor AR táctico)
+  const len = Math.min(18, rw * 0.25, rh * 0.25);
+  ctx.lineWidth = 4;
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  // Esquina superior izquierda
+  ctx.moveTo(rx, ry + len); ctx.lineTo(rx, ry); ctx.lineTo(rx + len, ry);
+  // Esquina superior derecha
+  ctx.moveTo(rx + rw - len, ry); ctx.lineTo(rx + rw, ry); ctx.lineTo(rx + rw, ry + len);
+  // Esquina inferior izquierda
+  ctx.moveTo(rx, ry + rh - len); ctx.lineTo(rx, ry + rh); ctx.lineTo(rx + len, ry + rh);
+  // Esquina inferior derecha
+  ctx.moveTo(rx + rw - len, ry + rh); ctx.lineTo(rx + rw, ry + rh); ctx.lineTo(rx + rw, ry + rh - len);
+  ctx.stroke();
+  
+  // 3. Etiqueta / Pill Badge de Luminaria
+  ctx.shadowBlur = 0;
+  const label = `💡 ${c.texto}  ${Math.round(c.conf * 100)}%`;
+  ctx.font = 'bold 12px Montserrat, Inter, system-ui, sans-serif';
+  const textMetrics = ctx.measureText(label);
+  const badgeW = textMetrics.width + 16;
+  const badgeH = 22;
+  const badgeX = Math.max(4, Math.min(rx, canvas.width - badgeW - 4));
+  const badgeY = Math.max(badgeH + 4, ry - 6);
+  
+  // Fondo de la insignia
+  ctx.fillStyle = 'rgba(16, 14, 18, 0.90)';
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(badgeX, badgeY - badgeH, badgeW, badgeH, 6);
+  } else {
+    ctx.rect(badgeX, badgeY - badgeH, badgeW, badgeH);
+  }
+  ctx.fill();
+  
+  ctx.strokeStyle = 'rgba(0, 255, 128, 0.7)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  
+  // Texto de la insignia
+  ctx.fillStyle = '#00ff80';
+  ctx.fillText(label, badgeX + 8, badgeY - 6);
+  
+  ctx.restore();
+}
+
 function pintar() {
   if (!pintarActivo) return;
   const videoListo = video && video.videoWidth > 0 && (video.readyState >= 2 || video.currentTime > 0);
+  
   if (videoListo && ctx && canvas) {
     if (canvas.width === 0 || canvas.width === 300) {
       ajustarDimensionesVideo();
     }
+    
+    // Dibujar frame de cámara
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Retícula central sutil en modo video
+    if (modo === 'video') {
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(230, 209, 148, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx - 16, cy); ctx.lineTo(cx - 5, cy);
+      ctx.moveTo(cx + 5, cy); ctx.lineTo(cx + 16, cy);
+      ctx.moveTo(cx, cy - 16); ctx.lineTo(cx, cy - 5);
+      ctx.moveTo(cx, cy + 5); ctx.lineTo(cx, cy + 16);
+      ctx.stroke();
+      ctx.restore();
+    }
+    
+    // Dibujar todas las cajas de IA activas
     const ahora = Date.now();
     for (const c of cajas) {
-      if (!c.caja || ahora - c.ts > 1000) continue;
-      const sx = canvas.width / c.w, sy = canvas.height / c.h;
-      const [x1, y1, x2, y2] = c.caja;
-      const alpha = Math.max(0, 1 - (ahora - c.ts) / 1000).toFixed(2);
-      ctx.strokeStyle = `rgba(0,255,128,${alpha})`;
-      ctx.lineWidth = 2.5;
-      ctx.strokeRect(x1 * sx, y1 * sy, (x2 - x1) * sx, (y2 - y1) * sy);
-      ctx.fillStyle = `rgba(0,255,128,${alpha})`;
-      ctx.font = 'bold 13px Arial';
-      ctx.fillText(c.texto + ' ' + Math.round(c.conf * 100) + '%', x1 * sx, Math.max(y1 * sy - 5, 15));
+      dibujarCajaHUD(c, ahora);
     }
   }
   requestAnimationFrame(pintar);
 }
 
-// ─── Análisis video (Inspección Guiada de 10 Segundos) ───────────
+// ─── Inspección Guiada de 10 Segundos (Modo Video) ───────────────
+let deteccionesAcumuladas = [];
+
 function iniciarAnalisisVideo() {
   detenerAnalisisVideo();
   if (!camaraEncendida || modo !== 'video') return;
 
   grabacionActiva = true;
   segundosRestantes = 10;
+  deteccionesAcumuladas = [];
   actualizarBotonGrabacion();
-  estado(`Grabando video IA (${segundosRestantes}s)... Buscando fallas`, '#ff4444');
-  LOG('Iniciando grabacion y análisis (máx 10 segundos)...', '#ff4444');
+  estado(`Grabando video IA (${segundosRestantes}s)... Buscando luminarias`, '#ff4444');
+  LOG('Iniciando inspección guiada de 10s...', '#ff4444');
 
   if (timerCuentaRegresiva) clearInterval(timerCuentaRegresiva);
   timerCuentaRegresiva = setInterval(() => {
@@ -376,17 +509,19 @@ function iniciarAnalisisVideo() {
 
 function finalizarPorTiempoVideo() {
   detenerAnalisisVideo();
-  if (cajas && cajas.length > 0) {
-    const mejor = cajas.reduce((a, b) => a.conf > b.conf ? a : b);
+  
+  // Buscar la mejor detección entre las acumuladas o las actuales
+  const bolsa = [...deteccionesAcumuladas, ...cajas];
+  if (bolsa.length > 0) {
+    const mejor = bolsa.reduce((a, b) => a.conf > b.conf ? a : b);
     mostrarPanelReporte(mejor);
     estado(`10s completados — ${mejor.texto} lista para reporte`, '#00ff80');
     LOG(`10s completados: reporte generado para ${mejor.texto}`, '#00ff80');
   } else {
     estado('10s completados — Sin luminarias detectadas', '#ff9800');
     LOG('10s transcurridos sin luminarias detectadas', '#ff9800');
-    // Reanudar escaneo en vivo tras la inspección de 10s
     if (camaraEncendida && modo === 'video') {
-      programarAnalisis(350);
+      programarAnalisis(300);
     }
   }
 }
@@ -423,13 +558,14 @@ function actualizarBotonGrabacion() {
 window.toggleGrabacionVideo = function () {
   if (grabacionActiva) {
     detenerAnalisisVideo();
-    if (cajas && cajas.length > 0) {
-      const mejor = cajas.reduce((a, b) => a.conf > b.conf ? a : b);
+    const bolsa = [...deteccionesAcumuladas, ...cajas];
+    if (bolsa.length > 0) {
+      const mejor = bolsa.reduce((a, b) => a.conf > b.conf ? a : b);
       mostrarPanelReporte(mejor);
       estado(`Grabación detenida — ${mejor.texto} lista para reporte`, '#00ff80');
     } else {
       estado('Grabación detenida — Escaneando en vivo', '#aaa');
-      programarAnalisis(350);
+      programarAnalisis(300);
     }
   } else {
     if (!camaraEncendida) toggleCamara();
@@ -440,19 +576,14 @@ window.toggleGrabacionVideo = function () {
 function programarAnalisis(delay) {
   if (!camaraEncendida || modo !== 'video') return;
   if (timerAnalisis) clearTimeout(timerAnalisis);
-  timerAnalisis = setTimeout(ejecutarAnalisis, delay !== undefined ? delay : (grabacionActiva ? 40 : 350));
+  timerAnalisis = setTimeout(ejecutarAnalisis, delay !== undefined ? delay : (grabacionActiva ? 60 : 300));
 }
 
+// ─── Motor de Análisis de Video (Dual: WebSocket + HTTP Streaming) ──
 async function ejecutarAnalisis() {
   if (analizando || !mediaStream) { programarAnalisis(40); return; }
   const videoListo = video && video.videoWidth > 0 && (video.readyState >= 2 || video.currentTime > 0);
-  if (!wsDeteccion || wsDeteccion.readyState !== WebSocket.OPEN) {
-    if (window.KucheAPI && !window.KucheAPI.isOnline()) {
-      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
-    }
-    programarAnalisis(300);
-    return;
-  }
+  if (!videoListo) { programarAnalisis(80); return; }
 
   if (sendCanvas.width === 0 || sendCanvas.width === 300) {
     ajustarDimensionesVideo();
@@ -461,40 +592,92 @@ async function ejecutarAnalisis() {
   analizando = true;
   setProgressBar(grabacionActiva);
 
-  // Watchdog de seguridad (1.8s) para nunca dejar el análisis trabado
-  const watchdog = setTimeout(() => {
+  // Watchdog de seguridad (1.8s): desbloquea la cola si una petición se retrasa
+  if (watchdogAnalisis) clearTimeout(watchdogAnalisis);
+  watchdogAnalisis = setTimeout(() => {
     if (analizando) {
       analizando = false;
       setProgressBar(false);
-      if (camaraEncendida && modo === 'video') programarAnalisis(60);
+      if (camaraEncendida && modo === 'video') programarAnalisis(80);
     }
   }, 1800);
 
   try {
     sc.drawImage(video, 0, 0, sendCanvas.width, sendCanvas.height);
-    const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.55));
+    const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.60));
     if (!blob) {
-      clearTimeout(watchdog);
+      if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
       analizando = false;
       setProgressBar(false);
       programarAnalisis(40);
       return;
     }
-    const buf = await blob.arrayBuffer();
-    if (wsDeteccion && wsDeteccion.readyState === WebSocket.OPEN) {
+
+    // ── VÍA 1: WebSocket Directo (Ultra baja latencia <150ms) ──────────
+    if (videoTransporte === 'ws' && wsDeteccion && wsDeteccion.readyState === WebSocket.OPEN) {
+      const buf = await blob.arrayBuffer();
       wsDeteccion.send(buf);
-    } else {
-      clearTimeout(watchdog);
+      return;
+    }
+
+    // ── VÍA 2: HTTP Streaming Fallback (Funciona en cualquier red/móvil)
+    // En GitHub Pages sin backend activo, evitar saturar con peticiones 404 continuas
+    if (window.location.hostname.includes('github.io') && (!window.KucheAPI || !window.KucheAPI.getUrl())) {
+      if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
       analizando = false;
       setProgressBar(false);
-      programarAnalisis(300);
+      programarAnalisis(1500);
+      return;
     }
-  } catch (e) {
-    clearTimeout(watchdog);
-    LOG('Error envío frame: ' + e.message, '#ff4444');
+
+    const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/detectar') : '/api/infraestructura/detectar';
+    const resp = await fetch(targetUrl, {
+      method: 'POST',
+      body: blob,
+      headers: { 'Content-Type': 'image/jpeg' },
+      signal: AbortSignal.timeout(2200)
+    });
+
+    if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
     analizando = false;
     setProgressBar(false);
-    programarAnalisis(100);
+
+    if (resp.ok) {
+      const j = await resp.json();
+      const nuevasVistas = j.vistas || [];
+      if (nuevasVistas.length > 0) {
+        cajas = nuevasVistas.map(c => ({ ...c, ts: Date.now() }));
+        if (grabacionActiva) {
+          deteccionesAcumuladas.push(...cajas);
+        }
+        const nombres = cajas.map(c => `${c.texto} (${Math.round(c.conf * 100)}%)`).join(', ');
+        if (grabacionActiva) {
+          estado(`Grabando (${segundosRestantes}s): ${nombres}`, '#00ff80');
+        } else {
+          estado(`Luminaria detectada: ${nombres}`, '#00ff80');
+        }
+        LOG(`IA Kuche (HTTP): ${nombres}`, '#00ff80');
+      } else {
+        cajas = cajas.filter(c => Date.now() - c.ts < 1200);
+        if (grabacionActiva) {
+          estado(`Escaneando video IA (${segundosRestantes}s)... Buscando luminarias`, '#00ff80');
+        } else if (cajas.length === 0) {
+          estado('IA Kuche lista — Escaneando luminarias en vivo', '#00ff80');
+        }
+      }
+    }
+
+    // Siguiente frame
+    if (camaraEncendida && modo === 'video') {
+      programarAnalisis(grabacionActiva ? 60 : 300);
+    }
+  } catch (e) {
+    if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
+    analizando = false;
+    setProgressBar(false);
+    if (camaraEncendida && modo === 'video') {
+      programarAnalisis(150);
+    }
   }
 }
 
@@ -505,52 +688,71 @@ function setProgressBar(activo) {
   pb.style.width = activo ? '100%' : '0%';
 }
 
-// ─── Modo Foto (Ultrarrápido y Visualización Garantizada) ───────
+// ─── MODO FOTO (Captura en Alta Resolución, Flash Visual y Reporte) ──
 window.capturarFoto = async function () {
-  if (!mediaStream || video.readyState < 2) { estado('Cámara no lista', '#ff9800'); return; }
-  estado('Capturando y analizando foto...', '#ffcc00');
+  if (!mediaStream || video.readyState < 2) {
+    estado('Cámara no lista — Espera un momento', '#ff9800');
+    return;
+  }
+
+  estado('⚡ Capturando y analizando foto con IA Kuche...', '#ffcc00');
   setProgressBar(true);
+
   try {
+    // 1. Escalar a resolución óptima (máx 800px para detección precisa y ágil)
     const maxDim = Math.max(video.videoWidth, video.videoHeight) || 1280;
-    const s = Math.min(1, 640 / maxDim);
+    const s = Math.min(1, 800 / maxDim);
     sendCanvas.width = Math.round(video.videoWidth * s);
     sendCanvas.height = Math.round(video.videoHeight * s);
     sc.drawImage(video, 0, 0, sendCanvas.width, sendCanvas.height);
 
-    // Obtener Data URL completa de la foto recién tomada
     const fotoDataUrl = sendCanvas.toDataURL('image/jpeg', 0.85);
 
-    // Congelar visualmente la foto en el canvas para retroalimentación inmediata
+    // 2. Efecto Flash visual y congelar foto en el lienzo
     if (ctx && canvas) {
-      ctx.drawImage(sendCanvas, 0, 0, canvas.width, canvas.height);
+      // Shutter flash blanco suave
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      setTimeout(() => {
+        if (ctx && canvas) ctx.drawImage(sendCanvas, 0, 0, canvas.width, canvas.height);
+      }, 70);
     }
 
-    const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.80));
+    // 3. Generar Blob JPEG y enviar a inferencia
+    const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.82));
     const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/detectar_foto') : '/api/infraestructura/detectar_foto';
+
     let vistas = [];
     try {
       const resp = await fetch(targetUrl, {
         method: 'POST',
         body: blob,
-        headers: { 'Content-Type': 'image/jpeg' }
+        headers: { 'Content-Type': 'image/jpeg' },
+        signal: AbortSignal.timeout(6000)
       });
       if (resp.ok) {
         const j = await resp.json();
         vistas = j.vistas || [];
       }
-    } catch(fetchErr) {}
+    } catch (fetchErr) {
+      LOG('Aviso red modo foto: ' + fetchErr.message, '#ff9800');
+    }
+
     setProgressBar(false);
-    
-    let itemReporte;
+
+    // 4. Procesar resultado
     const horaActual = new Date().getHours();
     const condHorario = (horaActual >= 6 && horaActual < 19) ? 'Día' : 'Noche';
+    let itemReporte;
 
     if (vistas.length > 0) {
       itemReporte = vistas.reduce((a, b) => a.conf > b.conf ? a : b);
       itemReporte.imagen = fotoDataUrl;
       itemReporte.horario = itemReporte.horario || condHorario;
+      cajas = vistas.map(v => ({ ...v, ts: Date.now() }));
+      
       const nombres = vistas.map(v => `${v.texto} (${Math.round(v.conf * 100)}%)`).join(', ');
-      estado(`Luminaria detectada: ${nombres}`, '#00ff80');
+      estado(`✅ Luminaria detectada: ${nombres}`, '#00ff80');
       LOG('Foto IA Kuche: ' + nombres, '#00ff80');
     } else {
       itemReporte = {
@@ -559,28 +761,32 @@ window.capturarFoto = async function () {
         horario: condHorario,
         imagen: fotoDataUrl
       };
+      cajas = [];
       estado(`Foto capturada: Sin luminaria detectada automáticamente [${condHorario}]`, '#ff9800');
-      LOG('Captura analizada: sin detecciones automáticas con alta certeza', '#ff9800');
+      LOG('Captura analizada: sin detecciones automáticas de alta certeza', '#ff9800');
     }
-    
+
+    // 5. Abrir panel de reporte con los datos cargados automáticamente
     mostrarPanelReporte(itemReporte);
   } catch (e) {
     setProgressBar(false);
-    estado('Captura lista para reporte', '#00ff80');
+    estado('Captura lista para reporte manual', '#00ff80');
   }
 };
 
-// Subir imagen (Redimensionado en cliente para análisis en milisegundos)
+// ─── Subir Imagen desde Archivo o Galería ─────────────────────────
 const fileInput = document.getElementById('file');
 if (fileInput) {
   fileInput.onchange = e => {
-    const f = e.target.files[0]; if (!f) return;
-    estado('Cargando y optimizando imagen...', '#ffcc00');
+    const f = e.target.files[0];
+    if (!f) return;
+    
+    estado('⚡ Cargando y analizando imagen con IA...', '#ffcc00');
     setProgressBar(true);
+    
     const img = new Image();
     img.onload = async () => {
       try {
-        estado('Analizando imagen con IA...', '#ffcc00');
         const maxDim = Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height) || 1280;
         const s = Math.min(1, 800 / maxDim);
         sendCanvas.width = Math.round((img.naturalWidth || img.width) * s);
@@ -592,32 +798,38 @@ if (fileInput) {
           ctx.drawImage(sendCanvas, 0, 0, canvas.width, canvas.height);
         }
 
-        const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.80));
+        const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.82));
         const targetUrl = window.KucheAPI ? window.KucheAPI.apiUrl('/api/infraestructura/detectar_foto') : '/api/infraestructura/detectar_foto';
+
         let vistas = [];
         try {
           const resp = await fetch(targetUrl, {
             method: 'POST',
             body: blob,
-            headers: { 'Content-Type': 'image/jpeg' }
+            headers: { 'Content-Type': 'image/jpeg' },
+            signal: AbortSignal.timeout(6000)
           });
           if (resp.ok) {
             const j = await resp.json();
             vistas = j.vistas || [];
           }
-        } catch(fetchErr) {}
+        } catch (fetchErr) {
+          LOG('Aviso red archivo: ' + fetchErr.message, '#ff9800');
+        }
+
         setProgressBar(false);
-        
-        let itemReporte;
+
         const horaActual = new Date().getHours();
         const condHorario = (horaActual >= 6 && horaActual < 19) ? 'Día' : 'Noche';
+        let itemReporte;
 
         if (vistas.length > 0) {
           itemReporte = vistas.reduce((a, b) => a.conf > b.conf ? a : b);
           itemReporte.imagen = fotoDataUrl;
           itemReporte.horario = itemReporte.horario || condHorario;
+          cajas = vistas.map(v => ({ ...v, ts: Date.now() }));
           const nombres = vistas.map(v => `${v.texto} (${Math.round(v.conf * 100)}%)`).join(', ');
-          estado(`Detectado en archivo: ${nombres}`, '#00ff80');
+          estado(`✅ Detectado en archivo: ${nombres}`, '#00ff80');
           LOG('Archivo IA Kuche: ' + nombres, '#00ff80');
         } else {
           itemReporte = {
@@ -626,10 +838,11 @@ if (fileInput) {
             horario: condHorario,
             imagen: fotoDataUrl
           };
+          cajas = [];
           estado(`Archivo cargado: Sin luminarias detectadas automáticamente [${condHorario}]`, '#ff9800');
-          LOG('Archivo procesado: sin detecciones automáticas con alta certeza', '#ff9800');
+          LOG('Archivo procesado: sin detecciones automáticas', '#ff9800');
         }
-        
+
         mostrarPanelReporte(itemReporte);
       } catch (err) {
         setProgressBar(false);
@@ -731,12 +944,11 @@ window.enviarReporteIA = async function () {
   const tipo    = (inpTipo && inpTipo.value) || (selCat && selCat.value) || 'Luminaria de Alumbrado';
   
   const inpFalla = document.getElementById('reporte-falla');
-  const falla = (inpFalla && inpFalla.value ? inpFalla.value.trim() : '');
+  let falla = (inpFalla && inpFalla.value ? inpFalla.value.trim() : '');
   
   if (!falla || falla.length < 3) {
-    alert('Debe escribir la descripción de la falla para generar el reporte oficial.');
-    if (inpFalla) inpFalla.focus();
-    return;
+    falla = 'Inspección y revisión de luminaria requerida';
+    if (inpFalla) inpFalla.value = falla;
   }
 
   const inpCond = document.getElementById('reporte-condicion-horaria');
