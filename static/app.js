@@ -163,8 +163,8 @@ function conectarWS() {
         }
         LOG(`IA Kuche: ${nombres}`, '#00ff80');
       } else {
-        // Mantener las cajas activas durante 1200ms para desvanecimiento suave (fade-out)
-        cajas = cajas.filter(c => Date.now() - c.ts < 1200);
+        // Mantener las cajas activas durante máximo 1000ms (1 segundo)
+        cajas = cajas.filter(c => Date.now() - c.ts < 1000);
         if (grabacionActiva) {
           estado(`Escaneando video IA (${segundosRestantes}s)... Buscando luminarias`, '#00ff80');
         } else if (cajas.length === 0) {
@@ -175,9 +175,9 @@ function conectarWS() {
       console.warn('Error decodificando respuesta WS:', err);
     }
 
-    // Programar siguiente frame (rápido en grabación 60ms, suave en reposo 300ms)
+    // Programar siguiente frame (ultra rápido 60ms en grabación, ágil 120ms en escaneo en vivo)
     if (camaraEncendida && modo === 'video') {
-      programarAnalisis(grabacionActiva ? 60 : 300);
+      programarAnalisis(grabacionActiva ? 60 : 120);
     }
   };
 
@@ -363,14 +363,14 @@ async function toggleCamara() {
   }
 }
 
-// ─── Loop de pintura AR y Renderizado Futurista ──────────────────
+// ─── Loop de pintura AR y Renderizado Ultrarrápido ────────────────
 function dibujarCajaHUD(c, ahora) {
   if (!c.caja || !canvas || !ctx) return;
   const edad = ahora - c.ts;
-  if (edad > 1400) return;
+  if (edad > 1000) return; // Desaparece tras exactamente 1 segundo (1000ms)
   
-  // Desvanecimiento suave tras 800ms
-  const alpha = edad < 800 ? 1 : Math.max(0.1, 1 - (edad - 800) / 600);
+  // Desvanecimiento suave en los últimos 250ms
+  const alpha = edad < 750 ? 1 : Math.max(0, (1000 - edad) / 250);
   const sx = canvas.width / (c.w || canvas.width);
   const sy = canvas.height / (c.h || canvas.height);
   const [x1, y1, x2, y2] = c.caja;
@@ -383,63 +383,33 @@ function dibujarCajaHUD(c, ahora) {
   ctx.save();
   ctx.globalAlpha = alpha;
   
-  // 1. Marco exterior con esquinas HUD iluminadas
+  // Cuadro verde nítido y delgadito (alto rendimiento, sin sombras que alenten la pantalla)
   ctx.strokeStyle = '#00ff80';
-  ctx.lineWidth = 2.5;
-  ctx.shadowColor = '#00ff80';
-  ctx.shadowBlur = 10;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(rx, ry, rw, rh);
   
-  // Dibujar caja redondeada o rectangular
-  if (ctx.roundRect) {
-    ctx.beginPath();
-    ctx.roundRect(rx, ry, rw, rh, 8);
-    ctx.stroke();
-  } else {
-    ctx.strokeRect(rx, ry, rw, rh);
-  }
-  
-  // 2. Corchetes angulares en las 4 esquinas (estilo visor AR táctico)
-  const len = Math.min(18, rw * 0.25, rh * 0.25);
-  ctx.lineWidth = 4;
-  ctx.shadowBlur = 14;
-  ctx.beginPath();
-  // Esquina superior izquierda
-  ctx.moveTo(rx, ry + len); ctx.lineTo(rx, ry); ctx.lineTo(rx + len, ry);
-  // Esquina superior derecha
-  ctx.moveTo(rx + rw - len, ry); ctx.lineTo(rx + rw, ry); ctx.lineTo(rx + rw, ry + len);
-  // Esquina inferior izquierda
-  ctx.moveTo(rx, ry + rh - len); ctx.lineTo(rx, ry + rh); ctx.lineTo(rx + len, ry + rh);
-  // Esquina inferior derecha
-  ctx.moveTo(rx + rw - len, ry + rh); ctx.lineTo(rx + rw, ry + rh); ctx.lineTo(rx + rw, ry + rh - len);
-  ctx.stroke();
-  
-  // 3. Etiqueta / Pill Badge de Luminaria
-  ctx.shadowBlur = 0;
-  const label = `💡 ${c.texto}  ${Math.round(c.conf * 100)}%`;
-  ctx.font = 'bold 12px Montserrat, Inter, system-ui, sans-serif';
+  // Etiqueta minimalista y limpia
+  const confPct = Math.round(c.conf * 100);
+  const label = `${c.texto} ${confPct}%`;
+  ctx.font = '600 11px Inter, system-ui, -apple-system, sans-serif';
   const textMetrics = ctx.measureText(label);
-  const badgeW = textMetrics.width + 16;
-  const badgeH = 22;
-  const badgeX = Math.max(4, Math.min(rx, canvas.width - badgeW - 4));
-  const badgeY = Math.max(badgeH + 4, ry - 6);
+  const badgeW = textMetrics.width + 12;
+  const badgeH = 18;
+  const badgeX = Math.max(2, Math.min(rx, canvas.width - badgeW - 2));
+  const badgeY = Math.max(badgeH + 2, ry - 4);
   
-  // Fondo de la insignia
-  ctx.fillStyle = 'rgba(16, 14, 18, 0.90)';
-  ctx.beginPath();
-  if (ctx.roundRect) {
-    ctx.roundRect(badgeX, badgeY - badgeH, badgeW, badgeH, 6);
-  } else {
-    ctx.rect(badgeX, badgeY - badgeH, badgeW, badgeH);
-  }
-  ctx.fill();
+  // Fondo oscuro traslúcido
+  ctx.fillStyle = 'rgba(10, 20, 15, 0.75)';
+  ctx.fillRect(badgeX, badgeY - badgeH, badgeW, badgeH);
   
-  ctx.strokeStyle = 'rgba(0, 255, 128, 0.7)';
+  // Borde muy sutil de la etiqueta
+  ctx.strokeStyle = 'rgba(0, 255, 128, 0.4)';
   ctx.lineWidth = 1;
-  ctx.stroke();
+  ctx.strokeRect(badgeX, badgeY - badgeH, badgeW, badgeH);
   
-  // Texto de la insignia
+  // Texto en verde brillante
   ctx.fillStyle = '#00ff80';
-  ctx.fillText(label, badgeX + 8, badgeY - 6);
+  ctx.fillText(label, badgeX + 6, badgeY - 5);
   
   ctx.restore();
 }
@@ -472,8 +442,9 @@ function pintar() {
       ctx.restore();
     }
     
-    // Dibujar todas las cajas de IA activas
+    // Dibujar todas las cajas de IA activas (purgando las que tengan más de 1 segundo)
     const ahora = Date.now();
+    cajas = cajas.filter(c => (ahora - c.ts) <= 1000);
     for (const c of cajas) {
       dibujarCajaHUD(c, ahora);
     }
@@ -521,7 +492,7 @@ function finalizarPorTiempoVideo() {
     estado('10s completados — Sin luminarias detectadas', '#ff9800');
     LOG('10s transcurridos sin luminarias detectadas', '#ff9800');
     if (camaraEncendida && modo === 'video') {
-      programarAnalisis(300);
+      programarAnalisis(120);
     }
   }
 }
@@ -565,7 +536,7 @@ window.toggleGrabacionVideo = function () {
       estado(`Grabación detenida — ${mejor.texto} lista para reporte`, '#00ff80');
     } else {
       estado('Grabación detenida — Escaneando en vivo', '#aaa');
-      programarAnalisis(300);
+      programarAnalisis(120);
     }
   } else {
     if (!camaraEncendida) toggleCamara();
@@ -576,7 +547,7 @@ window.toggleGrabacionVideo = function () {
 function programarAnalisis(delay) {
   if (!camaraEncendida || modo !== 'video') return;
   if (timerAnalisis) clearTimeout(timerAnalisis);
-  timerAnalisis = setTimeout(ejecutarAnalisis, delay !== undefined ? delay : (grabacionActiva ? 60 : 300));
+  timerAnalisis = setTimeout(ejecutarAnalisis, delay !== undefined ? delay : (grabacionActiva ? 60 : 120));
 }
 
 // ─── Motor de Análisis de Video (Dual: WebSocket + HTTP Streaming) ──
@@ -592,7 +563,7 @@ async function ejecutarAnalisis() {
   analizando = true;
   setProgressBar(grabacionActiva);
 
-  // Watchdog de seguridad (1.8s): desbloquea la cola si una petición se retrasa
+  // Watchdog de seguridad (1.5s): desbloquea la cola si una petición se retrasa
   if (watchdogAnalisis) clearTimeout(watchdogAnalisis);
   watchdogAnalisis = setTimeout(() => {
     if (analizando) {
@@ -600,11 +571,12 @@ async function ejecutarAnalisis() {
       setProgressBar(false);
       if (camaraEncendida && modo === 'video') programarAnalisis(80);
     }
-  }, 1800);
+  }, 1500);
 
   try {
     sc.drawImage(video, 0, 0, sendCanvas.width, sendCanvas.height);
-    const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.60));
+    // Compresión ligera 0.50 (carga ultra ligera en CPU y red)
+    const blob = await new Promise(r => sendCanvas.toBlob(r, 'image/jpeg', 0.50));
     if (!blob) {
       if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
       analizando = false;
@@ -635,7 +607,7 @@ async function ejecutarAnalisis() {
       method: 'POST',
       body: blob,
       headers: { 'Content-Type': 'image/jpeg' },
-      signal: AbortSignal.timeout(2200)
+      signal: AbortSignal.timeout(2000)
     });
 
     if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
@@ -658,7 +630,7 @@ async function ejecutarAnalisis() {
         }
         LOG(`IA Kuche (HTTP): ${nombres}`, '#00ff80');
       } else {
-        cajas = cajas.filter(c => Date.now() - c.ts < 1200);
+        cajas = cajas.filter(c => Date.now() - c.ts < 1000);
         if (grabacionActiva) {
           estado(`Escaneando video IA (${segundosRestantes}s)... Buscando luminarias`, '#00ff80');
         } else if (cajas.length === 0) {
@@ -669,7 +641,7 @@ async function ejecutarAnalisis() {
 
     // Siguiente frame
     if (camaraEncendida && modo === 'video') {
-      programarAnalisis(grabacionActiva ? 60 : 300);
+      programarAnalisis(grabacionActiva ? 60 : 120);
     }
   } catch (e) {
     if (watchdogAnalisis) { clearTimeout(watchdogAnalisis); watchdogAnalisis = null; }
