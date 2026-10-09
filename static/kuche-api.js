@@ -142,9 +142,364 @@
     }
   }
 
+  function inyectarEstilosIndicador() {
+    if (document.getElementById('kuche-server-badge-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'kuche-server-badge-styles';
+    style.textContent = `
+      .kuche-server-pill-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        user-select: none;
+        outline: none;
+      }
+      .kuche-server-pill-btn.online {
+        background: rgba(16, 185, 129, 0.14);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+        color: #10b981;
+      }
+      .kuche-server-pill-btn.online:hover {
+        background: rgba(16, 185, 129, 0.25);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+      }
+      .kuche-server-pill-btn.offline {
+        background: rgba(239, 68, 68, 0.14);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+      }
+      .kuche-server-pill-btn.offline:hover {
+        background: rgba(239, 68, 68, 0.25);
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+      }
+      .kuche-pill-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .kuche-server-pill-btn.online .kuche-pill-dot {
+        background: #10b981;
+        box-shadow: 0 0 6px #10b981;
+        animation: kuchePulseGreen 2s infinite ease-in-out;
+      }
+      .kuche-server-pill-btn.offline .kuche-pill-dot {
+        background: #ef4444;
+        box-shadow: 0 0 6px #ef4444;
+        animation: kuchePulseRed 1.8s infinite ease-in-out;
+      }
+      @keyframes kuchePulseGreen {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.6; }
+      }
+      @keyframes kuchePulseRed {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.5; }
+      }
+
+      /* Modal de Estado de Servidor */
+      .kuche-server-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        z-index: 999999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .kuche-server-modal-backdrop.active {
+        display: flex;
+      }
+      .kuche-server-modal-card {
+        background: #181517;
+        border: 1px solid #332d30;
+        border-radius: 14px;
+        width: 100%;
+        max-width: 440px;
+        padding: 24px 22px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        color: #f1ecee;
+        position: relative;
+        font-family: inherit;
+      }
+      .kuche-server-modal-card h3 {
+        margin: 0 0 12px 0;
+        font-size: 16px;
+        font-weight: 800;
+        color: #E6D194;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .kuche-server-modal-card .close-btn {
+        background: none;
+        border: none;
+        color: #A69CA1;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .kuche-server-modal-card .close-btn:hover {
+        color: #fff;
+      }
+      .kuche-server-info-box {
+        padding: 12px 14px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .kuche-server-info-box.online {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #a7f3d0;
+      }
+      .kuche-server-info-box.offline {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+      }
+      .kuche-input-group {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .kuche-modal-input {
+        flex: 1;
+        background: #0f0d0f;
+        border: 1px solid #3a3236;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        outline: none;
+      }
+      .kuche-modal-input:focus {
+        border-color: #9B2247;
+      }
+      .kuche-modal-btn {
+        background: #9B2247;
+        color: #fff;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .kuche-modal-btn:hover {
+        background: #b82954;
+      }
+      .kuche-modal-sec-btn {
+        background: #252124;
+        color: #E6D194;
+        border: 1px solid #3a3236;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+      .kuche-modal-sec-btn:hover {
+        background: #332d30;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function actualizarIndicadorServidor() {
+    inyectarEstilosIndicador();
+
+    const statusClass = isOnline ? 'online' : 'offline';
+    const statusText  = isOnline ? 'Server Online' : 'Server Offline';
+    const statusTitle = isOnline 
+      ? `Servidor KUCHE En Línea (${backendUrl}). IA YOLO-World activa.` 
+      : 'Servidor KUCHE Desconectado (Offline). Clic para conectar o ver opciones.';
+
+    // Actualizar todos los botones de estado existentes
+    const pills = document.querySelectorAll('.kuche-server-pill-btn');
+    if (pills.length > 0) {
+      pills.forEach(p => {
+        p.className = `kuche-server-pill-btn ${statusClass}`;
+        p.title = statusTitle;
+        p.innerHTML = `<span class="kuche-pill-dot"></span><span>${statusText}</span>`;
+      });
+    } else {
+      // Crear un botón en los lugares estándar
+      const targets = [
+        document.querySelector('.app-header > div:last-child'),
+        document.querySelector('.auth-header-brand'),
+        document.getElementById('brand-auth-container'),
+        document.querySelector('#view-auth-container .auth-card-box')
+      ];
+
+      let montado = false;
+      for (const t of targets) {
+        if (t) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `kuche-server-pill-btn ${statusClass}`;
+          btn.title = statusTitle;
+          btn.innerHTML = `<span class="kuche-pill-dot"></span><span>${statusText}</span>`;
+          btn.onclick = () => window.KucheAPI && window.KucheAPI.abrirModalServidor();
+          
+          if (t.classList.contains('auth-header-brand')) {
+            btn.style.marginTop = '8px';
+            t.appendChild(btn);
+          } else if (t.classList.contains('auth-card-box')) {
+            btn.style.marginBottom = '12px';
+            t.insertBefore(btn, t.firstChild);
+          } else {
+            t.insertBefore(btn, t.firstChild);
+          }
+          montado = true;
+          break;
+        }
+      }
+
+      // Si no se encontró ningún contenedor, crear como botón flotante fijo
+      if (!montado && document.body) {
+        const floatDiv = document.createElement('div');
+        floatDiv.id = 'kuche-server-floating-badge';
+        floatDiv.style.cssText = 'position:fixed; top:12px; right:12px; z-index:99998;';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `kuche-server-pill-btn ${statusClass}`;
+        btn.title = statusTitle;
+        btn.innerHTML = `<span class="kuche-pill-dot"></span><span>${statusText}</span>`;
+        btn.onclick = () => window.KucheAPI && window.KucheAPI.abrirModalServidor();
+        floatDiv.appendChild(btn);
+        document.body.appendChild(floatDiv);
+      }
+    }
+
+    actualizarContenidoModal();
+  }
+
+  function abrirModalServidor() {
+    inyectarEstilosIndicador();
+    let modal = document.getElementById('kuche-server-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'kuche-server-modal';
+      modal.className = 'kuche-server-modal-backdrop';
+      modal.innerHTML = `
+        <div class="kuche-server-modal-card">
+          <h3>
+            <span>Estado del Servidor IA</span>
+            <button type="button" class="close-btn" onclick="window.KucheAPI.cerrarModalServidor()">✕</button>
+          </h3>
+          <div id="kuche-modal-status-body"></div>
+          <div style="margin-top:14px; font-size:12px; color:#A69CA1;">
+            <span style="font-weight:700; color:#E6D194; display:block; margin-bottom:4px;">Conectar a otra URL de backend:</span>
+            <div class="kuche-input-group">
+              <input type="text" id="kuche-custom-url-input" class="kuche-modal-input" placeholder="https://ejemplo.trycloudflare.com">
+              <button type="button" class="kuche-modal-btn" onclick="window.KucheAPI.conectarUrlPersonalizada()">Conectar</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:16px;">
+            <button type="button" class="kuche-modal-sec-btn" style="flex:1;" onclick="window.KucheAPI.reintentar()">↻ Reintentar Detección</button>
+            <a href="http://localhost:8000/app.html" id="kuche-link-local-app" class="kuche-modal-sec-btn" style="flex:1; border-color:#9B2247; color:#fff; background:#9B2247;">Abrir Localhost</a>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) cerrarModalServidor();
+      });
+    }
+    actualizarContenidoModal();
+    modal.classList.add('active');
+  }
+
+  function cerrarModalServidor() {
+    const modal = document.getElementById('kuche-server-modal');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function actualizarContenidoModal() {
+    const body = document.getElementById('kuche-modal-status-body');
+    const input = document.getElementById('kuche-custom-url-input');
+    const linkLocal = document.getElementById('kuche-link-local-app');
+    if (!body) return;
+
+    if (input && !input.value) {
+      input.value = backendUrl || '';
+    }
+
+    if (linkLocal) {
+      const currentFile = window.location.pathname.includes('portal.html') ? 'portal.html' : 'app.html';
+      linkLocal.href = `http://localhost:8000/${currentFile}`;
+    }
+
+    if (isOnline) {
+      body.innerHTML = `
+        <div class="kuche-server-info-box online">
+          <div style="display:flex; align-items:center; gap:6px; font-weight:800; font-size:13px; margin-bottom:4px;">
+            <span class="kuche-pill-dot" style="background:#10b981; box-shadow:0 0 6px #10b981;"></span>
+            <span>Servidor En Línea (Online)</span>
+          </div>
+          <div style="color:#d1fae5;">Conectado a: <strong>${backendUrl}</strong></div>
+          <div style="color:#a7f3d0; margin-top:2px;">Motor YOLO-World activo y listo para detección en vivo.</div>
+        </div>
+      `;
+    } else {
+      body.innerHTML = `
+        <div class="kuche-server-info-box offline">
+          <div style="display:flex; align-items:center; gap:6px; font-weight:800; font-size:13px; margin-bottom:4px;">
+            <span class="kuche-pill-dot" style="background:#ef4444; box-shadow:0 0 6px #ef4444;"></span>
+            <span>Servidor Desconectado (Offline)</span>
+          </div>
+          <div>Esta página no detecta una conexión activa con el servidor local de IA.</div>
+          <div style="margin-top:6px; color:#fecaca;">
+            <strong>Para activar la detección en vivo:</strong>
+            <ul style="margin:4px 0 0 16px; padding:0;">
+              <li>Inicia el sistema ejecutando <code>INICIAR_APP.bat</code> en tu PC.</li>
+              <li>Abre <code>http://localhost:8000</code> o escanea el QR del panel de control.</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  async function conectarUrlPersonalizada() {
+    const input = document.getElementById('kuche-custom-url-input');
+    if (!input || !input.value.trim()) return;
+    const url = input.value.trim().replace(/\/+$/, '');
+    input.disabled = true;
+    const ok = await verificarPing(url);
+    input.disabled = false;
+    if (ok) {
+      backendUrl = url;
+      localStorage.setItem('kuche_backend_url', backendUrl);
+      isOnline = true;
+      notificar();
+      cerrarModalServidor();
+    } else {
+      alert(`No se pudo conectar a "${url}".\nAsegúrate de que el servidor esté activo y acepte peticiones.`);
+    }
+  }
+
   function actualizarBanner() {
-    const banner = document.getElementById('kuche-server-status-banner');
-    if (banner) banner.remove();
+    actualizarIndicadorServidor();
   }
 
   window.KucheAPI = {
@@ -163,6 +518,7 @@
       return backendUrl.replace(/\/+$/, '') + p;
     },
     wsUrl: function(path) {
+      if (!isDirectBackend && !backendUrl) return null;
       if (isGitHubPages && !backendUrl) return null;
       const p = path.startsWith('/') ? path : '/' + path;
       let host = location.host;
@@ -189,7 +545,7 @@
     reportarErrorConexion: async function() {
       try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
       backendUrl = '';
-      isOnline = true;
+      isOnline = false;
       notificar();
       return backendUrl;
     },
@@ -197,7 +553,10 @@
       try { localStorage.removeItem('kuche_backend_url'); } catch(e) {}
       backendUrl = '';
       return sincronizarUrl();
-    }
+    },
+    abrirModalServidor: abrirModalServidor,
+    cerrarModalServidor: cerrarModalServidor,
+    conectarUrlPersonalizada: conectarUrlPersonalizada
   };
 
   // ─── 2. INSTALADOR UNIVERSAL PWA (MODO DEMO & MODO LOGUEO) ───────────
@@ -369,15 +728,16 @@
     modalEl.classList.add('active');
   };
 
-  // Inicializar estado de botones al cargar el DOM
+  // Inicializar estado de botones e indicador al cargar el DOM
   document.addEventListener('DOMContentLoaded', () => {
     actualizarBotonesInstalacion(false, esPWAStandalone());
+    actualizarIndicadorServidor();
   });
 
-  // En modo estático verificar periódicamente de forma ligera (cada 60s)
+  // Verificar periódicamente el estado del servidor (cada 5s si offline, 12s si online)
   async function loopAutosync() {
     await sincronizarUrl();
-    const tiempo = (isGitHubPages && !backendUrl) ? 60000 : (isOnline ? 20000 : 5000);
+    const tiempo = isOnline ? 12000 : 5000;
     setTimeout(loopAutosync, tiempo);
   }
 

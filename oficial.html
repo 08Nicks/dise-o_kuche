@@ -248,6 +248,12 @@
     <div class="auth-header-brand">
       <h1 class="auth-brand-title">KUCHE</h1>
       <span class="auth-brand-sub">Sistema de Monitoreo de Luminarias y Alumbrado Público</span>
+      <div style="margin-top:10px; text-align:center;">
+        <button id="auth-server-status-pill" type="button" class="kuche-server-pill-btn offline" onclick="window.KucheAPI && window.KucheAPI.abrirModalServidor()" title="Estado de conexión con el Servidor IA">
+          <span class="kuche-pill-dot"></span>
+          <span>Server Offline</span>
+        </button>
+      </div>
     </div>
 
     <!-- SELECTOR DE PESTAÑAS: INICIAR SESIÓN O HACER CUENTA NUEVA -->
@@ -391,6 +397,11 @@
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
+      <!-- Indicador Dinámico Servidor Online / Offline -->
+      <button id="app-server-status-pill" type="button" class="kuche-server-pill-btn offline" onclick="window.KucheAPI && window.KucheAPI.abrirModalServidor()" title="Estado de conexión con el Servidor IA">
+        <span class="kuche-pill-dot"></span>
+        <span>Server Offline</span>
+      </button>
       <span id="badge-user-name" style="font-size:10px; font-weight:700; color:var(--dorado-accent); background:var(--bg-surface-elevated); padding:3px 8px; border-radius:4px; border:1px solid var(--border-subtle);">Usuario</span>
       <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:4px 10px; font-size:10px;">
         Modo Claro
@@ -1230,10 +1241,9 @@ async function activarVistaApp(sesion) {
   }
 
   if (typeof iniciarCamara === 'function') {
-    await iniciarCamara();
-    // La cámara queda lista; el usuario presiona btn-grabar-video para iniciar el análisis IA
-    if (typeof estado === 'function') {
-      estado('Cámara lista — Presiona "Iniciar Grabación" para activar la IA', '#00d2ff');
+    const camOk = await iniciarCamara();
+    if (camOk && typeof programarAnalisis === 'function' && typeof modo !== 'undefined' && modo === 'video') {
+      programarAnalisis(100);
     }
   }
 }

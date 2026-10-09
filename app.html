@@ -34,6 +34,11 @@
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
+      <!-- Indicador Dinámico Servidor Online / Offline -->
+      <button id="kuche-server-status-pill" type="button" class="kuche-server-pill-btn offline" onclick="window.KucheAPI && window.KucheAPI.abrirModalServidor()" title="Estado de conexión con el Servidor IA">
+        <span class="kuche-pill-dot"></span>
+        <span>Server Offline</span>
+      </button>
       <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:4px 10px; font-size:10px;">
         Modo Claro
       </button>

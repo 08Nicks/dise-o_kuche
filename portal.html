@@ -248,6 +248,12 @@
     <div class="auth-header-brand">
       <h1 class="auth-brand-title">KUCHE</h1>
       <span class="auth-brand-sub">Sistema de Monitoreo de Luminarias y Alumbrado Público</span>
+      <div style="margin-top:10px; text-align:center;">
+        <button id="auth-server-status-pill" type="button" class="kuche-server-pill-btn offline" onclick="window.KucheAPI && window.KucheAPI.abrirModalServidor()" title="Estado de conexión con el Servidor IA">
+          <span class="kuche-pill-dot"></span>
+          <span>Server Offline</span>
+        </button>
+      </div>
     </div>
 
     <!-- SELECTOR DE PESTAÑAS: INICIAR SESIÓN O HACER CUENTA NUEVA -->
@@ -391,6 +397,11 @@
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
+      <!-- Indicador Dinámico Servidor Online / Offline -->
+      <button id="app-server-status-pill" type="button" class="kuche-server-pill-btn offline" onclick="window.KucheAPI && window.KucheAPI.abrirModalServidor()" title="Estado de conexión con el Servidor IA">
+        <span class="kuche-pill-dot"></span>
+        <span>Server Offline</span>
+      </button>
       <span id="badge-user-name" style="font-size:10px; font-weight:700; color:var(--dorado-accent); background:var(--bg-surface-elevated); padding:3px 8px; border-radius:4px; border:1px solid var(--border-subtle);">Usuario</span>
       <button id="btn-theme-toggle" class="btn-theme-pill" onclick="alternarTema()" title="Alternar entre Modo Oscuro y Modo Claro" style="padding:4px 10px; font-size:10px;">
         Modo Claro
@@ -625,12 +636,12 @@
     <span>Reporte guardado con éxito</span>
   </div>
 
-  <video id="video" autoplay playsinline muted hidden></video>
+  <video id="video" autoplay playsinline muted style="position:fixed;top:-9999px;left:-9999px;width:640px;height:480px;opacity:0;pointer-events:none;z-index:-9999;"></video>
 </div>
 
 <!-- Scripts Kuche: Puente API y Lógica PWA -->
-<script src="./static/kuche-api.js"></script>
-<script src="./static/app.js?v=8.0"></script>
+<script src="./static/kuche-api.js?v=13.0"></script>
+<script src="./static/app.js?v=13.0"></script>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
@@ -1213,15 +1224,26 @@ function handleRegistroSubmit(e) {
 }
 
 // Activar vista de app
-function activarVistaApp(sesion) {
+async function activarVistaApp(sesion) {
   document.getElementById('view-auth-container').style.display = 'none';
   document.getElementById('view-app-container').style.display = 'block';
 
   const badgeEl = document.getElementById('badge-user-name');
   if (badgeEl) badgeEl.textContent = sesion.nombre || sesion.user;
 
+  // Sincronizar backend y conectar WebSocket
+  if (window.KucheAPI && typeof window.KucheAPI.sincronizarUrl === 'function') {
+    await window.KucheAPI.sincronizarUrl();
+  }
+  if (typeof conectarWS === 'function') {
+    conectarWS();
+  }
+
   if (typeof iniciarCamara === 'function') {
-    iniciarCamara();
+    const camOk = await iniciarCamara();
+    if (camOk && typeof programarAnalisis === 'function' && typeof modo !== 'undefined' && modo === 'video') {
+      programarAnalisis(100);
+    }
   }
 }
 

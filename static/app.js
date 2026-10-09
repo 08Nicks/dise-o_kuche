@@ -76,9 +76,9 @@ function conectarWS() {
     wsDeteccion = null;
   }
 
-  // En modo estático puro (GitHub Pages), no abrir WebSocket innecesariamente
+  // En modo desconectado / sin URL de backend válida
   if (!url || url.includes('undefined') || url === 'wss://' || url === 'ws://') {
-    estado('Sistema en Línea (Modo Estático)', '#00ff80');
+    estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
     return;
   }
 
@@ -88,12 +88,13 @@ function conectarWS() {
     wsDeteccion.binaryType = 'arraybuffer';
   } catch (err) {
     LOG('WS no disponible en este entorno', '#aaa');
+    estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
     return;
   }
 
   wsDeteccion.onopen = () => {
     LOG('WebSocket conectado con éxito', '#00ff80');
-    estado('IA Kuche lista', '#00ff80');
+    estado('IA Kuche lista — Escaneando en vivo', '#00ff80');
     wsReconnecting = false;
     analizando = false;
     if (camaraEncendida && modo === 'video') {
@@ -104,6 +105,7 @@ function conectarWS() {
   wsDeteccion.onerror = (e) => {
     analizando = false;
     setProgressBar(false);
+    estado('⚠️ Error de conexión con el Servidor IA', '#ef4444');
   };
 
   wsDeteccion.onmessage = (event) => {
@@ -111,20 +113,22 @@ function conectarWS() {
     setProgressBar(false);
     try {
       const j = JSON.parse(event.data);
-      cajas = (j.vistas || []).map(c => ({ ...c, ts: Date.now() }));
-
-      if (cajas.length > 0) {
+      const nuevasVistas = j.vistas || [];
+      if (nuevasVistas.length > 0) {
+        cajas = nuevasVistas.map(c => ({ ...c, ts: Date.now() }));
         const nombres = cajas.map(c => `${c.texto} (${Math.round(c.conf * 100)}%)`).join(', ');
         if (grabacionActiva) {
           estado(`Grabando (${segundosRestantes}s): ${nombres}`, '#00ff80');
         } else {
-          estado(`IA Kuche: ${nombres}`, '#00ff80');
+          estado(`Luminaria detectada: ${nombres}`, '#00ff80');
         }
         LOG(`IA Kuche: ${nombres}`, '#00ff80');
       } else {
+        // Mantener las cajas activas durante 1200ms para desvanecimiento suave (fade-out)
+        cajas = cajas.filter(c => Date.now() - c.ts < 1200);
         if (grabacionActiva) {
           estado(`Escaneando video IA (${segundosRestantes}s)... Buscando luminarias`, '#00ff80');
-        } else {
+        } else if (cajas.length === 0) {
           estado('IA Kuche lista — Escaneando luminarias en vivo', '#00ff80');
         }
       }
@@ -140,12 +144,19 @@ function conectarWS() {
 
   wsDeteccion.onclose = (e) => {
     analizando = false;
-    if (!wsReconnecting && window.KucheAPI && !window.KucheAPI.isStaticMode()) {
+    if (window.KucheAPI && !window.KucheAPI.isOnline()) {
+      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
+    } else {
+      estado('⚠️ Conexión cerrada — Reconectando...', '#ff9800');
+    }
+    if (!wsReconnecting) {
       wsReconnecting = true;
       setTimeout(() => {
         wsReconnecting = false;
-        conectarWS();
-      }, 5000);
+        if (window.KucheAPI && window.KucheAPI.isOnline()) {
+          conectarWS();
+        }
+      }, 4000);
     }
   };
 }
@@ -157,6 +168,16 @@ if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
       const targetWs = window.KucheAPI.wsUrl('/api/infraestructura/ws/detectar');
       if (!wsDeteccion || wsDeteccion.url !== targetWs || wsDeteccion.readyState > 1) {
         conectarWS();
+      }
+    } else if (!online) {
+      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
+      if (wsDeteccion) {
+        try {
+          wsDeteccion.onclose = null;
+          wsDeteccion.onerror = null;
+          wsDeteccion.close();
+        } catch(e) {}
+        wsDeteccion = null;
       }
     }
   });
@@ -425,8 +446,13 @@ function programarAnalisis(delay) {
 async function ejecutarAnalisis() {
   if (analizando || !mediaStream) { programarAnalisis(40); return; }
   const videoListo = video && video.videoWidth > 0 && (video.readyState >= 2 || video.currentTime > 0);
-  if (!videoListo) { programarAnalisis(40); return; }
-  if (!wsDeteccion || wsDeteccion.readyState !== WebSocket.OPEN) { programarAnalisis(300); return; }
+  if (!wsDeteccion || wsDeteccion.readyState !== WebSocket.OPEN) {
+    if (window.KucheAPI && !window.KucheAPI.isOnline()) {
+      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA en video', '#ef4444');
+    }
+    programarAnalisis(300);
+    return;
+  }
 
   if (sendCanvas.width === 0 || sendCanvas.width === 300) {
     ajustarDimensionesVideo();
