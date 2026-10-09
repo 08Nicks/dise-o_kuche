@@ -91,7 +91,7 @@ function conectarWS() {
     if (window.KucheAPI && window.KucheAPI.isOnline()) {
       estado('IA Kuche lista — Modo HTTP Streaming', '#00ff80');
     } else {
-      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA', '#ef4444');
+      estado('Servidor Offline — Inicia el backend para activar la IA', '#ef4444');
     }
     return;
   }
@@ -107,7 +107,7 @@ function conectarWS() {
   }
 
   wsDeteccion.onopen = () => {
-    LOG('✅ WebSocket conectado con éxito', '#00ff80');
+    LOG('WebSocket conectado con éxito', '#00ff80');
     videoTransporte = 'ws';
     estado('IA Kuche lista — Escaneando en vivo (WS)', '#00ff80');
     wsReconnecting = false;
@@ -156,15 +156,13 @@ function conectarWS() {
           deteccionesAcumuladas.push(...cajas);
         }
         const nombres = cajas.map(c => {
-          const icono = (c.horario === 'Noche') ? '🌙' : '☀️';
-          const alerta = c.alerta_falla ? ` ⚠️ [${c.alerta_falla}]` : ` [${icono} ${c.horario || 'Día'}]`;
-          return `${c.texto} (${Math.round(c.conf * 100)}%)${alerta}`;
+          const hor = c.horario ? ` [${c.horario}]` : '';
+          return `${c.texto} (${Math.round(c.conf * 100)}%)${hor}`;
         }).join(', ');
         if (grabacionActiva) {
           estado(`Grabando (${segundosRestantes}s): ${nombres}`, '#00ff80');
         } else {
-          const tieneFalla = cajas.some(c => c.alerta_falla);
-          estado(`Luminaria: ${nombres}`, tieneFalla ? '#ffcc00' : '#00ff80');
+          estado(`Luminaria: ${nombres}`, '#00ff80');
         }
         LOG(`IA Kuche: ${nombres}`, '#00ff80');
       } else {
@@ -220,7 +218,7 @@ if (window.KucheAPI && typeof window.KucheAPI.onStateChange === 'function') {
         programarAnalisis(100);
       }
     } else if (!online) {
-      estado('⚠️ Servidor Offline — Inicia el backend para activar la IA', '#ef4444');
+      estado('Servidor Offline — Inicia el backend para activar la IA', '#ef4444');
       videoTransporte = 'http';
     }
   });
@@ -393,16 +391,10 @@ function dibujarCajaHUD(c, ahora) {
   ctx.lineWidth = 1.5;
   ctx.strokeRect(rx, ry, rw, rh);
   
-  // Etiqueta minimalista y limpia con indicación de Día/Noche
+  // Etiqueta minimalista y limpia sin emojis
   const confPct = Math.round(c.conf * 100);
-  const iconoSolLuna = (c.horario === 'Noche') ? '🌙' : '☀️';
-  let badgeExtra = '';
-  if (c.alerta_falla) {
-    badgeExtra = ` · ⚠️ ${c.alerta_falla.includes('Fotocelda') ? 'Luz ON' : 'Apagada'}`;
-  } else if (c.horario) {
-    badgeExtra = ` · ${iconoSolLuna} ${c.horario}`;
-  }
-  const label = `${c.texto} ${confPct}%${badgeExtra}`;
+  const horarioTxt = c.horario ? ` [${c.horario}]` : '';
+  const label = `${c.texto} ${confPct}%${horarioTxt}`;
   ctx.font = '600 11px Inter, system-ui, -apple-system, sans-serif';
   const textMetrics = ctx.measureText(label);
   const badgeW = textMetrics.width + 12;
@@ -411,16 +403,16 @@ function dibujarCajaHUD(c, ahora) {
   const badgeY = Math.max(badgeH + 2, ry - 4);
   
   // Fondo oscuro traslúcido
-  ctx.fillStyle = c.alerta_falla ? 'rgba(35, 15, 10, 0.85)' : 'rgba(10, 20, 15, 0.75)';
+  ctx.fillStyle = 'rgba(10, 20, 15, 0.75)';
   ctx.fillRect(badgeX, badgeY - badgeH, badgeW, badgeH);
   
   // Borde muy sutil de la etiqueta
-  ctx.strokeStyle = c.alerta_falla ? 'rgba(255, 180, 0, 0.6)' : 'rgba(0, 255, 128, 0.4)';
+  ctx.strokeStyle = 'rgba(0, 255, 128, 0.4)';
   ctx.lineWidth = 1;
   ctx.strokeRect(badgeX, badgeY - badgeH, badgeW, badgeH);
   
-  // Texto en verde brillante (o ámbar si hay alerta de falla)
-  ctx.fillStyle = c.alerta_falla ? '#ffcc00' : '#00ff80';
+  // Texto en verde brillante institucional
+  ctx.fillStyle = '#00ff80';
   ctx.fillText(label, badgeX + 6, badgeY - 5);
   
   ctx.restore();
@@ -635,15 +627,13 @@ async function ejecutarAnalisis() {
           deteccionesAcumuladas.push(...cajas);
         }
         const nombres = cajas.map(c => {
-          const icono = (c.horario === 'Noche') ? '🌙' : '☀️';
-          const alerta = c.alerta_falla ? ` ⚠️ [${c.alerta_falla}]` : ` [${icono} ${c.horario || 'Día'}]`;
-          return `${c.texto} (${Math.round(c.conf * 100)}%)${alerta}`;
+          const hor = c.horario ? ` [${c.horario}]` : '';
+          return `${c.texto} (${Math.round(c.conf * 100)}%)${hor}`;
         }).join(', ');
         if (grabacionActiva) {
           estado(`Grabando (${segundosRestantes}s): ${nombres}`, '#00ff80');
         } else {
-          const tieneFalla = cajas.some(c => c.alerta_falla);
-          estado(`Luminaria: ${nombres}`, tieneFalla ? '#ffcc00' : '#00ff80');
+          estado(`Luminaria: ${nombres}`, '#00ff80');
         }
         LOG(`IA Kuche (HTTP): ${nombres}`, '#00ff80');
       } else {
@@ -684,7 +674,7 @@ window.capturarFoto = async function () {
     return;
   }
 
-  estado('⚡ Capturando y analizando foto con IA Kuche...', '#ffcc00');
+  estado('Capturando y analizando foto con IA...', '#ffcc00');
   setProgressBar(true);
 
   try {
@@ -741,7 +731,7 @@ window.capturarFoto = async function () {
       cajas = vistas.map(v => ({ ...v, ts: Date.now() }));
       
       const nombres = vistas.map(v => `${v.texto} (${Math.round(v.conf * 100)}%)`).join(', ');
-      estado(`✅ Luminaria detectada: ${nombres}`, '#00ff80');
+      estado(`Luminaria detectada: ${nombres}`, '#00ff80');
       LOG('Foto IA Kuche: ' + nombres, '#00ff80');
     } else {
       itemReporte = {
@@ -770,7 +760,7 @@ if (fileInput) {
     const f = e.target.files[0];
     if (!f) return;
     
-    estado('⚡ Cargando y analizando imagen con IA...', '#ffcc00');
+    estado('Cargando y analizando imagen con IA...', '#ffcc00');
     setProgressBar(true);
     
     const img = new Image();
@@ -818,7 +808,7 @@ if (fileInput) {
           itemReporte.horario = itemReporte.horario || condHorario;
           cajas = vistas.map(v => ({ ...v, ts: Date.now() }));
           const nombres = vistas.map(v => `${v.texto} (${Math.round(v.conf * 100)}%)`).join(', ');
-          estado(`✅ Detectado en archivo: ${nombres}`, '#00ff80');
+          estado(`Detectado en archivo: ${nombres}`, '#00ff80');
           LOG('Archivo IA Kuche: ' + nombres, '#00ff80');
         } else {
           itemReporte = {
@@ -879,14 +869,14 @@ function mostrarPanelReporte(vista) {
     selCat.value = tipoLuminaria;
   }
 
-  // Confianza IA detallada y diagnóstico de cielo
+  // Confianza IA detallada
   const conf = document.getElementById('reporte-conf');
   if (conf) {
-    const diagCielo = (vista && vista.cielo) ? `<div style="font-size:11px;color:#94a3b8;margin-top:3px;">☀️/🌙 Triangulación: <strong>${vista.cielo}</strong> ${vista.diagnostico ? `— ${vista.diagnostico}` : ''}</div>` : '';
+    const detalleCielo = (vista && vista.cielo) ? `<div style="font-size:11px;color:#94a3b8;margin-top:3px;">Cielo: <strong>${vista.cielo}</strong></div>` : '';
     if (vista && vista.conf > 0) {
-      conf.innerHTML = `<strong>Detección IA:</strong> ${tipoLuminaria} <span style="color:#00ff80;">(${Math.round(vista.conf * 100)}% certeza)</span>${diagCielo}`;
+      conf.innerHTML = `<strong>Detección IA:</strong> ${tipoLuminaria} <span style="color:#00ff80;">(${Math.round(vista.conf * 100)}% certeza)</span>${detalleCielo}`;
     } else {
-      conf.innerHTML = `<strong>Captura Directa:</strong> ${tipoLuminaria}${diagCielo}`;
+      conf.innerHTML = `<strong>Captura Directa:</strong> ${tipoLuminaria}${detalleCielo}`;
     }
     conf.style.display = 'block';
   }
@@ -904,15 +894,7 @@ function mostrarPanelReporte(vista) {
 
   const inpFalla = document.getElementById('reporte-falla');
   if (inpFalla) {
-    if (vista && vista.alerta_falla) {
-      if (vista.alerta_falla.includes('Fotocelda')) {
-        inpFalla.value = 'Alerta IA: Luminaria encendida en horario diurno (Revisión de sensor fotocelda requerida)';
-      } else {
-        inpFalla.value = 'Alerta IA: Luminaria inoperativa en horario nocturno (Lámpara apagada / fuera de servicio)';
-      }
-    } else {
-      inpFalla.value = '';
-    }
+    inpFalla.value = '';
     setTimeout(() => inpFalla.focus(), 300);
   }
 
@@ -1229,7 +1211,7 @@ async function sincronizarColaOffline() {
     localStorage.setItem('kuche_cola_offline', JSON.stringify(pendientes));
     actualizarInsigniaOffline();
     if (subidos > 0) {
-      mostrarToast(`✅ ${subidos} reporte(s) sincronizados y guardados en la base de datos`);
+      mostrarToast(`${subidos} reporte(s) sincronizados y guardados en la base de datos`);
       LOG(`${subidos} reporte(s) offline subidos exitosamente`, '#00ff80');
       estado(`${subidos} reporte(s) sincronizados con éxito`, '#00ff80');
     }
