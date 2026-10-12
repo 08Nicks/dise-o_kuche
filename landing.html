@@ -2054,51 +2054,147 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       CAPTURAS REALES EN LAS TARJETAS DE PANTALLAS (#pantallas)
+       MOCKUPS COMPLETOS Y PRESENTABLES EN LAS TARJETAS (#pantallas)
        ═════════════════════════════════════════════════════════════════ */
-    .screen-capture-preview {
-      margin: 14px 0 16px;
-      border-radius: 10px;
+    .screen-mockup-frame {
+      margin: 16px 0 18px;
+      border-radius: 12px;
       overflow: hidden;
       border: 1.5px solid var(--border-subtle);
-      background: #05080B;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      position: relative;
+      background: #080D12;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
-    .screen-capture-preview img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-      transition: transform 0.3s ease;
+    .screen-card:hover .screen-mockup-frame {
+      border-color: var(--clr-dorado-metalico);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.55);
     }
-    .screen-card:hover .screen-capture-preview img {
-      transform: scale(1.025);
+    .mockup-header-bar {
+      background: #0D151D;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
-    .screen-live-tag {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: rgba(13, 9, 12, 0.88);
-      color: #34D399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
+    body.theme-light .mockup-header-bar {
+      background: #E8EEF3;
+      border-bottom-color: rgba(0, 0, 0, 0.1);
+    }
+    .mockup-window-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .mockup-window-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .mockup-window-dots .dot-red { background: #EF4444; }
+    .mockup-window-dots .dot-yellow { background: #F59E0B; }
+    .mockup-window-dots .dot-green { background: #10B981; }
+
+    .mockup-window-title {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9.5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #94A3B8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.theme-light .mockup-window-title { color: #475569; }
+
+    .screen-live-tag {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
       font-weight: 800;
-      padding: 3px 8px;
+      padding: 2px 7px;
       border-radius: 4px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      backdrop-filter: blur(4px);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .screen-live-tag::before {
       content: '';
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       background: #10B981;
+      box-shadow: 0 0 6px #10B981;
+    }
+
+    .mockup-viewport {
+      background: radial-gradient(circle at center, #111A24 0%, #05080B 100%);
+      padding: 16px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      max-height: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+    body.theme-light .mockup-viewport {
+      background: radial-gradient(circle at center, #F1F5F9 0%, #E2E8F0 100%);
+    }
+    .mockup-zoom-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      text-decoration: none;
+    }
+    .mockup-viewport img {
+      max-height: 360px;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+    }
+    .mockup-zoom-link:hover img {
+      transform: scale(1.03);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+    }
+    .mockup-zoom-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(13, 9, 12, 0.88);
+      color: var(--clr-dorado-arena);
+      border: 1px solid var(--border-subtle);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      backdrop-filter: blur(4px);
+      opacity: 0.85;
+      transition: opacity 0.2s, background 0.2s;
+    }
+    .mockup-zoom-link:hover .mockup-zoom-hint {
+      opacity: 1;
+      background: rgba(97, 18, 50, 0.95);
+      border-color: var(--clr-dorado-metalico);
     }
 
     /* ═════════════════════════════════════════════════════════════════
@@ -2209,7 +2305,8 @@
       .viz-card { padding: 18px 14px; }
       .donut-chart-wrap { flex-direction: column; text-align: center; }
       .identity-gallery-grid { grid-template-columns: 1fr; }
-      .screen-capture-preview img { height: 180px; }
+      .mockup-viewport { min-height: 280px; max-height: 330px; padding: 10px; }
+      .mockup-viewport img { max-height: 290px; }
     }
   </style>
 </head>
@@ -3066,10 +3163,26 @@
               </div>
             </div>
 
-            <!-- Captura real antes del botón -->
-            <div class="screen-capture-preview">
-              <img src="./fotos/captura_demo.jpg" alt="Captura de pantalla real del Modo Demo Kuche con detección IA de noche" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-              <span class="screen-live-tag">MODO DEMO PWA</span>
+            <!-- Mockup Presentable y Completo -->
+            <div class="screen-mockup-frame">
+              <div class="mockup-header-bar">
+                <div class="mockup-window-dots">
+                  <span class="dot-red"></span>
+                  <span class="dot-yellow"></span>
+                  <span class="dot-green"></span>
+                </div>
+                <span class="mockup-window-title">Modo Demo PWA · Cámara IA</span>
+                <span class="screen-live-tag">EN VIVO</span>
+              </div>
+              <div class="mockup-viewport">
+                <a href="./fotos/captura_demo.jpg" target="_blank" title="Clic para ampliar captura completa" class="mockup-zoom-link">
+                  <img src="./fotos/captura_demo.jpg" alt="Captura completa del Modo Demo Kuche con IA" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
+                  <span class="mockup-zoom-hint">
+                    <svg class="icon-svg" style="width:11px; height:11px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    <span>Ver completa</span>
+                  </span>
+                </a>
+              </div>
             </div>
 
             <div class="screen-footer-cta">
@@ -3100,10 +3213,26 @@
               </div>
             </div>
 
-            <!-- Captura real antes del botón -->
-            <div class="screen-capture-preview">
-              <img src="./fotos/captura_login.jpg" alt="Captura de pantalla real del Portal de Acceso Ciudadano con CURP" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-              <span class="screen-live-tag">ACCESO CURP</span>
+            <!-- Mockup Presentable y Completo -->
+            <div class="screen-mockup-frame">
+              <div class="mockup-header-bar">
+                <div class="mockup-window-dots">
+                  <span class="dot-red"></span>
+                  <span class="dot-yellow"></span>
+                  <span class="dot-green"></span>
+                </div>
+                <span class="mockup-window-title">Acceso Ciudadano · Validación CURP</span>
+                <span class="screen-live-tag">EN VIVO</span>
+              </div>
+              <div class="mockup-viewport">
+                <a href="./fotos/captura_login.jpg" target="_blank" title="Clic para ampliar captura completa" class="mockup-zoom-link">
+                  <img src="./fotos/captura_login.jpg" alt="Captura completa del Portal de Acceso Ciudadano con CURP" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
+                  <span class="mockup-zoom-hint">
+                    <svg class="icon-svg" style="width:11px; height:11px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    <span>Ver completa</span>
+                  </span>
+                </a>
+              </div>
             </div>
 
             <div class="screen-footer-cta">
@@ -3134,10 +3263,26 @@
               </div>
             </div>
 
-            <!-- Captura real antes del botón -->
-            <div class="screen-capture-preview">
-              <img src="./fotos/captura_dashboard.png" alt="Captura de pantalla real del Dashboard Municipal Kuche con mapa satelital y cuadrilla" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-              <span class="screen-live-tag">DASHBOARD GIS</span>
+            <!-- Mockup Presentable y Completo -->
+            <div class="screen-mockup-frame">
+              <div class="mockup-header-bar">
+                <div class="mockup-window-dots">
+                  <span class="dot-red"></span>
+                  <span class="dot-yellow"></span>
+                  <span class="dot-green"></span>
+                </div>
+                <span class="mockup-window-title">Dashboard GIS · Cuadrilla K-01</span>
+                <span class="screen-live-tag">GIS MANDO</span>
+              </div>
+              <div class="mockup-viewport">
+                <a href="./fotos/captura_dashboard.png" target="_blank" title="Clic para ampliar captura completa" class="mockup-zoom-link">
+                  <img src="./fotos/captura_dashboard.png" alt="Captura completa del Dashboard Municipal Kuche con mapa" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
+                  <span class="mockup-zoom-hint">
+                    <svg class="icon-svg" style="width:11px; height:11px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                    <span>Ver completa</span>
+                  </span>
+                </a>
+              </div>
             </div>
 
             <div class="screen-footer-cta">
