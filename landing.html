@@ -233,6 +233,77 @@
       background: rgba(255, 255, 255, 0.08);
     }
     .nav-link:hover::after { transform: scaleX(1); }
+    .nav-dropdown {
+      position: relative;
+    }
+    .nav-dropdown-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .nav-dropdown-btn:hover,
+    .nav-dropdown:hover .nav-dropdown-btn {
+      color: var(--clr-dorado-arena);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .nav-dropdown:hover .nav-dropdown-btn svg {
+      transform: rotate(180deg);
+    }
+    .nav-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-gold);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      min-width: 180px;
+      padding: 6px;
+      list-style: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(6px);
+      transition: all 0.2s ease;
+      z-index: 1002;
+    }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .nav-dropdown-item {
+      width: 100%;
+    }
+    .nav-dropdown-item a {
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .nav-dropdown-item a:hover {
+      background: rgba(188, 149, 92, 0.15);
+      color: var(--clr-guinda-profundo);
+    }
+    body.theme-dark .nav-dropdown-item a:hover {
+      color: var(--clr-dorado-arena);
+      background: rgba(230, 209, 148, 0.12);
+    }
     .mobile-only-link { display: none; }
     .header-actions {
       display: flex;
@@ -1692,7 +1763,8 @@
     /* ═════════════════════════════════════════════════════════════════
        RESPONSIVE DESIGN (MEDIA QUERIES)
        ═════════════════════════════════════════════════════════════════ */
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
+      .nav-dropdown { display: none; }
       .nav-menu {
         display: none;
         position: absolute;
@@ -1767,21 +1839,37 @@
     <div class="header-inner">
       <a href="#inicio" class="brand-link" title="Ir al inicio de KUCHE">
         <span class="brand-wordmark">KUCHE</span>
-        <span class="brand-tagline">Plataforma Inteligente de Alumbrado Público · Puebla</span>
+        <span class="brand-tagline">Alumbrado Inteligente · Puebla</span>
       </a>
 
-      <!-- Menú de Navegación -->
+      <!-- Menú de Navegación Compacto -->
       <nav>
         <ul class="nav-menu" id="nav-menu">
           <li><a href="#inicio" class="nav-link">Inicio</a></li>
           <li><a href="#diagnostico" class="nav-link">Diagnóstico</a></li>
           <li><a href="#solucion-ia" class="nav-link">Solución IA</a></li>
           <li><a href="#demostrador" class="nav-link">Demostrador</a></li>
-          <li><a href="#rentabilidad" class="nav-link">Estudio Económico</a></li>
-          <li><a href="#impacto" class="nav-link">Impacto & ODS</a></li>
-          <li><a href="#marco-legal" class="nav-link">Marco Legal</a></li>
-          <li><a href="#equipo" class="nav-link">Equipo & Fases</a></li>
-          <li><a href="#ecosistema" class="nav-link">Ecosistema</a></li>
+          <li><a href="#rentabilidad" class="nav-link">Rentabilidad</a></li>
+
+          <!-- Menú Desplegable "Más" -->
+          <li class="nav-dropdown">
+            <button class="nav-dropdown-btn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span>Más</span>
+              <svg class="icon-svg" style="width:11px; height:11px; transition:transform 0.2s;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <ul class="nav-dropdown-menu">
+              <li class="nav-dropdown-item"><a href="#impacto">Impacto & ODS</a></li>
+              <li class="nav-dropdown-item"><a href="#marco-legal">Marco Legal</a></li>
+              <li class="nav-dropdown-item"><a href="#equipo">Equipo & Fases</a></li>
+              <li class="nav-dropdown-item"><a href="#ecosistema">Ecosistema GIS</a></li>
+            </ul>
+          </li>
+
+          <!-- Secciones secundarias accesibles en menú móvil -->
+          <li class="mobile-only-link"><a href="#impacto" class="nav-link">Impacto & ODS</a></li>
+          <li class="mobile-only-link"><a href="#marco-legal" class="nav-link">Marco Legal</a></li>
+          <li class="mobile-only-link"><a href="#equipo" class="nav-link">Equipo & Fases</a></li>
+          <li class="mobile-only-link"><a href="#ecosistema" class="nav-link">Ecosistema GIS</a></li>
           <li class="mobile-only-link"><a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" class="nav-link">Convocatoria ElectroHack 2026</a></li>
         </ul>
       </nav>
@@ -2937,7 +3025,7 @@
       if (menu) menu.classList.toggle('open');
     }
 
-    document.querySelectorAll('.nav-link').forEach(link => {
+    document.querySelectorAll('.nav-link, .nav-dropdown-item a').forEach(link => {
       link.addEventListener('click', () => {
         const menu = document.getElementById('nav-menu');
         if (menu && menu.classList.contains('open')) {
