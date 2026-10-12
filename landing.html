@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>KUCHE — Plataforma Inteligente de Reporte Ciudadano y Eficiencia Energética en Alumbrado Público | Puebla</title>
+  <title>KUCHE — Sistema Unificado de Monitoreo de Alumbrado Público e IA | Puebla</title>
   
-  <meta name="description" content="KUCHE es la plataforma inteligente de participación ciudadana y eficiencia energética para alumbrado público. Detección de anomalías diurnas, visión computacional, erradicación de consumo parásito y ahorro municipal en Puebla. Concurso ElectroHack 2026.">
-  <meta name="keywords" content="KUCHE, Alumbrado Público, Eficiencia Energética, ElectroHack 2026, Agencia de Energía del Estado de Puebla, Visión Computacional, San Pedro Cholula, Consumo Parásito, CFE APBT, NOM-013-ENER, NOM-031-ENER, BUAP, UTP, INAOEP">
+  <meta name="description" content="KUCHE es la plataforma unificada de participación ciudadana y monitoreo de alumbrado público con IA para el estado de Puebla. Piloto en San Pedro Cholula. Detección de fallas, erradicación de consumo parásito y gestión municipal. Concurso ElectroHack 2026.">
+  <meta name="keywords" content="KUCHE, Alumbrado Público, Puebla, San Pedro Cholula, Puebla Brilla, ElectroHack 2026, Agencia de Energía de Puebla, Visión Artificial, Consumo Parásito, Ngiigua, Popoloca, BUAP, UTP, INAOEP">
   <meta name="author" content="Equipo KUCHE · BUAP & UTP">
   
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="KUCHE — Inteligencia Artificial y Eficiencia en Alumbrado Público · Puebla">
-  <meta property="og:description" content="Supervisión inteligente del alumbrado público con visión artificial, reducción de fugas de energía y ahorro de hasta $1.36 MDP anuales por municipio.">
+  <meta property="og:title" content="KUCHE — Sistema Unificado de Monitoreo de Alumbrado Público · Puebla">
+  <meta property="og:description" content="Supervisión inteligente del alumbrado público en Puebla: desde la captura ciudadana hasta el dashboard municipal con IA.">
   <meta property="og:image" content="./static/icons/icon-512.png">
   
   <!-- Favicons y tema institucional -->
@@ -20,7 +20,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./static/icons/icon-192.png">
   <link rel="apple-touch-icon" href="./static/icons/apple-touch-icon.png">
 
-  <!-- Control estricto de caché y frescura de datos -->
+  <!-- Control estricto de caché -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -33,10 +33,9 @@
   <style>
     /* ═════════════════════════════════════════════════════════════════════
        SISTEMA DE DISEÑO INSTITUCIONAL CON IDENTIDAD POPOLOCA
-       Paleta Oficial del Estado de Puebla y Raíz Biocultural Ngigua
+       Colores Oficiales de Puebla y Raíz Biocultural Ngigua
        ═════════════════════════════════════════════════════════════════════ */
     :root {
-      /* Colores Oficiales Bioculturales */
       --clr-guinda-profundo: #611232;
       --clr-guinda-primario: #9B2247;
       --clr-dorado-metalico: #BC955C;
@@ -52,7 +51,6 @@
       --bg-surface: #FFFFFF;
       --bg-card: #FFFFFF;
       --bg-card-subtle: #F6EFE6;
-      --bg-card-alt: #EFE6D8;
       --bg-header: rgba(97, 18, 50, 0.96);
       --text-main: #1C1518;
       --text-muted: #594D54;
@@ -71,7 +69,6 @@
       --bg-surface: #1A1418;
       --bg-card: #20191E;
       --bg-card-subtle: #281F25;
-      --bg-card-alt: #31262E;
       --bg-header: rgba(32, 10, 19, 0.96);
       --text-main: #F8F3F6;
       --text-muted: #B8A8B1;
@@ -84,7 +81,6 @@
       --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.85);
     }
 
-    /* Reset y Estructura */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; font-size: 16px; }
     body {
@@ -106,10 +102,6 @@
       padding-right: 24px;
     }
 
-    .font-title { font-family: 'Montserrat', sans-serif; font-weight: 800; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-    /* Iconografía Vectorial SVG (Cero Emojis) */
     .icon-svg {
       display: inline-block;
       width: 18px;
@@ -123,13 +115,13 @@
       flex-shrink: 0;
     }
 
-    /* Grecas Popolocas Decorativas */
+    /* Grecas Popolocas */
     .popoloca-fret-line {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      margin: 28px 0;
+      margin: 32px 0;
       color: var(--clr-dorado-metalico);
       opacity: 0.85;
     }
@@ -144,9 +136,9 @@
       fill: currentColor;
     }
 
-    /* ═════════════════════════════════════════════════════════════════════
-       CABECERA INSTITUCIONAL STICKY
-       ═════════════════════════════════════════════════════════════════════ */
+    /* ═════════════════════════════════════════════════════════════════
+       CABECERA INSTITUCIONAL Y NAVEGACIÓN COMPACTA
+       ═════════════════════════════════════════════════════════════════ */
     .site-header {
       position: sticky;
       top: 0;
@@ -233,9 +225,9 @@
       background: rgba(255, 255, 255, 0.08);
     }
     .nav-link:hover::after { transform: scaleX(1); }
-    .nav-dropdown {
-      position: relative;
-    }
+
+    /* Dropdown Más */
+    .nav-dropdown { position: relative; }
     .nav-dropdown-btn {
       background: transparent;
       border: 1px solid transparent;
@@ -256,9 +248,7 @@
       color: var(--clr-dorado-arena);
       background: rgba(255, 255, 255, 0.08);
     }
-    .nav-dropdown:hover .nav-dropdown-btn svg {
-      transform: rotate(180deg);
-    }
+    .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
     .nav-dropdown-menu {
       position: absolute;
       top: calc(100% + 4px);
@@ -267,7 +257,7 @@
       border: 1.5px solid var(--border-gold);
       border-radius: 8px;
       box-shadow: var(--shadow-lg);
-      min-width: 180px;
+      min-width: 185px;
       padding: 6px;
       list-style: none;
       opacity: 0;
@@ -282,9 +272,7 @@
       visibility: visible;
       transform: translateY(0);
     }
-    .nav-dropdown-item {
-      width: 100%;
-    }
+    .nav-dropdown-item { width: 100%; }
     .nav-dropdown-item a {
       display: block;
       padding: 8px 12px;
@@ -305,6 +293,7 @@
       background: rgba(230, 209, 148, 0.12);
     }
     .mobile-only-link { display: none; }
+
     .header-actions {
       display: flex;
       align-items: center;
@@ -343,14 +332,12 @@
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
-      letter-spacing: 0.3px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       white-space: nowrap;
     }
     .btn-nav-cta:hover {
       background: var(--clr-dorado-arena);
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(230, 209, 148, 0.35);
     }
     .menu-toggle {
       display: none;
@@ -363,7 +350,41 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       HERO PRINCIPAL CON MÉTRICAS Y DATOS DE LA FICHA TÉCNICA
+       ESTILOS DE SECCIONES GENERALES
+       ═════════════════════════════════════════════════════════════════ */
+    .section-py { padding: 85px 0; }
+    .section-header {
+      text-align: center;
+      max-width: 880px;
+      margin: 0 auto 50px;
+    }
+    .section-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--clr-guinda-primario);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    body.theme-dark .section-kicker { color: var(--clr-dorado-arena); }
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1.22;
+      color: var(--text-main);
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 15.5px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       1. HERO: ¿QUÉ ES KUCHE?
        ═════════════════════════════════════════════════════════════════ */
     .hero-section {
       background: radial-gradient(circle at 85% 20%, rgba(155, 34, 71, 0.5) 0%, rgba(97, 18, 50, 0.98) 70%, #350819 100%);
@@ -412,23 +433,21 @@
       font-size: 46px;
       font-weight: 900;
       line-height: 1.12;
-      letter-spacing: -0.5px;
       color: #FFFFFF;
       margin-bottom: 12px;
     }
     .hero-title span {
       color: var(--clr-dorado-arena);
       display: block;
-      font-size: 26px;
+      font-size: 25px;
       font-weight: 800;
-      letter-spacing: 0px;
       margin-top: 8px;
       line-height: 1.25;
     }
     .hero-focus-tag {
       display: inline-block;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #10B981;
       background: rgba(16, 185, 129, 0.16);
@@ -436,7 +455,6 @@
       padding: 5px 12px;
       border-radius: 6px;
       margin-bottom: 16px;
-      letter-spacing: 0.5px;
     }
     .hero-description {
       font-size: 15.5px;
@@ -449,7 +467,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
     }
     .btn-hero-primary {
       background: var(--clr-dorado-metalico);
@@ -465,13 +483,11 @@
       gap: 10px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
       transition: all 0.25s ease;
-      letter-spacing: 0.4px;
       text-transform: uppercase;
     }
     .btn-hero-primary:hover {
       background: var(--clr-dorado-arena);
       transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(230, 209, 148, 0.4);
     }
     .btn-hero-secondary {
       background: rgba(0, 0, 0, 0.35);
@@ -487,44 +503,13 @@
       gap: 10px;
       border: 1.5px solid var(--clr-dorado-arena);
       transition: all 0.25s ease;
-      letter-spacing: 0.3px;
     }
     .btn-hero-secondary:hover {
       background: rgba(230, 209, 148, 0.15);
       color: var(--clr-dorado-arena);
-      transform: translateY(-2px);
     }
 
-    /* Franja de Métricas Hero (Cifras Ficha Técnica) */
-    .hero-kpi-ribbon {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(230, 209, 148, 0.25);
-    }
-    .hero-kpi-item {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(230, 209, 148, 0.3);
-      padding: 12px 14px;
-      border-radius: 8px;
-    }
-    .hero-kpi-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--clr-dorado-brillo);
-      line-height: 1.2;
-    }
-    .hero-kpi-label {
-      font-size: 11px;
-      color: #E2D3DB;
-      font-weight: 500;
-      margin-top: 4px;
-      line-height: 1.35;
-    }
-
-    /* Tarjeta Táctica Hero */
+    /* Tarjeta Táctica Hero con Foto Real */
     .hero-tactical-card {
       background: rgba(18, 12, 16, 0.95);
       border: 2px solid var(--clr-dorado-metalico);
@@ -553,7 +538,7 @@
       gap: 8px;
     }
     .hero-preview-box {
-      height: 240px;
+      height: 250px;
       background: #0B070A;
       border-radius: 8px;
       border: 1px solid #33242D;
@@ -567,7 +552,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.9;
+      opacity: 0.92;
     }
     .hero-preview-overlay {
       position: absolute;
@@ -592,7 +577,6 @@
       display: inline-flex;
       align-items: center;
       gap: 2px;
-      letter-spacing: 0.5px;
     }
     .hud-cursor {
       display: inline-block;
@@ -602,277 +586,481 @@
       margin-left: 4px;
       animation: hudBlink 1s infinite;
     }
-    @keyframes hudBlink {
-      0%, 49% { opacity: 1; }
-      50%, 100% { opacity: 0; }
-    }
+    @keyframes hudBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
     .hero-preview-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--clr-dorado-arena);
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.82);
       padding: 6px 10px;
       border-radius: 4px;
       backdrop-filter: blur(4px);
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       ESTILOS GLOBALES DE SECCIÓN
+       2. EL NOMBRE, RAÍCES Y POR QUÉ LO ESCOGIMOS
        ═════════════════════════════════════════════════════════════════ */
-    .section-py { padding: 85px 0; }
-    .section-header {
-      text-align: center;
-      max-width: 860px;
-      margin: 0 auto 50px;
+    .etymology-card {
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.08) 0%, rgba(188, 149, 92, 0.12) 100%);
+      border: 2px solid var(--clr-dorado-metalico);
+      border-radius: 14px;
+      padding: 38px 34px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 36px;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
     }
-    .section-kicker {
+    body.theme-dark .etymology-card {
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.25) 0%, rgba(32, 25, 30, 0.9) 100%);
+    }
+    .etym-title-box h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--clr-guinda-profundo);
+      margin-bottom: 6px;
+    }
+    body.theme-dark .etym-title-box h3 { color: var(--clr-dorado-arena); }
+    .etym-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--clr-guinda-primario);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--clr-dorado-metalico);
+      margin-bottom: 14px;
       display: inline-block;
     }
-    body.theme-dark .section-kicker { color: var(--clr-dorado-arena); }
-    .section-title {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 34px;
-      font-weight: 900;
-      line-height: 1.22;
-      color: var(--text-main);
-      margin-bottom: 14px;
-    }
-    .section-desc {
-      font-size: 15.5px;
+    .etym-desc {
+      font-size: 14.5px;
       color: var(--text-muted);
       line-height: 1.7;
     }
-
-    /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 1: DIAGNÓSTICO SITUACIONAL Y LA RAÍZ DEL PROBLEMA
-       ═════════════════════════════════════════════════════════════════ */
-    .diagnosis-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-top: 4px solid var(--clr-guinda-primario);
-      border-radius: 10px;
-      padding: 24px 20px;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-    }
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-      border-top-color: var(--clr-dorado-metalico);
-    }
-    .stat-number {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--clr-guinda-profundo);
-      line-height: 1.1;
-      margin-bottom: 6px;
-    }
-    body.theme-dark .stat-number { color: var(--clr-dorado-arena); }
-    .stat-title {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-    .stat-desc {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      line-height: 1.55;
-    }
-    .stat-source {
-      margin-top: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--clr-dorado-metalico);
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    /* Cuadro de la Analogía Biocultural Kuche */
-    .kuche-origin-card {
-      background: linear-gradient(135deg, rgba(97, 18, 50, 0.08) 0%, rgba(188, 149, 92, 0.12) 100%);
-      border: 2px solid var(--clr-dorado-metalico);
-      border-radius: 12px;
-      padding: 32px;
-      margin-top: 30px;
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 32px;
-      align-items: center;
-    }
-    body.theme-dark .kuche-origin-card {
-      background: linear-gradient(135deg, rgba(97, 18, 50, 0.25) 0%, rgba(32, 25, 30, 0.9) 100%);
-    }
-    .origin-title-box h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 24px;
-      font-weight: 900;
-      color: var(--clr-guinda-profundo);
-      margin-bottom: 8px;
-    }
-    body.theme-dark .origin-title-box h3 { color: var(--clr-dorado-arena); }
-    .origin-etymology {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--clr-dorado-metalico);
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-    .origin-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.65;
-    }
-    .parasite-comparison {
+    .etym-comparison-col {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
-    .parasite-item {
+    .etym-box {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 18px 20px;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      padding: 14px 16px;
-      border-radius: 8px;
+      gap: 14px;
     }
-    .parasite-icon {
-      color: var(--clr-critico-rojo);
+    .etym-box-icon {
       flex-shrink: 0;
-      margin-top: 2px;
+      margin-top: 3px;
     }
-    .parasite-item h4 {
-      font-size: 13.5px;
-      font-weight: 700;
+    .etym-box h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14.5px;
+      font-weight: 800;
       color: var(--text-main);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
-    .parasite-item p {
-      font-size: 12.5px;
+    .etym-box p {
+      font-size: 13px;
       color: var(--text-muted);
-      line-height: 1.45;
+      line-height: 1.5;
       margin: 0;
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 2: LOS 4 COMPONENTES DE LA SOLUCIÓN TECNOLÓGICA
+       3. INTEGRANTES DEL EQUIPO Y MENTORÍA
        ═════════════════════════════════════════════════════════════════ */
-    .components-grid {
+    .team-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 22px;
-      margin-top: 20px;
+      gap: 20px;
+      margin-bottom: 30px;
     }
-    .comp-card {
+    .team-card {
       background: var(--bg-card);
       border: 1.5px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 28px 22px;
+      border-radius: 10px;
+      padding: 24px 18px;
+      text-align: center;
       box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      transition: all 0.25s ease;
     }
-    .comp-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
+    .team-card:hover {
       border-color: var(--clr-dorado-metalico);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
     }
-    .comp-num-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+    .team-avatar-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-guinda-profundo), var(--clr-guinda-primario));
+      color: var(--clr-dorado-arena);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      border: 2px solid var(--clr-dorado-metalico);
+    }
+    .team-card h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14.5px;
       font-weight: 800;
-      color: var(--clr-dorado-metalico);
-      background: rgba(188, 149, 92, 0.12);
-      border: 1px solid rgba(188, 149, 92, 0.3);
-      padding: 4px 8px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 16px;
-      align-self: flex-start;
+      color: var(--text-main);
+      margin-bottom: 4px;
     }
-    .comp-card h3 {
+    .team-role {
+      font-size: 11.5px;
+      color: var(--clr-dorado-metalico);
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .team-uni {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .mentor-card {
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.06) 0%, rgba(188, 149, 92, 0.1) 100%);
+      border: 1.5px solid var(--clr-dorado-metalico);
+      border-radius: 12px;
+      padding: 22px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    body.theme-dark .mentor-card {
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.2) 0%, rgba(32, 25, 30, 0.8) 100%);
+    }
+    .mentor-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .mentor-icon-wrap {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      background: var(--clr-guinda-profundo);
+      color: var(--clr-dorado-arena);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .mentor-left h4 {
       font-family: 'Montserrat', sans-serif;
       font-size: 17px;
       font-weight: 800;
       color: var(--text-main);
-      margin-bottom: 12px;
-      line-height: 1.3;
+      margin-bottom: 3px;
     }
-    .comp-card p {
+    .mentor-left p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       4. CÓMO SE CONFORMA EL PROYECTO (PILOTO EN SAN PEDRO CHOLULA)
+       ═════════════════════════════════════════════════════════════════ */
+    .pilot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+    }
+    .pilot-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: var(--shadow-sm);
+    }
+    .pilot-card.gold-accent { border-top: 5px solid var(--clr-dorado-metalico); }
+    .pilot-card.guinda-accent { border-top: 5px solid var(--clr-guinda-primario); }
+    .pilot-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+    .pilot-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .pilot-stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .pilot-stat-box {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .pilot-stat-box .val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--clr-guinda-profundo);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    body.theme-dark .pilot-stat-box .val { color: var(--clr-dorado-arena); }
+    .pilot-stat-box .lbl {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       5. PROBLEMÁTICA DEL ESTADO Y PUEBLA BRILLA
+       ═════════════════════════════════════════════════════════════════ */
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+    .problem-box {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-top: 4px solid var(--clr-critico-rojo);
+      border-radius: 10px;
+      padding: 26px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .problem-box h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .problem-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .problem-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--clr-critico-rojo);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       6. ÁREAS DE OPORTUNIDAD: DISPERSIÓN ADMINISTRATIVA
+       ═════════════════════════════════════════════════════════════════ */
+    .opportunity-card {
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.95) 0%, rgba(155, 34, 71, 0.95) 100%);
+      color: #FFFFFF;
+      border-radius: 14px;
+      padding: 38px 34px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      box-shadow: var(--shadow-md);
+    }
+    .opportunity-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--clr-dorado-arena);
+      margin-bottom: 12px;
+    }
+    .opportunity-card p {
+      font-size: 14px;
+      color: #F8EBF0;
+      line-height: 1.65;
+    }
+    .opp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .opp-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(230, 209, 148, 0.25);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .opp-item svg {
+      color: #10B981;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .opp-item strong {
+      display: block;
+      color: #FFFFFF;
+      font-size: 13.5px;
+      margin-bottom: 2px;
+    }
+    .opp-item span {
+      font-size: 12px;
+      color: #E2D3DB;
+      line-height: 1.45;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       7. LAS PANTALLAS DEL SISTEMA (ORDEN EXACTO SOLICITADO)
+       ═════════════════════════════════════════════════════════════════ */
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+      margin-top: 10px;
+    }
+    .screen-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+    .screen-card:hover {
+      border-color: var(--clr-dorado-metalico);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    .screen-header-bar {
+      padding: 16px 20px;
+      background: rgba(97, 18, 50, 0.08);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    body.theme-dark .screen-header-bar { background: rgba(188, 149, 92, 0.1); }
+    .screen-step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--clr-dorado-metalico);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .screen-badge-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .screen-badge-type.operational {
+      background: rgba(16, 185, 129, 0.15);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .screen-badge-type.civic {
+      background: rgba(97, 18, 50, 0.12);
+      color: var(--clr-guinda-primario);
+      border: 1px solid rgba(97, 18, 50, 0.25);
+    }
+    .screen-badge-type.executive {
+      background: rgba(188, 149, 92, 0.15);
+      color: var(--clr-dorado-metalico);
+      border: 1px solid rgba(188, 149, 92, 0.35);
+    }
+    body.theme-dark .screen-badge-type.operational { color: #10B981; }
+    body.theme-dark .screen-badge-type.civic { color: var(--clr-dorado-arena); }
+
+    .screen-body { padding: 24px 22px; flex-grow: 1; }
+    .screen-body h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .screen-body p {
       font-size: 13.5px;
       color: var(--text-muted);
       line-height: 1.6;
       margin-bottom: 18px;
     }
-    .comp-list {
+    .screen-highlights {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-    .comp-list li {
+    .screen-highlights li {
       font-size: 12px;
       color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .comp-list li svg {
-      width: 13px;
-      height: 13px;
+    .screen-highlights li svg {
+      width: 13px; height: 13px;
       color: var(--clr-verde-eficiencia);
+      flex-shrink: 0;
     }
-    .comp-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      color: #059669;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      padding: 6px 10px;
-      border-radius: 6px;
-      text-align: center;
-    }
-    body.theme-dark .comp-pill { color: #10B981; }
-
-    /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 3: CONSOLA INTERACTIVA: DEMOSTRADOR EN VIVO
-       ═════════════════════════════════════════════════════════════════ */
-    .demo-section {
-      background: var(--bg-card-subtle);
+    .screen-footer-cta {
+      padding: 16px 22px 22px;
       border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
     }
+    .btn-screen-action {
+      width: 100%;
+      background: var(--bg-body);
+      border: 1.5px solid var(--border-medium);
+      color: var(--text-main);
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 11px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.3px;
+    }
+    .btn-screen-action:hover {
+      background: var(--clr-guinda-profundo);
+      color: #FFFFFF;
+      border-color: var(--clr-dorado-metalico);
+      transform: translateY(-2px);
+    }
+
+    /* Demostrador en Vivo Incrustado (Modo Demo) */
     .demo-console-card {
       background: var(--bg-surface);
       border: 2px solid var(--clr-dorado-metalico);
       border-radius: 14px;
       padding: 34px;
       box-shadow: var(--shadow-lg);
-      position: relative;
+      margin-top: 36px;
     }
     .demo-controls-header {
       margin-bottom: 22px;
@@ -944,35 +1132,15 @@
       max-height: 440px;
       object-fit: cover;
       display: block;
-      transition: filter 0.3s ease;
     }
-
-    .scan-reticle {
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      border-color: var(--clr-dorado-arena);
-      border-style: solid;
-      pointer-events: none;
-      z-index: 5;
-    }
-    .scan-reticle.tl { top: 14px; left: 14px; border-width: 2.5px 0 0 2.5px; }
-    .scan-reticle.tr { top: 14px; right: 14px; border-width: 2.5px 2.5px 0 0; }
-    .scan-reticle.bl { bottom: 14px; left: 14px; border-width: 0 0 2.5px 2.5px; }
-    .scan-reticle.br { bottom: 14px; right: 14px; border-width: 0 2.5px 2.5px 0; }
-
     .ai-bounding-box {
       position: absolute;
-      top: 25%;
-      left: 32%;
-      width: 38%;
-      height: 46%;
+      top: 45%; left: 54%; width: 18%; height: 22%;
       border: 2px solid #10B981;
       background: rgba(16, 185, 129, 0.14);
       border-radius: 4px;
       box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
       z-index: 6;
-      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -987,7 +1155,6 @@
       padding: 2px 6px;
       border-radius: 3px;
       align-self: flex-start;
-      letter-spacing: 0.5px;
     }
     .ai-scan-bar {
       position: absolute;
@@ -1007,7 +1174,6 @@
       50% { top: 96%; opacity: 1; }
       100% { top: 0%; opacity: 0.3; }
     }
-
     .demo-report-card {
       background: var(--bg-body);
       border: 1px solid var(--border-medium);
@@ -1023,7 +1189,6 @@
       font-weight: 800;
       color: var(--clr-guinda-profundo);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 16px;
@@ -1046,24 +1211,14 @@
       padding-bottom: 7px;
       border-bottom: 1px dashed var(--border-subtle);
     }
-    .report-label {
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .report-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      color: var(--text-main);
-    }
+    .report-label { color: var(--text-muted); font-weight: 500; }
+    .report-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--text-main); }
     .status-badge {
       padding: 3px 8px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
     }
     .status-badge.critical {
       background: rgba(239, 68, 68, 0.15);
@@ -1075,9 +1230,6 @@
       color: #059669;
       border: 1px solid rgba(16, 185, 129, 0.4);
     }
-    body.theme-dark .status-badge.critical { color: #EF4444; }
-    body.theme-dark .status-badge.optimal { color: #10B981; }
-
     .btn-run-analysis {
       width: 100%;
       background: var(--clr-guinda-profundo);
@@ -1094,31 +1246,18 @@
       justify-content: center;
       gap: 10px;
       transition: all 0.25s ease;
-      letter-spacing: 0.5px;
       text-transform: uppercase;
-      box-shadow: 0 4px 14px rgba(97, 18, 50, 0.25);
     }
-    .btn-run-analysis:hover {
-      background: var(--clr-guinda-primario);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(155, 34, 71, 0.35);
-    }
-    body.theme-dark .btn-run-analysis {
-      background: var(--clr-dorado-metalico);
-      color: #120E11;
-    }
-    body.theme-dark .btn-run-analysis:hover {
-      background: var(--clr-dorado-arena);
-    }
+    .btn-run-analysis:hover { background: var(--clr-guinda-primario); }
 
     /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 4: ESTUDIO FINANCIERO Y RENTABILIDAD (SAN PEDRO CHOLULA)
+       8. MODELOS ECONÓMICOS, FINANCIEROS Y LEGALES
        ═════════════════════════════════════════════════════════════════ */
     .finance-metrics-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 18px;
-      margin-bottom: 34px;
+      margin-bottom: 30px;
     }
     .finance-metric-card {
       background: var(--bg-card);
@@ -1130,7 +1269,7 @@
     }
     .finance-metric-card .f-val {
       font-family: 'Montserrat', sans-serif;
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 900;
       color: var(--clr-guinda-profundo);
       line-height: 1.1;
@@ -1152,29 +1291,9 @@
 
     .finance-breakdown-grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 28px;
       margin-bottom: 34px;
-    }
-    .table-responsive-card {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-    .table-responsive-card h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-    .table-responsive-card p {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 18px;
-      line-height: 1.5;
     }
     .custom-table {
       width: 100%;
@@ -1191,15 +1310,11 @@
       border-bottom: 2px solid var(--border-gold);
       font-size: 11.5px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
     .custom-table td {
       padding: 10px 12px;
       border-bottom: 1px solid var(--border-subtle);
       color: var(--text-muted);
-    }
-    .custom-table tr:hover td {
-      background: rgba(188, 149, 92, 0.05);
     }
     .custom-table .highlight-row td {
       font-weight: 800;
@@ -1211,41 +1326,39 @@
       background: rgba(188, 149, 92, 0.1);
     }
 
-    /* Comparativa Disruptiva Hardware IoT vs Kuche */
     .iot-disruption-box {
       background: linear-gradient(135deg, rgba(97, 18, 50, 0.95) 0%, rgba(155, 34, 71, 0.95) 100%);
       color: #FFFFFF;
       border-radius: 12px;
-      padding: 28px;
+      padding: 26px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: var(--shadow-md);
     }
     .iot-disruption-box h3 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 900;
       color: var(--clr-dorado-arena);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .iot-disruption-box p {
-      font-size: 13.5px;
+      font-size: 13px;
       color: #F8EDF3;
-      line-height: 1.6;
-      margin-bottom: 20px;
+      line-height: 1.55;
+      margin-bottom: 16px;
     }
     .iot-compare-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
     .iot-side {
       background: rgba(0, 0, 0, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
-      padding: 14px;
+      padding: 12px;
     }
     .iot-side.kuche-win {
       border-color: #10B981;
@@ -1253,444 +1366,71 @@
     }
     .iot-side-title {
       font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .iot-side .cost {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
-      color: #FFFFFF;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .iot-side.kuche-win .cost { color: #34D399; }
-    .iot-side p {
-      font-size: 11.5px;
-      color: #E6D2DE;
-      line-height: 1.4;
-      margin: 0;
-    }
+    .iot-side p { font-size: 11px; color: #E6D2DE; margin: 0; line-height: 1.35; }
     .saas-callout {
       background: rgba(0, 0, 0, 0.45);
       border: 1px solid var(--clr-dorado-metalico);
       border-radius: 8px;
-      padding: 12px 16px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
     .saas-callout .val {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 800;
       color: var(--clr-dorado-arena);
       white-space: nowrap;
     }
-    .saas-callout .desc {
-      font-size: 11.5px;
-      color: #FFFFFF;
-      line-height: 1.35;
-    }
+    .saas-callout .desc { font-size: 11.5px; color: #FFFFFF; line-height: 1.35; }
 
-    /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 5: IMPACTO AMBIENTAL Y SOCIAL
-       ═════════════════════════════════════════════════════════════════ */
-    .impact-dual-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      margin-top: 24px;
-    }
-    .impact-card {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: var(--shadow-sm);
-    }
-    .impact-card.green-accent {
-      border-top: 5px solid #10B981;
-    }
-    .impact-card.purple-accent {
-      border-top: 5px solid var(--clr-guinda-primario);
-    }
-    .impact-card h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--text-main);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .impact-card p {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      line-height: 1.65;
-      margin-bottom: 20px;
-    }
-    .impact-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .impact-list-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      background: var(--bg-card-subtle);
-      padding: 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border-subtle);
-    }
-    .impact-list-item svg {
-      flex-shrink: 0;
-      margin-top: 2px;
-      color: var(--clr-dorado-metalico);
-    }
-    .impact-list-item strong {
-      display: block;
-      font-size: 13.5px;
-      color: var(--text-main);
-      margin-bottom: 3px;
-    }
-    .impact-list-item span {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-
-    /* ODS Badges */
-    .ods-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-top: 30px;
-    }
-    .ods-badge {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: var(--shadow-sm);
-    }
-    .ods-num {
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      background: var(--clr-guinda-profundo);
-      color: #FFFFFF;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .ods-info {
-      font-size: 12px;
-      line-height: 1.35;
-    }
-    .ods-info strong {
-      display: block;
-      color: var(--text-main);
-      font-size: 12.5px;
-    }
-    .ods-info span {
-      color: var(--text-muted);
-      font-size: 11px;
-    }
-
-    /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 6: MARCO LEGAL Y NORMATIVO
-       ═════════════════════════════════════════════════════════════════ */
+    /* Marco Legal */
     .legal-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-      margin-top: 20px;
+      gap: 20px;
+      margin-top: 24px;
     }
     .legal-card {
       background: var(--bg-card);
       border: 1.5px solid var(--border-subtle);
       border-radius: 10px;
-      padding: 24px;
+      padding: 22px;
       box-shadow: var(--shadow-sm);
-      transition: all 0.25s ease;
     }
-    .legal-card:hover {
-      border-color: var(--clr-dorado-metalico);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-    }
+    .legal-card:hover { border-color: var(--clr-dorado-metalico); }
     .legal-law-code {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--clr-guinda-primario);
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     body.theme-dark .legal-law-code { color: var(--clr-dorado-arena); }
     .legal-card h4 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 800;
       color: var(--text-main);
-      margin-bottom: 8px;
-      line-height: 1.3;
+      margin-bottom: 6px;
     }
     .legal-card p {
       font-size: 12.5px;
       color: var(--text-muted);
-      line-height: 1.55;
-    }
-
-    /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 7: EQUIPO, MENTORÍA Y FASES DEL PROYECTO (12 MESES)
-       ═════════════════════════════════════════════════════════════════ */
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-bottom: 34px;
-    }
-    .team-card {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 22px 18px;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.25s ease;
-    }
-    .team-card:hover {
-      border-color: var(--clr-dorado-metalico);
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-md);
-    }
-    .team-avatar-box {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--clr-guinda-profundo), var(--clr-guinda-primario));
-      color: var(--clr-dorado-arena);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 14px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 18px;
-      font-weight: 900;
-      border: 2px solid var(--clr-dorado-metalico);
-    }
-    .team-card h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14.5px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 4px;
-    }
-    .team-role {
-      font-size: 12px;
-      color: var(--clr-dorado-metalico);
-      font-weight: 700;
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    .team-uni {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Tarjeta de Mentoría Científica */
-    .mentor-card {
-      background: linear-gradient(135deg, rgba(97, 18, 50, 0.06) 0%, rgba(188, 149, 92, 0.1) 100%);
-      border: 1.5px solid var(--clr-dorado-metalico);
-      border-radius: 12px;
-      padding: 24px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 40px;
-    }
-    body.theme-dark .mentor-card {
-      background: linear-gradient(135deg, rgba(97, 18, 50, 0.2) 0%, rgba(32, 25, 30, 0.8) 100%);
-    }
-    .mentor-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .mentor-icon-wrap {
-      width: 52px;
-      height: 52px;
-      border-radius: 10px;
-      background: var(--clr-guinda-profundo);
-      color: var(--clr-dorado-arena);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .mentor-left h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 4px;
-    }
-    .mentor-left p {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin: 0;
-    }
-    .mentor-contact {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .mentor-badge-contact {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      padding: 6px 12px;
-      border-radius: 6px;
-      color: var(--text-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Línea de Tiempo: 8 Etapas / 12 Meses */
-    .timeline-title {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 18px;
-      text-align: center;
-    }
-    .timeline-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .timeline-stage {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 16px;
-      position: relative;
-    }
-    .stage-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--clr-dorado-metalico);
-      background: rgba(188, 149, 92, 0.12);
-      padding: 3px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-    .timeline-stage h5 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .timeline-stage p {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      line-height: 1.45;
-      margin: 0;
-    }
-
-    /* ═════════════════════════════════════════════════════════════════
-       SECCIÓN 8: ECOSISTEMA DE TRES MÓDULOS DE KUCHE
-       ═════════════════════════════════════════════════════════════════ */
-    .ecosystem-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-    .eco-card {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-    }
-    .eco-card:hover {
-      border-color: var(--clr-dorado-metalico);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-    }
-    .eco-header-bar {
-      background: rgba(97, 18, 50, 0.08);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    body.theme-dark .eco-header-bar {
-      background: rgba(188, 149, 92, 0.1);
-    }
-    .eco-header-bar svg { color: var(--clr-guinda-primario); }
-    body.theme-dark .eco-header-bar svg { color: var(--clr-dorado-arena); }
-    .eco-header-bar span {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--text-main);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .eco-body { padding: 22px 20px; }
-    .eco-body h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 10px;
-    }
-    .eco-body p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .eco-badge-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .eco-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      font-weight: 700;
-      background: var(--bg-card-subtle);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 3px 8px;
-      border-radius: 4px;
+      line-height: 1.5;
     }
 
     /* ═════════════════════════════════════════════════════════════════
@@ -1716,37 +1456,18 @@
       letter-spacing: 3px;
       margin-bottom: 8px;
     }
-    .footer-brand p {
-      font-size: 13px;
-      line-height: 1.65;
-      color: #94868F;
-      max-width: 420px;
-    }
+    .footer-brand p { font-size: 13px; line-height: 1.65; color: #94868F; max-width: 420px; }
     .footer-col h4 {
       font-family: 'Montserrat', sans-serif;
       font-size: 13.5px;
       font-weight: 800;
       color: #FFFFFF;
-      letter-spacing: 0.8px;
       text-transform: uppercase;
       margin-bottom: 16px;
     }
-    .footer-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-    .footer-links li {
-      font-size: 12.5px;
-      color: #94868F;
-    }
-    .footer-links a {
-      color: #94868F;
-      text-decoration: none;
-      font-size: 12.5px;
-      transition: color 0.2s;
-    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .footer-links li { font-size: 12.5px; color: #94868F; }
+    .footer-links a { color: #94868F; text-decoration: none; font-size: 12.5px; transition: color 0.2s; }
     .footer-links a:hover { color: var(--clr-dorado-arena); }
     .footer-bottom {
       border-top: 1px solid #241A21;
@@ -1781,29 +1502,20 @@
       }
       .nav-menu.open { display: flex; }
       .nav-menu li { width: 100%; }
-      .nav-menu .nav-link {
-        display: block;
-        width: 100%;
-        padding: 10px 14px;
-        font-size: 14px;
-        border-radius: 6px;
-      }
+      .nav-menu .nav-link { display: block; width: 100%; padding: 10px 14px; font-size: 14px; border-radius: 6px; }
       .mobile-only-link { display: block; }
       .menu-toggle { display: flex; align-items: center; justify-content: center; }
       .hero-layout { grid-template-columns: 1fr; gap: 36px; }
-      .hero-kpi-ribbon { grid-template-columns: repeat(2, 1fr); }
-      .diagnosis-grid { grid-template-columns: repeat(2, 1fr); }
-      .components-grid { grid-template-columns: repeat(2, 1fr); }
+      .etymology-card { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .pilot-grid { grid-template-columns: 1fr; }
+      .problems-grid { grid-template-columns: 1fr; }
+      .opportunity-card { grid-template-columns: 1fr; }
+      .screens-grid { grid-template-columns: 1fr; }
+      .demo-viewport-grid { grid-template-columns: 1fr; }
       .finance-metrics-strip { grid-template-columns: repeat(2, 1fr); }
       .finance-breakdown-grid { grid-template-columns: 1fr; }
-      .impact-dual-grid { grid-template-columns: 1fr; }
-      .ods-strip { grid-template-columns: repeat(2, 1fr); }
       .legal-grid { grid-template-columns: repeat(2, 1fr); }
-      .team-grid { grid-template-columns: repeat(2, 1fr); }
-      .timeline-grid { grid-template-columns: repeat(2, 1fr); }
-      .ecosystem-grid { grid-template-columns: 1fr; }
-      .demo-viewport-grid { grid-template-columns: 1fr; }
-      .kuche-origin-card { grid-template-columns: 1fr; }
       .footer-top { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
@@ -1814,26 +1526,20 @@
       .btn-theme span { display: none; }
       .btn-theme { padding: 8px; }
       .btn-nav-cta { padding: 7px 11px; font-size: 11px; }
-      .hero-kpi-ribbon { grid-template-columns: 1fr; }
-      .diagnosis-grid { grid-template-columns: 1fr; }
-      .components-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
       .finance-metrics-strip { grid-template-columns: 1fr; }
       .iot-compare-grid { grid-template-columns: 1fr; }
-      .ods-strip { grid-template-columns: 1fr; }
       .legal-grid { grid-template-columns: 1fr; }
-      .team-grid { grid-template-columns: 1fr; }
-      .timeline-grid { grid-template-columns: 1fr; }
+      .mentor-card { padding: 18px 16px; }
       .demo-console-card { padding: 20px 16px; }
-      .kuche-origin-card { padding: 20px 16px; }
-      .mentor-card { padding: 20px 16px; }
-      .mentor-contact { flex-direction: column; align-items: flex-start; }
+      .etymology-card { padding: 24px 18px; }
     }
   </style>
 </head>
 <body>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       CABECERA INSTITUCIONAL
+       CABECERA INSTITUCIONAL CON NAVEGACIÓN EN ORDEN ESTRUCTURADO
        ═══════════════════════════════════════════════════════════════════ -->
   <header class="site-header">
     <div class="header-inner">
@@ -1842,34 +1548,33 @@
         <span class="brand-tagline">Alumbrado Inteligente · Puebla</span>
       </a>
 
-      <!-- Menú de Navegación Compacto -->
+      <!-- Menú en el orden exacto del flujo del proyecto -->
       <nav>
         <ul class="nav-menu" id="nav-menu">
-          <li><a href="#inicio" class="nav-link">Inicio</a></li>
-          <li><a href="#diagnostico" class="nav-link">Diagnóstico</a></li>
-          <li><a href="#solucion-ia" class="nav-link">Solución IA</a></li>
-          <li><a href="#demostrador" class="nav-link">Demostrador</a></li>
-          <li><a href="#rentabilidad" class="nav-link">Rentabilidad</a></li>
+          <li><a href="#inicio" class="nav-link">¿Qué es Kuche?</a></li>
+          <li><a href="#origen-nombre" class="nav-link">Origen y Raíces</a></li>
+          <li><a href="#equipo" class="nav-link">Equipo</a></li>
+          <li><a href="#proyecto-piloto" class="nav-link">Proyecto Piloto</a></li>
+          <li><a href="#problematica" class="nav-link">Problemática</a></li>
+          <li><a href="#pantallas" class="nav-link">Pantallas</a></li>
 
-          <!-- Menú Desplegable "Más" -->
+          <!-- Menú desplegable Más para modelos complementarios -->
           <li class="nav-dropdown">
             <button class="nav-dropdown-btn" type="button" aria-haspopup="true" aria-expanded="false">
               <span>Más</span>
               <svg class="icon-svg" style="width:11px; height:11px; transition:transform 0.2s;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <ul class="nav-dropdown-menu">
-              <li class="nav-dropdown-item"><a href="#impacto">Impacto & ODS</a></li>
+              <li class="nav-dropdown-item"><a href="#oportunidades">Oportunidades</a></li>
+              <li class="nav-dropdown-item"><a href="#economia">Modelo Económico</a></li>
               <li class="nav-dropdown-item"><a href="#marco-legal">Marco Legal</a></li>
-              <li class="nav-dropdown-item"><a href="#equipo">Equipo & Fases</a></li>
-              <li class="nav-dropdown-item"><a href="#ecosistema">Ecosistema GIS</a></li>
             </ul>
           </li>
 
-          <!-- Secciones secundarias accesibles en menú móvil -->
-          <li class="mobile-only-link"><a href="#impacto" class="nav-link">Impacto & ODS</a></li>
+          <!-- Enlaces visibles en el menú móvil drawer -->
+          <li class="mobile-only-link"><a href="#oportunidades" class="nav-link">Oportunidades</a></li>
+          <li class="mobile-only-link"><a href="#economia" class="nav-link">Modelo Económico</a></li>
           <li class="mobile-only-link"><a href="#marco-legal" class="nav-link">Marco Legal</a></li>
-          <li class="mobile-only-link"><a href="#equipo" class="nav-link">Equipo & Fases</a></li>
-          <li class="mobile-only-link"><a href="#ecosistema" class="nav-link">Ecosistema GIS</a></li>
           <li class="mobile-only-link"><a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" class="nav-link">Convocatoria ElectroHack 2026</a></li>
         </ul>
       </nav>
@@ -1898,7 +1603,7 @@
 
   <main>
     <!-- ═════════════════════════════════════════════════════════════════
-         HERO PRINCIPAL (DATOS EXACTOS DE LA FICHA TÉCNICA)
+         1. HERO: ¿QUÉ ES KUCHE?
          ═════════════════════════════════════════════════════════════════ -->
     <section id="inicio" class="hero-section">
       <div class="hero-fret-pattern"></div>
@@ -1906,55 +1611,35 @@
         <div class="hero-content">
           <div class="hero-badge-strip">
             <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            <span>Agencia de Energía del Estado de Puebla · ElectroHack 2026 · Eje Infraestructura</span>
+            <span>Agencia de Energía del Estado de Puebla · ElectroHack 2026</span>
           </div>
 
           <h1 class="hero-title">
             KUCHE
-            <span>Plataforma Inteligente de Reporte Ciudadano para Detectar Zonas con Deficiencias en el Alumbrado Público</span>
+            <span>¿Qué es Kuche? Plataforma Inteligente de Reporte y Monitoreo de Alumbrado Público</span>
           </h1>
 
           <div class="hero-focus-tag">
-            IA APLICADA A INFRAESTRUCTURA ELÉCTRICA · ERRADICACIÓN DE CONSUMO PARÁSITO
+            PARTICIPACIÓN CIUDADANA · VISIÓN COMPUTACIONAL · EFICIENCIA ENERGÉTICA
           </div>
 
           <p class="hero-description">
-            Plataforma inteligente de participación ciudadana que, mediante <strong>visión computacional, geolocalización e inteligencia artificial</strong>, detecta, valida y prioriza incidencias en el alumbrado público de Puebla. Erradica las cargas parásitas diurnas, cuida las finanzas municipales y dignifica el mantenimiento urbano sin requerir compras millonarias de sensores físicos.
+            <strong>KUCHE</strong> es una plataforma inteligente de participación ciudadana y software municipal que, mediante <strong>visión computacional e inteligencia artificial</strong>, permite detectar, validar y priorizar incidencias en la infraestructura de alumbrado público. Transforma el mantenimiento correctivo en preventivo, reduce el desperdicio eléctrico diurno y garantiza calles iluminadas y seguras para las familias poblanas.
           </p>
 
           <div class="hero-ctas">
-            <a href="#demostrador" class="btn-hero-primary">
+            <a href="#pantallas" class="btn-hero-primary">
               <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>Probar Demostrador IA</span>
+              <span>Ver Pantallas del Sistema</span>
             </a>
-            <a href="#rentabilidad" class="btn-hero-secondary">
-              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Estudio Financiero ($1.36 MDP/año)</span>
+            <a href="#origen-nombre" class="btn-hero-secondary">
+              <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Origen del Nombre y Raíces</span>
             </a>
-          </div>
-
-          <!-- Franja de Métricas Oficiales de Rentabilidad (Caso San Pedro Cholula) -->
-          <div class="hero-kpi-ribbon">
-            <div class="hero-kpi-item">
-              <div class="hero-kpi-val">$1.16M - $1.36M</div>
-              <div class="hero-kpi-label">Ahorro económico anual municipal (MXN)</div>
-            </div>
-            <div class="hero-kpi-item">
-              <div class="hero-kpi-val">173.6% - 256%</div>
-              <div class="hero-kpi-label">Retorno de inversión (ROI en 3.1 a 4.4 meses)</div>
-            </div>
-            <div class="hero-kpi-item">
-              <div class="hero-kpi-val">112.1 - 128.7 t</div>
-              <div class="hero-kpi-label">CO2e no emitidas por año (CRE/SEMARNAT)</div>
-            </div>
-            <div class="hero-kpi-item">
-              <div class="hero-kpi-val">$1.41 MXN</div>
-              <div class="hero-kpi-label">Costo SaaS mensual por lámpara monitoreada</div>
-            </div>
           </div>
         </div>
 
-        <!-- Tarjeta Táctica Lateral con Datos Oficiales -->
+        <!-- Tarjeta Táctica Lateral con Foto Real ("POR AMOR A PUEBLA") -->
         <div class="hero-tactical-card">
           <div class="hero-card-header">
             <div class="hero-hud-title">
@@ -2008,91 +1693,52 @@
     </div>
 
     <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: DIAGNÓSTICO SITUACIONAL Y LA PROBLEMÁTICA REAL
+         2. EL NOMBRE, RAÍCES BIOCULTURALES Y POR QUÉ LO ESCOGIMOS
          ═════════════════════════════════════════════════════════════════ -->
-    <section id="diagnostico" class="section-py">
+    <section id="origen-nombre" class="section-py">
       <div class="container">
         <div class="section-header">
-          <span class="section-kicker">ANÁLISIS DE LA SITUACIÓN ACTUAL Y OFERTA</span>
-          <h2 class="section-title">La Realidad del Alumbrado Público en Puebla y la Fuga Silenciosa</h2>
+          <span class="section-kicker">PATRIMONIO BIOCULTURAL Y FUNDAMENTO TÉCNICO</span>
+          <h2 class="section-title">El Nombre: Kuche ("Piojo"), sus Raíces y por qué lo Escogimos</h2>
           <p class="section-desc">
-            Datos oficiales del INEGI, CFE y Ayuntamientos metropolitanos revelan una profunda desconexión entre la infraestructura existente, la satisfacción de la ciudadanía y los canales de reporte obsoletos.
+            Una identidad con arraigo histórico en el estado de Puebla que refleja con exactitud la analogía ingenieril del proyecto.
           </p>
         </div>
 
-        <div class="diagnosis-grid">
-          <!-- Stat 1 -->
-          <div class="stat-card">
-            <div class="stat-number">345,110</div>
-            <div class="stat-title">Luminarias en el Estado</div>
-            <p class="stat-desc">
-              Puebla concentra el 5% del alumbrado nacional (7° lugar en el país). La capital alberga 124 mil puntos de luz, Tehuacán 30,724 y San Pedro Cholula 11,781 luminarias.
+        <div class="etymology-card">
+          <div class="etym-title-box">
+            <span class="etym-badge">LENGUA NGIIGUA (POPOLOCA) · SAN MARCOS TLACOYALCO, PUEBLA</span>
+            <h3>Kuche = "Piojo" (Parásito)</h3>
+            <p class="etym-desc">
+              El nombre del proyecto es un vocablo de la lengua originaria <strong>Ngiigua (popoloca)</strong> de San Marcos Tlacoyalco, Puebla, documentado formalmente en el <em>Vocabulario / Diccionario Ngiigua - Español</em> (Stark Campbell, Luna Hernández y Luna Villanueva, 2020) con el significado directo de <strong>"piojo"</strong>, un parásito biológico.
             </p>
-            <div class="stat-source">Fuente: Censo Oficial CFE 2026</div>
-          </div>
-
-          <!-- Stat 2 -->
-          <div class="stat-card">
-            <div class="stat-number">34.3%</div>
-            <div class="stat-title">Satisfacción Ciudadana</div>
-            <p class="stat-desc">
-              Solo 3 de cada 10 poblanos sienten que el alumbrado sirve y se atiende a tiempo. Casi siete de cada diez personas están inconformes con el servicio actual en sus colonias.
-            </p>
-            <div class="stat-source">Fuente: INEGI ENCIG 2025</div>
-          </div>
-
-          <!-- Stat 3 -->
-          <div class="stat-card">
-            <div class="stat-number">4 de 10</div>
-            <div class="stat-title">Manzanas en Penumbra</div>
-            <p class="stat-desc">
-              El Plan de Desarrollo Municipal revela 4 de cada 10 frentes sin luz en Puebla capital, con desatención crítica del 66% en Santo Tomás Chautla y 60% en San Miguel Canoa.
-            </p>
-            <div class="stat-source">Fuente: Plan Municipal 2024–2027</div>
-          </div>
-
-          <!-- Stat 4 -->
-          <div class="stat-card">
-            <div class="stat-number">2.9 ★</div>
-            <div class="stat-title">Falla de Canales Actuales</div>
-            <p class="stat-desc">
-              La app municipal "Puebla Brilla" apenas capta 100 a 200 reportes/mes, reprobada con 2.9 estrellas en Play Store. El municipio prevé destinar $851 MDP en mantenimiento sin resolver el fondo.
-            </p>
-            <div class="stat-source">Fuente: Google Play & Servicios Públicos</div>
-          </div>
-        </div>
-
-        <!-- Origen y Analogía Biocultural Kuche -->
-        <div class="kuche-origin-card">
-          <div class="origin-title-box">
-            <span class="origin-etymology">PATRIMONIO BIOCULTURAL POBLANO · NGIIGUA (POPOLOCA)</span>
-            <h3>¿Por qué "KUCHE"? La erradicación del parásito eléctrico</h3>
-            <p class="origin-desc">
-              El nombre del proyecto proviene del vocablo <strong>Kuche</strong> en lengua originaria <strong>Ngiigua (popoloca)</strong> de San Marcos Tlacoyalco, Puebla, registrado en el <em>Vocabulario Ngigua - Español</em> con el significado de <strong>"piojo" (parásito)</strong>.
-            </p>
-            <p class="origin-desc" style="margin-top:10px;">
-              Este término fundamenta la analogía técnica central de la plataforma: <strong>combatir y erradicar el consumo parásito</strong> en la red eléctrica urbana, donde lámparas encendidas a pleno sol por fotoceldas pegadas continúan devorando presupuesto municipal y kilowatt-hora sin iluminar a nadie.
+            <p class="etym-desc" style="margin-top:12px;">
+              <strong>¿Por qué lo escogimos?</strong> Porque en ingeniería eléctrica y gestión urbana, el problema más silencioso y costoso se conoce como <strong>consumo parásito</strong>: luminarias que se quedan encendidas en pleno día por fotoceldas dañadas o circuitos en corto, drenando energía de la red y dinero del erario municipal sin beneficio alguno.
             </p>
           </div>
 
-          <div class="parasite-comparison">
-            <div class="parasite-item">
-              <div class="parasite-icon">
+          <div class="etym-comparison-col">
+            <div class="etym-box">
+              <div class="etym-box-icon" style="color:var(--clr-critico-rojo);">
                 <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
               </div>
               <div>
-                <h4>El Problema: Fuga Energética Diurna Oculta</h4>
-                <p>Entre el 2.5% y el 3.0% del parque lumínico permanece encendido al mediodía por fotoceldas dañadas en circuito cerrado. En un municipio como Cholula son más de 353 lámparas tirando energía 12 horas al día.</p>
+                <h4>La Analogía Técnica: Erradicar el Consumo Parásito</h4>
+                <p>
+                  Tal como un parásito consume nutrientes de su huésped sin aportar nada, las luminarias encendidas a mediodía se comen el presupuesto del municipio. Kuche detecta y erradica estas cargas parásitas mediante reporte oportuno.
+                </p>
               </div>
             </div>
 
-            <div class="parasite-item">
-              <div class="parasite-icon" style="color:var(--clr-verde-eficiencia);">
-                <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <div class="etym-box">
+              <div class="etym-box-icon" style="color:var(--clr-dorado-metalico);">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               </div>
               <div>
-                <h4>La Solución Kuche: Monitoreo Ágil Sin Inversión Masiva</h4>
-                <p>En lugar de sensorificar cada poste con chips caros y vulnerables al robo, la ciudadanía y los inspectores reportan en 1-2 minutos desde su celular con pre-diagnóstico de visión artificial.</p>
+                <h4>Revalorización Lingüística Poblana</h4>
+                <p>
+                  En lugar de recurrir a anglicismos genéricos, KUCHE rinde homenaje al patrimonio biocultural popoloca de nuestro estado, dotando al software de identidad local y arraigo territorial.
+                </p>
               </div>
             </div>
           </div>
@@ -2110,558 +1756,18 @@
     </div>
 
     <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: LOS 4 COMPONENTES DE LA SOLUCIÓN TECNOLÓGICA
-         ═════════════════════════════════════════════════════════════════ -->
-    <section id="solucion-ia" class="section-py">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-kicker">ARQUITECTURA DE LA SOLUCIÓN · FICHA TÉCNICA CAP. IV</span>
-          <h2 class="section-title">Cuatro Componentes Integrados para Servir al Municipio</h2>
-          <p class="section-desc">
-            KUCHE es una solución modular de software diseñada para operar tanto como aplicación web progresiva (PWA) sin instalaciones pesadas, como mediante aplicación móvil nativa según la infraestructura de cada localidad.
-          </p>
-        </div>
-
-        <div class="components-grid">
-          <!-- Componente 1 -->
-          <div class="comp-card">
-            <div>
-              <span class="comp-num-badge">COMPONENTE 01</span>
-              <h3>Registro y Acceso Ciudadano</h3>
-              <p>
-                Garantiza la autenticidad de los reportes y erradica el spam o cuentas falsas. El sistema valida el acceso seguro mediante correo electrónico, CURP y contraseña.
-              </p>
-              <ul class="comp-list">
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Autenticación blindada con CURP</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Trazabilidad jurídica del reporte</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Cero cuentas fantasma ante dependencias</li>
-              </ul>
-            </div>
-            <div class="comp-pill">Trazabilidad Vecinal Segura</div>
-          </div>
-
-          <!-- Componente 2 -->
-          <div class="comp-card">
-            <div>
-              <span class="comp-num-badge">COMPONENTE 02</span>
-              <h3>Captura Inteligente Multimodal</h3>
-              <p>
-                Modelos de visión computacional con tres modalidades flexibles para registrar la incidencia técnica en vía pública:
-              </p>
-              <ul class="comp-list">
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> <strong>Video de 10s:</strong> Parpadeos e intermitencias</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> <strong>Cámara integrada:</strong> Enfoque a cabezal o poste</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> <strong>Modo manual:</strong> Carga de fotos de galería</li>
-              </ul>
-            </div>
-            <div class="comp-pill">Visión Computacional Flexible</div>
-          </div>
-
-          <!-- Componente 3 -->
-          <div class="comp-card">
-            <div>
-              <span class="comp-num-badge">COMPONENTE 03</span>
-              <h3>Detección y Reporte Ágil</h3>
-              <p>
-                La IA analiza el video o foto en tiempo real, clasifica el tipo de luminaria (Vapor de Sodio vs. LED) y su condición operativa. El vecino solo valida la ubicación.
-              </p>
-              <ul class="comp-list">
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Reporte completo en <strong>1 a 2 minutos</strong></li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Clasificación técnica automática</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Confirmación satelital GPS al poste</li>
-              </ul>
-            </div>
-            <div class="comp-pill">Tiempo Récord: 1 a 2 Minutos</div>
-          </div>
-
-          <!-- Componente 4 -->
-          <div class="comp-card">
-            <div>
-              <span class="comp-num-badge">COMPONENTE 04</span>
-              <h3>Dashboard de Cuadrillas Adaptable</h3>
-              <p>
-                Panel de control en tiempo real que se ajusta a la capacidad de cada municipio: geocercas para grandes metrópolis o atención directa para juntas auxiliares.
-              </p>
-              <ul class="comp-list">
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Rutas optimizadas con geocercas</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Pre-diagnóstico técnico y refacción lista</li>
-                <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Eliminación de vueltas nocturnas a ciegas</li>
-              </ul>
-            </div>
-            <div class="comp-pill">Despacho Operativo Eficiente</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cenefa de Greca Popoloca -->
-    <div class="popoloca-fret-line container">
-      <div class="fret-divider"></div>
-      <svg class="fret-glyph" viewBox="0 0 40 16">
-        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
-      </svg>
-      <div class="fret-divider"></div>
-    </div>
-
-    <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: CONSOLA INTERACTIVA: DEMOSTRADOR EN VIVO
-         ═════════════════════════════════════════════════════════════════ -->
-    <section id="demostrador" class="section-py demo-section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-kicker">MODELO DE DETECCIÓN EN TIEMPO REAL</span>
-          <h2 class="section-title">Demostrador en Vivo de Visión Artificial</h2>
-          <p class="section-desc">
-            Simulación interactiva de inferencia en vía pública: la IA clasifica la tecnología de la lámpara, detecta anomalías horarias y genera la ficha técnica de despacho municipal.
-          </p>
-        </div>
-
-        <div class="demo-console-card">
-          <!-- Selector de Casos de Prueba -->
-          <div class="demo-controls-header">
-            <div class="demo-presets-label">
-              Selecciona un escenario de prueba en campo:
-            </div>
-            <div class="demo-preset-buttons">
-              <button class="btn-preset active" id="btn-case-1" onclick="cargarEscenarioDemo(1)">
-                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                <span>Caso 1: Vapor de Sodio Encendida de Día (Falla Fotocelda)</span>
-              </button>
-              <button class="btn-preset" id="btn-case-2" onclick="cargarEscenarioDemo(2)">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4"/><path d="M12 18v4"/><circle cx="12" cy="12" r="6"/></svg>
-                <span>Caso 2: Luminaria LED Apagada de Día (Operación Normal)</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Visor Interactivo y Ficha Técnica -->
-          <div class="demo-viewport-grid">
-            <!-- Pantalla del Visor Táctico -->
-            <div class="demo-screen-box">
-              <div class="scan-reticle tl"></div>
-              <div class="scan-reticle tr"></div>
-              <div class="scan-reticle bl"></div>
-              <div class="scan-reticle br"></div>
-
-              <div id="ai-scan-bar" class="ai-scan-bar"></div>
-
-              <img id="demo-display-img" src="./fotos/demo_caso_1.jpg" alt="Luminaria analizada por visión artificial" class="demo-screen-img">
-
-              <div id="demo-bounding-box" class="ai-bounding-box" style="top:45%; left:54%; width:18%; height:22%;">
-                <span id="demo-box-tag" class="ai-box-tag">Vapor de Sodio 150W</span>
-                <span style="font-family:'JetBrains Mono', monospace; font-size:9px; color:#FFFFFF; background:rgba(0,0,0,0.7); padding:2px 4px; border-radius:2px; align-self:flex-end;" id="demo-box-sub">Confianza: 96.4%</span>
-              </div>
-            </div>
-
-            <!-- Ficha Técnica Resultante -->
-            <div class="demo-report-card">
-              <div>
-                <div class="report-card-title">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  <span>Cédula Técnica de Inspección Inteligente</span>
-                </div>
-
-                <div class="report-meta-grid">
-                  <div class="report-row">
-                    <span class="report-label">Folio de Registro</span>
-                    <span class="report-val" id="rep-folio">PUE-2026-CHOL-01</span>
-                  </div>
-                  <div class="report-row">
-                    <span class="report-label">Tecnología Detectada</span>
-                    <span class="report-val" id="rep-tipo" style="color:var(--clr-dorado-brillo); font-weight:700;">Vapor de Sodio 150W (+ Balastro 187.5W)</span>
-                  </div>
-                  <div class="report-row">
-                    <span class="report-label">Condición Horaria</span>
-                    <span class="report-val" id="rep-horario">12:30 hrs (Horario Diurno)</span>
-                  </div>
-                  <div class="report-row">
-                    <span class="report-label">Diagnóstico de Red</span>
-                    <span id="rep-status" class="status-badge critical">CONSUMO PARÁSITO (FOTOCELDA PEGADA)</span>
-                  </div>
-                  <div class="report-row">
-                    <span class="report-label">Impacto Estimado</span>
-                    <span class="report-val" id="rep-potencia" style="font-size:11.5px; color:#EF4444;">Drenando 2.25 kWh diarios sin provecho</span>
-                  </div>
-                  <div class="report-row">
-                    <span class="report-label">Modelo Inferencia</span>
-                    <span class="report-val" id="rep-modelo" style="font-size:11px; color:#10B981; font-family:'JetBrains Mono', monospace;">Kuche-Vision YOLOv8s Custom</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <button type="button" class="btn-run-analysis" id="btn-analyze" onclick="ejecutarAnalisisIA()">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                  <span>Re-Escanear Cuadro en Tiempo Real</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cenefa de Greca Popoloca -->
-    <div class="popoloca-fret-line container">
-      <div class="fret-divider"></div>
-      <svg class="fret-glyph" viewBox="0 0 40 16">
-        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
-      </svg>
-      <div class="fret-divider"></div>
-    </div>
-
-    <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: ESTUDIO FINANCIERO Y RENTABILIDAD (CASO SAN PEDRO CHOLULA)
-         ═════════════════════════════════════════════════════════════════ -->
-    <section id="rentabilidad" class="section-py">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-kicker">INDICADORES DE RENTABILIDAD · FICHA TÉCNICA CAP. IV & ASPECTOS ECONÓMICOS</span>
-          <h2 class="section-title">Viabilidad Financiera Comprobada en Polígono Piloto</h2>
-          <p class="section-desc">
-            Evaluado sobre el municipio representativo de <strong>San Pedro Cholula</strong> (cabecera municipal, 13 juntas auxiliares y padrón oficial de <strong>11,781 luminarias</strong> registradas ante CFE). Aplicando la metodología de la OIT y el principio de costos evitados de Murcia (2009).
-          </p>
-        </div>
-
-        <!-- 4 Métricas Clave de Finanzas Públicas -->
-        <div class="finance-metrics-strip">
-          <div class="finance-metric-card">
-            <div class="f-val">$300k - $500k</div>
-            <div class="f-title">Inversión Inicial (CAPEX)</div>
-            <p class="f-desc">Presupuesto modular que incluye IVA y 15% de reserva técnica de contingencia (norma ISO 21500).</p>
-          </div>
-          <div class="finance-metric-card">
-            <div class="f-val">51.2% - 61.8%</div>
-            <div class="f-title">Tasa Interna Retorno (TIR)</div>
-            <p class="f-desc">Proyección a 3 años deduciendo OPEX. Supera con holgura instrumentos gubernamentales (CETES).</p>
-          </div>
-          <div class="finance-metric-card">
-            <div class="f-val">173.6% - 256%</div>
-            <div class="f-title">Retorno de Inversión (ROI)</div>
-            <p class="f-desc">Recuperación simple íntegra de la inversión inicial estimada en solo <strong>3.1 a 4.4 meses</strong>.</p>
-          </div>
-          <div class="finance-metric-card">
-            <div class="f-val">$1.16M - $1.36M</div>
-            <div class="f-title">Ahorro Anual Consolidado</div>
-            <p class="f-desc">Integrado por cobro parásito evitado ante CFE y optimización de diésel, brigadas y vehículos.</p>
-          </div>
-        </div>
-
-        <!-- Desglose Técnico de Cálculos y Comparativa Disruptiva -->
-        <div class="finance-breakdown-grid">
-          <!-- Tabla de Desglose de Ahorros Anuales -->
-          <div class="table-responsive-card">
-            <h3>Desglose y Justificación de los Ahorros Anuales</h3>
-            <p>Parámetros oficiales validados con manuales de CFE, CONUEE y tarifas vigentes en el estado de Puebla:</p>
-            
-            <table class="custom-table">
-              <thead>
-                <tr>
-                  <th>Concepto de Ahorro</th>
-                  <th>Cálculo Operativo en Campo</th>
-                  <th>Impacto Anual (MXN)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Consumo Parásito ante CFE</strong><br><span style="font-size:11px;">(353 lámparas diurnas a 187.5W nominal + balastro NOM-013)</span></td>
-                  <td>353 lum. × 0.1875 kW × 12h/día × 365 días = <strong>289,898 kWh</strong> a tarifa CFE APBT ($3.10/kWh)</td>
-                  <td><strong>$751,033 a $898,684</strong></td>
-                </tr>
-                <tr>
-                  <td><strong>Combustible Diésel de Brigada</strong><br><span style="font-size:11px;">(35 km diarios de patrullaje nocturno a ciegas evitados)</span></td>
-                  <td>10,500 km rodados menos al año ÷ 3.5 km/l = 3,000 litros diésel × $25.00/l</td>
-                  <td><strong>$75,000</strong></td>
-                </tr>
-                <tr>
-                  <td><strong>Horas-Hombre de Cuadrillas</strong><br><span style="font-size:11px;">(Recuperación de 3 horas diarias de búsqueda improductiva)</span></td>
-                  <td>900 horas anuales de brigada recuperadas × $350.00 MXN/hora costo de cuadrilla</td>
-                  <td><strong>$315,000</strong></td>
-                </tr>
-                <tr>
-                  <td><strong>Mantenimiento y Desgaste Vehicular</strong><br><span style="font-size:11px;">(Camión canastilla, neumáticos y brazos hidráulicos)</span></td>
-                  <td>Menor kilometraje y ciclos de frenado prolongan vida útil mecánica</td>
-                  <td><strong>$80,000</strong></td>
-                </tr>
-                <tr class="highlight-row">
-                  <td><strong>BENEFICIO CONSOLIDADO ANUAL</strong></td>
-                  <td><strong>Recursos públicos liberados para bacheo, parques y luminarias</strong></td>
-                  <td><strong>$1,168,000 a $1,368,684</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Comparativa Disruptiva frente a Sensores IoT Tradicionales -->
-          <div class="iot-disruption-box">
-            <div>
-              <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--clr-dorado-arena); font-weight:700; text-transform:uppercase;">EFICIENCIA DE CAPITAL FRENTE A HARDWARE</span>
-              <h3>Kuche vs. Sensorificación IoT Física</h3>
-              <p>
-                Instalar sensores dedicados con telemetría LoRaWAN en cada poste exige grúa y equipo con costo de ~$2,000 MXN por punto, expuesto a vandalismo constante y robo de cableado.
-              </p>
-
-              <div class="iot-compare-grid">
-                <div class="iot-side">
-                  <div class="iot-side-title" style="color:#EF4444;">Hardware IoT Masivo</div>
-                  <div class="cost">> $23.5 MDP</div>
-                  <p>11,781 postes con sensores físicos + riesgo continuo de robo en calle.</p>
-                </div>
-                <div class="iot-side kuche-win">
-                  <div class="iot-side-title" style="color:#34D399;">Kuche (Software e IA)</div>
-                  <div class="cost">&lt; $500,000 MXN</div>
-                  <p>Aprovecha la cámara y GPS que ciudadanos y cuadrillas ya traen en el bolsillo. <strong>Ahorro &gt;95%</strong>.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Modelo SaaS Municipal -->
-            <div class="saas-callout">
-              <div class="val">$1.41 MXN</div>
-              <div class="desc">
-                <strong>Modelo SaaS Municipal al mes por lámpara:</strong> Costo operativo anual de $200,000 MXN entre 11,781 luminarias = $16.97 MXN/año por poste (frente a $60–$120 de firmas internacionales).
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cenefa de Greca Popoloca -->
-    <div class="popoloca-fret-line container">
-      <div class="fret-divider"></div>
-      <svg class="fret-glyph" viewBox="0 0 40 16">
-        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
-      </svg>
-      <div class="fret-divider"></div>
-    </div>
-
-    <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: IMPACTO AMBIENTAL, SOCIAL Y AGENDA 2030
-         ═════════════════════════════════════════════════════════════════ -->
-    <section id="impacto" class="section-py">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-kicker">SUSTENTABILIDAD Y SENTIDO HUMANO · FICHA TÉCNICA</span>
-          <h2 class="section-title">Impacto Ambiental Cuantificable y Transformación Social</h2>
-          <p class="section-desc">
-            Tener luz en la calle no es solo colgar focos en postes; es la diferencia entre caminar con calma o ir con miedo por la noche, cuidando a las familias y al medio ambiente de Puebla.
-          </p>
-        </div>
-
-        <div class="impact-dual-grid">
-          <!-- Tarjeta Ambiental -->
-          <div class="impact-card green-accent">
-            <h3>
-              <svg class="icon-svg" style="color:#10B981;" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Impacto Ambiental y Mitigación de Emisiones
-            </h3>
-            <p>
-              La energía que se ahorra se cuantifica con parámetros oficiales de la Comisión Reguladora de Energía (CRE) y el Registro Nacional de Emisiones (RENE de SEMARNAT):
-            </p>
-
-            <div class="impact-list">
-              <div class="impact-list-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                <div>
-                  <strong>242 a 289 MWh Ahorrados al Año</strong>
-                  <span>Reducción directa de demanda en la red eléctrica pública de San Pedro Cholula al apagar focos diurnos.</span>
-                </div>
-              </div>
-
-              <div class="impact-list-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-                <div>
-                  <strong>112.1 a 128.7 Toneladas de CO2e No Emitidas</strong>
-                  <span>Calculado con el Factor de Emisión del Sistema Eléctrico Nacional vigente (0.444 tCO2e/MWh).</span>
-                </div>
-              </div>
-
-              <div class="impact-list-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                <div>
-                  <strong>140 a 1: Balance Energético Positivo</strong>
-                  <span>El software en la nube consume menos de 1.8 MWh/año. Por cada 1 kWh que consume Kuche, se ahorran más de 140 kWh en las calles. Cero chatarra electrónica.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tarjeta Social -->
-          <div class="impact-card purple-accent">
-            <h3>
-              <svg class="icon-svg" style="color:var(--clr-guinda-primario);" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Seguridad Ciudadana e Inclusión Digital
-            </h3>
-            <p>
-              El alumbrado oportuno protege a los sectores más vulnerables de nuestras comunidades poblanas:
-            </p>
-
-            <div class="impact-list">
-              <div class="impact-list-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <div>
-                  <strong>Calles Seguras para Mujeres, Obreros y Estudiantes</strong>
-                  <span>Iluminación directa para quienes caminan a las 5:00 AM hacia las paradas de autobús y paraderos de la Red Urbana de Transporte Articulado (RUTA).</span>
-                </div>
-              </div>
-
-              <div class="impact-list-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                <div>
-                  <strong>Inclusión Sin Barreras: PWA Ligera y Códigos QR</strong>
-                  <span>Funciona en celulares con poca memoria y saldo medido sin obligar a descargar apps pesadas. Reporte en postes mediante enlace web o código QR en &lt;90 segundos.</span>
-                </div>
-              </div>
-
-              <div class="impact-list-item">
-                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                <div>
-                  <strong>Dignificación de los Electricistas Municipales</strong>
-                  <span>Las brigadas ya no salen de noche a ciegas con frío y riesgo vial; salen de día con georreferenciación, diagnóstico técnico y la refacción exacta en la cajuela.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Alineación ODS Agenda 2030 -->
-        <div class="ods-strip">
-          <div class="ods-badge">
-            <div class="ods-num" style="background:#FCC30B; color:#000;">7</div>
-            <div class="ods-info">
-              <strong>ODS 7: Energía Asequible</strong>
-              <span>Mitigación de consumo parásito y ahorro de finanzas públicas.</span>
-            </div>
-          </div>
-          <div class="ods-badge">
-            <div class="ods-num" style="background:#FD6925;">9</div>
-            <div class="ods-info">
-              <strong>ODS 9: Industria e Innovación</strong>
-              <span>Capa de software inteligente sobre infraestructura ya instalada.</span>
-            </div>
-          </div>
-          <div class="ods-badge">
-            <div class="ods-num" style="background:#F99D26;">11</div>
-            <div class="ods-info">
-              <strong>ODS 11: Ciudades Sostenibles</strong>
-              <span>Escalable a metrópolis y comunidades rurales de Puebla.</span>
-            </div>
-          </div>
-          <div class="ods-badge">
-            <div class="ods-num" style="background:#19486A;">17</div>
-            <div class="ods-info">
-              <strong>ODS 17: Alianzas Clave</strong>
-              <span>Sinergia entre ciudadanía, municipios y Agencia de Energía.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cenefa de Greca Popoloca -->
-    <div class="popoloca-fret-line container">
-      <div class="fret-divider"></div>
-      <svg class="fret-glyph" viewBox="0 0 40 16">
-        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
-      </svg>
-      <div class="fret-divider"></div>
-    </div>
-
-    <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: MARCO LEGAL Y NORMATIVO
-         ═════════════════════════════════════════════════════════════════ -->
-    <section id="marco-legal" class="section-py">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-kicker">CERTEZA JURÍDICA Y CUMPLIMIENTO REGULATORIO</span>
-          <h2 class="section-title">Respaldo Jurídico y Protección de Datos</h2>
-          <p class="section-desc">
-            Kuche opera estrictamente dentro del marco legal vigente en los tres niveles de gobierno, sin privatizar el servicio ni requerir modificaciones contractuales complejas.
-          </p>
-        </div>
-
-        <div class="legal-grid">
-          <!-- Ley 1 -->
-          <div class="legal-card">
-            <div class="legal-law-code">ART. 115 CPEUM & ART. 199 LEY ORGÁNICA</div>
-            <h4>Mandato Municipal de Alumbrado Público</h4>
-            <p>
-              El alumbrado es un servicio y facultad constitucional exclusiva de los municipios. Kuche apoya la labor de Servicios Públicos con transparencia y cuentas claras; el control total se mantiene en el ayuntamiento.
-            </p>
-          </div>
-
-          <!-- Ley 2 -->
-          <div class="legal-card">
-            <div class="legal-law-code">NOM-013-ENER-2013 & NOM-031-ENER-2019</div>
-            <h4>Normatividad de Eficiencia CONUEE</h4>
-            <p>
-              Vigila los límites máximos de Densidad de Potencia Eléctrica para Alumbrado (DPEA) y audita que las nuevas lámparas LED cumplan con el estándar de 95 a 105 lúmenes/watt y 5 años de garantía.
-            </p>
-          </div>
-
-          <!-- Ley 3 -->
-          <div class="legal-card">
-            <div class="legal-law-code">LGPDPPSO (INAI)</div>
-            <h4>Privacidad y Borrado de Placas/Rostros</h4>
-            <p>
-              La IA pasa un filtro de anonimización para difuminar automáticamente placas de automóviles y caras de personas antes de guardar la fotografía, solicitando solo correo y ubicación del poste.
-            </p>
-          </div>
-
-          <!-- Ley 4 -->
-          <div class="legal-card">
-            <div class="legal-law-code">LEY GENERAL DE CAMBIO CLIMÁTICO</div>
-            <h4>Registro Nacional de Emisiones (RENE)</h4>
-            <p>
-              El cálculo de las más de 128 toneladas de CO2e mitigadas permite a los municipios reportar indicadores limpios y verificables ante los programas de cambio climático de SEMARNAT y del Gobierno de Puebla.
-            </p>
-          </div>
-
-          <!-- Ley 5 -->
-          <div class="legal-card">
-            <div class="legal-law-code">LEY DE LA AGENCIA DE ENERGÍA DE PUEBLA</div>
-            <h4>Fondos Verdes y FOTEASE (Arts. 4 y 38)</h4>
-            <p>
-              Facultades expresas para celebrar convenios de coordinación técnica municipal y canalizar fondos verdes de transición energética del estado, modernizando las calles sin deuda municipal.
-            </p>
-          </div>
-
-          <!-- Ley 6 -->
-          <div class="legal-card">
-            <div class="legal-law-code">COMPATIBILIDAD CON SISTEMAS EXISTENTES</div>
-            <h4>Integración con Puebla Brilla</h4>
-            <p>
-              Kuche no busca pelear ni sustituir inversiones previas: en la capital puede acoplarse como motor inteligente de visión computacional y pre-diagnóstico de fotoceldas sobre las plataformas actuales.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Cenefa de Greca Popoloca -->
-    <div class="popoloca-fret-line container">
-      <div class="fret-divider"></div>
-      <svg class="fret-glyph" viewBox="0 0 40 16">
-        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
-      </svg>
-      <div class="fret-divider"></div>
-    </div>
-
-    <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: EQUIPO, MENTORÍA Y FASES DEL PROYECTO (12 MESES)
+         3. INTEGRANTES DEL EQUIPO Y MENTORÍA
          ═════════════════════════════════════════════════════════════════ -->
     <section id="equipo" class="section-py">
       <div class="container">
         <div class="section-header">
-          <span class="section-kicker">TALENTO UNIVERSITARIO POBLANO · BUAP & UTP</span>
-          <h2 class="section-title">Equipo de Proyecto, Mentoría Científica y Hoja de Ruta</h2>
+          <span class="section-kicker">TALENTO UNIVERSITARIO POBLANO</span>
+          <h2 class="section-title">Integrantes del Equipo y Mentoría Científica</h2>
           <p class="section-desc">
-            Desarrollado íntegramente por estudiantes e investigadores de instituciones públicas de Puebla para transformar nuestra propia entidad federativa.
+            Proyecto desarrollado por estudiantes e investigadores de la <strong>BUAP</strong> y la <strong>UTP</strong>, asesorados por el <strong>INAOEP</strong>, demostrando que en Puebla hay capacidad técnica de sobra para resolver los problemas de nuestras propias calles.
           </p>
         </div>
 
-        <!-- Tarjetas del Equipo de Desarrollo -->
         <div class="team-grid">
           <div class="team-card">
             <div class="team-avatar-box">JF</div>
@@ -2692,80 +1798,21 @@
           </div>
         </div>
 
-        <!-- Tarjeta del Mentor Científico -->
+        <!-- Mentor del Equipo -->
         <div class="mentor-card">
           <div class="mentor-left">
             <div class="mentor-icon-wrap">
               <svg class="icon-svg" style="width:24px; height:24px;" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
             </div>
             <div>
-              <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--clr-dorado-metalico); font-weight:700;">VALIDACIÓN TÉCNICA Y MENTORÍA</span>
+              <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--clr-dorado-metalico); font-weight:700;">RESPONSABLE DE VALIDAR LA INFORMACIÓN · MENTOR</span>
               <h4>Dr. Alfredo Benítez Lara</h4>
-              <p>Investigador Científico · Mentor Oficial del Proyecto KUCHE</p>
+              <p>Investigador Científico · INAOEP (Instituto Nacional de Astrofísica, Óptica y Electrónica)</p>
             </div>
           </div>
 
-          <div class="mentor-contact">
-            <span class="mentor-badge-contact">
-              <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              abenitezl@inaoep.mx
-            </span>
-            <span class="mentor-badge-contact">
-              <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              INAOEP · Puebla
-            </span>
-          </div>
-        </div>
-
-        <!-- Cronograma Oficial de 12 Meses -->
-        <h4 class="timeline-title">Cronograma de Implementación y Puesta en Marcha (12 Meses)</h4>
-        <div class="timeline-grid">
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 1 - 2</span>
-            <h5>1. Planeación y Definición Técnica</h5>
-            <p>Levantamiento de requerimientos con municipios, arquitectura del sistema y diseño del plan de acción.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 2 - 4</span>
-            <h5>2. Curación del Dataset y Etiquetado</h5>
-            <p>Recolección de imágenes de luminarias de Puebla (LED vs vapor de sodio) en múltiples condiciones lumínicas.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 3 - 5</span>
-            <h5>3. Diseño y Prototipado UI/UX</h5>
-            <p>Flujo de reporte ágil (1 a 2 min), interfaz de captura multimodal (video 10s, foto, manual) y mockups de mando.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 4 - 8</span>
-            <h5>4. Core y Entrenamiento de IA</h5>
-            <p>Programación de acceso seguro (CURP/correo), backend escalable y entrenamiento de modelos de visión.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 5 - 8</span>
-            <h5>5. Dashboard y Análisis Financiero</h5>
-            <p>Panel adaptable de cuadrillas, módulos de georreferenciación satelital y costeo operativo del servicio.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 7 - 9</span>
-            <h5>6. Pruebas de Laboratorio e Inferencia</h5>
-            <p>Pruebas de estrés en servidor cloud, optimización de latencia en modelos y robustez ante ruido visual.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 9 - 11</span>
-            <h5>7. Despliegue del Piloto en Campo</h5>
-            <p>Validación real con ciudadanos en área delimitada de Cholula, despacho de cuadrillas y medición de métricas.</p>
-          </div>
-
-          <div class="timeline-stage">
-            <span class="stage-badge">MESES 11 - 12</span>
-            <h5>8. Puesta en Marcha y Transferencia</h5>
-            <p>Lanzamiento público formal en la zona metropolitana, capacitación a electricistas y entrega de manuales.</p>
+          <div style="font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--text-main); background:var(--bg-card); padding:8px 14px; border-radius:6px; border:1px solid var(--border-subtle);">
+            abenitezl@inaoep.mx · INAOEP, Tonantzintla, Pue.
           </div>
         </div>
       </div>
@@ -2781,92 +1828,520 @@
     </div>
 
     <!-- ═════════════════════════════════════════════════════════════════
-         SECCIÓN: ECOSISTEMA TECNOLÓGICO DE TRES MÓDULOS
+         4. CÓMO SE CONFORMA EL PROYECTO (PILOTO EN SAN PEDRO CHOLULA)
          ═════════════════════════════════════════════════════════════════ -->
-    <section id="ecosistema" class="section-py">
+    <section id="proyecto-piloto" class="section-py">
       <div class="container">
         <div class="section-header">
-          <span class="section-kicker">ARQUITECTURA DE SOLUCIÓN COMPLETA</span>
-          <h2 class="section-title">Ecosistema Integrado de Tres Módulos</h2>
+          <span class="section-kicker">ALCANCE Y ESCALABILIDAD TERRITORIAL</span>
+          <h2 class="section-title">Cómo se Conforma el Proyecto: Sistema Unificado Estatal</h2>
           <p class="section-desc">
-            KUCHE combina herramientas especializadas para abarcar desde la captura vecinal en calle hasta la gestión directiva de servicios públicos municipales.
+            KUCHE está concebido como una red tecnológica unificada para los <strong>217 municipios del estado de Puebla</strong>, evaluado financieramente y validado en campo tomando como polígono piloto de referencia al municipio de <strong>San Pedro Cholula</strong>.
           </p>
         </div>
 
-        <div class="ecosystem-grid">
-          <!-- Modulo 1: GIS -->
-          <div class="eco-card">
-            <div class="eco-header-bar">
-              <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
-              <span>Centro de Mando Geoespacial</span>
-            </div>
-            <div class="eco-body">
-              <h3>Tablero GIS Municipal</h3>
-              <p>
-                Cartografía multi-capa con visualización satelital y mapa de calor de fallas. Permite a los directores de servicios públicos auditar zonas oscuras y despilfarros diurnos en tiempo real con geocercas.
-              </p>
-              <div class="eco-badge-list">
-                <span class="eco-tag">Esri Street Map / Leaflet</span>
-                <span class="eco-tag">Clusters de Red</span>
-                <span class="eco-tag">Métricas CFE</span>
+        <div class="pilot-grid">
+          <div class="pilot-card gold-accent">
+            <h3>Polígono Piloto de Validación: San Pedro Cholula</h3>
+            <p>
+              San Pedro Cholula es un territorio representativo de la zona metropolitana de Puebla con cabecera municipal, áreas urbanas densas y <strong>13 juntas auxiliares</strong> distantes (como Momoxpan, San Matías Cocoyotla, San Cristóbal Tepontla, Santiago Momoxpan y San Juan Tlautla).
+            </p>
+            <div class="pilot-stat-row">
+              <div class="pilot-stat-box">
+                <div class="val">11,781</div>
+                <div class="lbl">Luminarias registradas en el censo CFE</div>
               </div>
-              <div style="margin-top:16px;">
-                <a href="./dashboard.html" class="btn-preset" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;">
-                  <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
-                  <span>Abrir Tablero GIS</span>
-                </a>
+              <div class="pilot-stat-box">
+                <div class="val">13 Juntas</div>
+                <div class="lbl">Auxiliares bajo modelo de monitoreo</div>
               </div>
             </div>
           </div>
 
-          <!-- Modulo 2: App PWA -->
-          <div class="eco-card">
-            <div class="eco-header-bar">
-              <svg class="icon-svg" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-              <span>Módulo de Campo PWA</span>
-            </div>
-            <div class="eco-body">
-              <h3>Aplicación Móvil Desconectada</h3>
-              <p>
-                Herramienta para inspectores y cuadrillas que captura fotografías con sensor satelital GPS. Funciona sin internet mediante base de datos local y sincronización diferida automática.
-              </p>
-              <div class="eco-badge-list">
-                <span class="eco-tag">PWA Ultraligera</span>
-                <span class="eco-tag">GPS Satelital</span>
-                <span class="eco-tag">Modo Offline</span>
+          <div class="pilot-card guinda-accent">
+            <h3>Arquitectura Diseñada para Escalar a Todo el Estado</h3>
+            <p>
+              La infraestructura de software está diseñada para expandirse progresivamente desde Cholula hacia toda la zona metropolitana (Puebla Capital, San Andrés, Cuautlancingo, Coronango, Amozoc) y a las regiones del interior del estado, adaptándose a las capacidades y recursos técnicos de cada localidad sin requerir servidores locales caros.
+            </p>
+            <div class="pilot-stat-row">
+              <div class="pilot-stat-box">
+                <div class="val">345,110</div>
+                <div class="lbl">Luminarias en todo el estado de Puebla</div>
               </div>
-              <div style="margin-top:16px;">
-                <a href="./app.html" class="btn-preset active" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;">
-                  <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                  <span>Abrir App Modo Demo</span>
-                </a>
+              <div class="pilot-stat-box">
+                <div class="val">217</div>
+                <div class="lbl">Municipios con capacidad de cobertura</div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Modulo 3: Portal Ciudadano -->
-          <div class="eco-card">
-            <div class="eco-header-bar">
-              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              <span>Participación y Transparencia</span>
+    <!-- Cenefa de Greca Popoloca -->
+    <div class="popoloca-fret-line container">
+      <div class="fret-divider"></div>
+      <svg class="fret-glyph" viewBox="0 0 40 16">
+        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
+      </svg>
+      <div class="fret-divider"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         5. PROBLEMÁTICA DEL ALUMBRADO PÚBLICO EN EL ESTADO
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="problematica" class="section-py">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">ANÁLISIS DE LA SITUACIÓN ACTUAL</span>
+          <h2 class="section-title">Problemática: Sistemas Fragmentados y Opciones a Medias</h2>
+          <p class="section-desc">
+            Actualmente cada zona del estado tiene un método distinto e inconexo para reportar luminarias rotas, y las pocas aplicaciones existentes son de uso a medias y exclusivas de la capital.
+          </p>
+        </div>
+
+        <div class="problems-grid">
+          <!-- Problema 1 -->
+          <div class="problem-box">
+            <span class="problem-badge">DISPERSIÓN REGIONAL</span>
+            <h4>Cada Zona con Canales Aislados</h4>
+            <p>
+              En San Pedro Cholula los reportes dependen de llamadas telefónicas y mensajes de WhatsApp que se pierden; en San Andrés Cholula de un formulario web aislado; y en municipios del interior las personas tienen que ir físicamente a formarse a la oficina de Servicios Públicos. No existe un estándar estatal unificado.
+            </p>
+          </div>
+
+          <!-- Problema 2 -->
+          <div class="problem-box">
+            <span class="problem-badge">USO A MEDIAS: PUEBLA BRILLA</span>
+            <h4>Falla de Apps Actuales en la Capital</h4>
+            <p>
+              En Puebla capital opera la app "Puebla Brilla" (Citelum), pero apenas capta entre 100 y 200 reportes al mes con una <strong>calificación reprobatoria de 2.9 estrellas</strong> en Google Play Store y solo 5 mil descargas. La propia Secretaría municipal admitió que la app no permite acceder a detalle técnico ni georreferenciar con precisión el poste.
+            </p>
+          </div>
+
+          <!-- Problema 3 -->
+          <div class="problem-box">
+            <span class="problem-badge">DESCONTENTO Y OSCURIDAD</span>
+            <h4>Descontento Generalizado (INEGI)</h4>
+            <p>
+              Según la encuesta ENCIG 2025 del INEGI, en Puebla solo el <strong>34.3%</strong> de la población está satisfecha con el alumbrado (casi 7 de cada 10 inconformes). En la capital, el Plan de Desarrollo Municipal 2024-2027 señala que 4 de cada 10 frentes de manzana no tienen luz, con desatención de hasta el 66% en Santo Tomás Chautla y 60% en Canoa.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cenefa de Greca Popoloca -->
+    <div class="popoloca-fret-line container">
+      <div class="fret-divider"></div>
+      <svg class="fret-glyph" viewBox="0 0 40 16">
+        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
+      </svg>
+      <div class="fret-divider"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         6. ÁREAS DE OPORTUNIDAD: DISPERSIÓN ADMINISTRATIVA
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="oportunidades" class="section-py">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">VENTANAS DE OPORTUNIDAD Y GOBERNANZA</span>
+          <h2 class="section-title">Áreas de Oportunidad: Superar la Variación entre Administraciones</h2>
+          <p class="section-desc">
+            Los sistemas de aviso de fallas dependen hoy del criterio de cada ayuntamiento: son diversos, no están unificados y cambian o mueren cada trienio.
+          </p>
+        </div>
+
+        <div class="opportunity-card">
+          <div>
+            <h3>La Oportunidad de una Plataforma Abierta y Continua</h3>
+            <p>
+              Actualmente los municipios prevén destinar contratos millonarios (como los 851 millones de pesos de mantenimiento en la capital) a empresas concesionarias cerradas sin resolver el problema de fondo: la falta de diagnóstico oportuno y de una herramienta soberana que le pertenezca a la ciudad.
+            </p>
+            <p style="margin-top:12px;">
+              KUCHE aprovecha la tecnología que ciudadanos e inspectores ya traen en el bolsillo para tender un puente directo, estandarizado y transparente entre vecinos y cuadrillas de electricistas, garantizando que el sistema no se pierda al cambiar de trienio gubernamental.
+            </p>
+          </div>
+
+          <div class="opp-list">
+            <div class="opp-item">
+              <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <div>
+                <strong>Unificación Intermunicipal</strong>
+                <span>Un solo estándar de datos e imágenes para juntas auxiliares, cabeceras metropolitanas y gobierno estatal.</span>
+              </div>
             </div>
-            <div class="eco-body">
-              <h3>Portal Cívico y Acceso CURP</h3>
+
+            <div class="opp-item">
+              <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <div>
+                <strong>Compatibilidad con Puebla Brilla</strong>
+                <span>Kuche no busca pelear con inversiones previas; puede integrarse como motor inteligente que le sume pre-diagnóstico con foto y detección de fotoceldas al sistema actual.</span>
+              </div>
+            </div>
+
+            <div class="opp-item">
+              <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              <div>
+                <strong>Activo Digital Permanente para el Estado</strong>
+                <span>Si por cuestiones administrativas el alumbrado cambiara, la plataforma de visión y geocercas sirve como base directa para reportar baches, fugas de agua o basura.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cenefa de Greca Popoloca -->
+    <div class="popoloca-fret-line container">
+      <div class="fret-divider"></div>
+      <svg class="fret-glyph" viewBox="0 0 40 16">
+        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
+      </svg>
+      <div class="fret-divider"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         7. LAS PANTALLAS DEL SISTEMA (ORDEN EXACTO SOLICITADO)
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="pantallas" class="section-py">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">ARQUITECTURA DE PANTALLAS E INTERFACES</span>
+          <h2 class="section-title">Las Pantallas que Conforman el Sistema Kuche</h2>
+          <p class="section-desc">
+            Presentamos la estructura secuencial de interfaces diseñadas para cada actor del ecosistema: la captura operativa en campo, el sistema de acceso cívico blindado y el panel exclusivo de mando municipal.
+          </p>
+        </div>
+
+        <div class="screens-grid">
+          <!-- Pantalla 1: Modo Demo (Detección de Luminarias e Incidencias) -->
+          <div class="screen-card">
+            <div>
+              <div class="screen-header-bar">
+                <span class="screen-step-num">PANTALLA 1</span>
+                <span class="screen-badge-type operational">INTERFAZ ACTUAL EN VIVO</span>
+              </div>
+              <div class="screen-body">
+                <h3>Modo Demo (Detección e Incidencias)</h3>
+                <p>
+                  Es la interfaz operativa que tenemos actualmente desarrollada. Permite a ciudadanos e inspectores usar la cámara para detectar la luminaria mediante IA, identificar si está encendida de día o apagada, y levantar el reporte técnico con folio en menos de 2 minutos.
+                </p>
+                <ul class="screen-highlights">
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Detección de cabezal y tecnología con IA</li>
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Modalidades: Video 10s, Cámara y Manual</li>
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Generación instantánea de cédula de reporte</li>
+                </ul>
+              </div>
+            </div>
+            <div class="screen-footer-cta">
+              <a href="./app.html" class="btn-screen-action">
+                <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Abrir Modo Demo (App)</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Pantalla 2: Sistema de Logueo (CURP / Ciudadano) -->
+          <div class="screen-card">
+            <div>
+              <div class="screen-header-bar">
+                <span class="screen-step-num">PANTALLA 2</span>
+                <span class="screen-badge-type civic">ACCESO Y TRAZABILIDAD</span>
+              </div>
+              <div class="screen-body">
+                <h3>Sistema de Logueo que Deseamos Implementar</h3>
+                <p>
+                  El módulo cívico para garantizar la autenticidad de los reportes. Permite el acceso seguro de vecinos y presidentes auxiliares mediante correo, contraseña y validación de <strong>CURP</strong>, erradicando reportes falsos y spam ante dependencias oficiales.
+                </p>
+                <ul class="screen-highlights">
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Blindaje de identidad mediante CURP</li>
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Trazabilidad jurídica ante Servicios Públicos</li>
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Consulta de folios sin descargas pesadas</li>
+                </ul>
+              </div>
+            </div>
+            <div class="screen-footer-cta">
+              <a href="./portal.html" class="btn-screen-action">
+                <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Ver Portal de Logueo</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Pantalla 3: Dashboard Municipal de Mando -->
+          <div class="screen-card">
+            <div>
+              <div class="screen-header-bar">
+                <span class="screen-step-num">PANTALLA 3</span>
+                <span class="screen-badge-type executive">EXCLUSIVO AYUNTAMIENTOS</span>
+              </div>
+              <div class="screen-body">
+                <h3>Dashboard de Gestión y Cuadrillas</h3>
+                <p>
+                  Diseñado <strong>exclusivamente para los ayuntamientos y dependencias gubernamentales</strong> que deseen implementar Kuche. Ofrece un centro de mando geoespacial para visualizar el mapa de luminarias, despachar brigadas y optimizar rutas.
+                </p>
+                <ul class="screen-highlights">
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Mapa satelital GIS con clusters y calor de fallas</li>
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Geocercas para urbes grandes y juntas auxiliares</li>
+                  <li><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Refacciones necesarias y costeo antes de salir</li>
+                </ul>
+              </div>
+            </div>
+            <div class="screen-footer-cta">
+              <a href="./dashboard.html" class="btn-screen-action">
+                <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+                <span>Ver Dashboard Municipal</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demostrador Interactivo Incrustado (Modo Demo en Vivo) -->
+        <div class="demo-console-card">
+          <div class="demo-controls-header">
+            <div class="demo-presets-label">
+              Demostrador en Vivo (Pantalla 1 - Modo Demo):
+            </div>
+            <div class="demo-preset-buttons">
+              <button class="btn-preset active" id="btn-case-1" onclick="cargarEscenarioDemo(1)">
+                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+                <span>Caso 1: Vapor de Sodio Encendida de Día (Consumo Parásito)</span>
+              </button>
+              <button class="btn-preset" id="btn-case-2" onclick="cargarEscenarioDemo(2)">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4"/><circle cx="12" cy="12" r="6"/></svg>
+                <span>Caso 2: LED Vial Apagada de Día (Operación Normal)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="demo-viewport-grid">
+            <div class="demo-screen-box">
+              <div id="ai-scan-bar" class="ai-scan-bar"></div>
+              <img id="demo-display-img" src="./fotos/demo_caso_1.jpg" alt="Luminaria analizada por visión artificial" class="demo-screen-img">
+              <div id="demo-bounding-box" class="ai-bounding-box">
+                <span id="demo-box-tag" class="ai-box-tag">Vapor de Sodio 150W</span>
+                <span style="font-family:'JetBrains Mono', monospace; font-size:9px; color:#FFFFFF; background:rgba(0,0,0,0.7); padding:2px 4px; border-radius:2px; align-self:flex-end;" id="demo-box-sub">Confianza: 96.4%</span>
+              </div>
+            </div>
+
+            <div class="demo-report-card">
+              <div>
+                <div class="report-card-title">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                  <span>Cédula Técnica Generada por la IA</span>
+                </div>
+                <div class="report-meta-grid">
+                  <div class="report-row">
+                    <span class="report-label">Folio de Registro</span>
+                    <span class="report-val" id="rep-folio">PUE-2026-CHOL-01</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-label">Tecnología Detectada</span>
+                    <span class="report-val" id="rep-tipo" style="color:var(--clr-dorado-brillo); font-weight:700;">Vapor de Sodio 150W (+ Balastro 187.5W)</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-label">Condición Horaria</span>
+                    <span class="report-val" id="rep-horario">12:30 hrs (Horario Diurno)</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-label">Diagnóstico de Red</span>
+                    <span id="rep-status" class="status-badge critical">CONSUMO PARÁSITO (FOTOCELDA PEGADA)</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-label">Impacto Estimado</span>
+                    <span class="report-val" id="rep-potencia" style="font-size:11.5px; color:#EF4444;">Drenando 2.25 kWh diarios sin provecho</span>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn-run-analysis" id="btn-analyze" onclick="ejecutarAnalisisIA()">
+                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Re-Escanear Inferencia IA</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cenefa de Greca Popoloca -->
+    <div class="popoloca-fret-line container">
+      <div class="fret-divider"></div>
+      <svg class="fret-glyph" viewBox="0 0 40 16">
+        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
+      </svg>
+      <div class="fret-divider"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         8. MODELOS ECONÓMICOS, FINANCIEROS Y LEGALES
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="economia" class="section-py">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">EVALUACIÓN FINANCIERA (METODOLOGÍA OIT)</span>
+          <h2 class="section-title">Modelo Económico: Rentabilidad y Saneamiento Presupuestal</h2>
+          <p class="section-desc">
+            Evaluado sobre el polígono piloto de San Pedro Cholula (11,781 luminarias). Kuche no representa un gasto para el erario, sino una herramienta de saneamiento que se amortiza en menos de 5 meses.
+          </p>
+        </div>
+
+        <div class="finance-metrics-strip">
+          <div class="finance-metric-card">
+            <div class="f-val">$300k - $500k</div>
+            <div class="f-title">Inversión Inicial (CAPEX)</div>
+            <p class="f-desc">Incluye desarrollo PWA, modelo de visión, IVA y 15% de reserva técnica ISO 21500.</p>
+          </div>
+          <div class="finance-metric-card">
+            <div class="f-val">51.2% - 61.8%</div>
+            <div class="f-title">Tasa Interna Retorno (TIR)</div>
+            <p class="f-desc">Proyección a 3 años deduciendo OPEX. Supera ampliamente instrumentos como CETES.</p>
+          </div>
+          <div class="finance-metric-card">
+            <div class="f-val">173.6% - 256%</div>
+            <div class="f-title">Retorno de Inversión (ROI)</div>
+            <p class="f-desc">Periodo de recuperación simple (Payback) de apenas <strong>3.1 a 4.4 meses</strong>.</p>
+          </div>
+          <div class="finance-metric-card">
+            <div class="f-val">$1.16M - $1.36M</div>
+            <div class="f-title">Ahorro Anual Consolidado</div>
+            <p class="f-desc">Recursos públicos retenidos en tesorería por luz evitada en CFE y logística de cuadrillas.</p>
+          </div>
+        </div>
+
+        <div class="finance-breakdown-grid">
+          <!-- Desglose de ahorros -->
+          <div style="background:var(--bg-card); border:1.5px solid var(--border-subtle); border-radius:12px; padding:24px;">
+            <h3 style="font-family:'Montserrat', sans-serif; font-size:17px; font-weight:800; color:var(--text-main); margin-bottom:12px;">Desglose de Ahorros Consolidados Anuales</h3>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Concepto Operativo</th>
+                  <th>Cálculo Oficial en Cholula</th>
+                  <th>Ahorro (MXN)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Consumo Parásito ante CFE</strong><br><span style="font-size:11px;">(353 lámparas diurnas a 187.5W nominal + balastro NOM-013)</span></td>
+                  <td>353 lum. × 0.1875 kW × 12h/día × 365 días = 289,898 kWh a tarifa APBT ($3.10/kWh)</td>
+                  <td><strong>$751,000 a $898,684</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Combustible Diésel de Brigada</strong><br><span style="font-size:11px;">(Se suprimen 35 km diarios de patrullaje a ciegas)</span></td>
+                  <td>10,500 km anuales evitados ÷ 3.5 km/l = 3,000 litros diésel × $25.00/l</td>
+                  <td><strong>$75,000</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Horas-Hombre de Cuadrillas</strong><br><span style="font-size:11px;">(Recuperación de 3 horas diarias de búsqueda pasiva)</span></td>
+                  <td>900 horas anuales de brigada recuperadas × $350.00 MXN/hora cuadrilla</td>
+                  <td><strong>$315,000</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>Mantenimiento Vehicular</strong><br><span style="font-size:11px;">(Camión canastilla, neumáticos y brazos hidráulicos)</span></td>
+                  <td>Menor desgaste por reducción de rodamiento nocturno</td>
+                  <td><strong>$80,000</strong></td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>BENEFICIO CONSOLIDADO ANUAL</strong></td>
+                  <td><strong>Recursos liberados para bacheo, parques y compra de luminarias</strong></td>
+                  <td><strong>$1,168,000 a $1,368,684</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Comparativa Hardware vs Software -->
+          <div class="iot-disruption-box">
+            <div>
+              <span style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--clr-dorado-arena); font-weight:700;">EFICIENCIA DE CAPITAL FRENTE A HARDWARE</span>
+              <h3>Kuche vs. Sensores Físicos (IoT)</h3>
               <p>
-                Mecanismo para que presidentes auxiliares, comités vecinales y ciudadanos consulten el estatus de sus luminarias reportadas con folios trazables y autenticación blindada anti-spam.
+                Instalar sensores dedicados con telemetría en cada poste cuesta ~$2,000 MXN por luminaria y queda expuesto al robo constante de cableado y vandalismo.
               </p>
-              <div class="eco-badge-list">
-                <span class="eco-tag">Acceso Seguro CURP</span>
-                <span class="eco-tag">Trazabilidad Pública</span>
-                <span class="eco-tag">Sin Descarga Pesada</span>
-              </div>
-              <div style="margin-top:16px;">
-                <a href="./portal.html" class="btn-preset active" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700;">
-                  <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  <span>Acceso Oficial (Login)</span>
-                </a>
+              <div class="iot-compare-grid">
+                <div class="iot-side">
+                  <div class="iot-side-title" style="color:#EF4444;">Hardware IoT Masivo</div>
+                  <div class="cost">> $23.5 MDP</div>
+                  <p>11,781 postes con sensores + riesgo de robo.</p>
+                </div>
+                <div class="iot-side kuche-win">
+                  <div class="iot-side-title" style="color:#34D399;">Kuche (Software e IA)</div>
+                  <div class="cost">&lt; $500,000 MXN</div>
+                  <p>Aprovecha los celulares que la gente ya trae. <strong>Ahorro &gt;95%</strong>.</p>
+                </div>
               </div>
             </div>
+
+            <div class="saas-callout">
+              <div class="val">$1.41 MXN</div>
+              <div class="desc">
+                <strong>Modelo SaaS al mes por lámpara:</strong> Costo operativo anual de $200k MXN ÷ 11,781 luminarias = $16.97 MXN al año por punto de luz (vs $60-$120 de firmas internacionales).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cenefa de Greca Popoloca -->
+    <div class="popoloca-fret-line container">
+      <div class="fret-divider"></div>
+      <svg class="fret-glyph" viewBox="0 0 40 16">
+        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
+      </svg>
+      <div class="fret-divider"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         MARCO LEGAL Y NORMATIVO
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="marco-legal" class="section-py">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">CERTEZA JURÍDICA Y CUMPLIMIENTO REGULATORIO</span>
+          <h2 class="section-title">Marco Legal: Soberanía Municipal y Normas Oficiales</h2>
+          <p class="section-desc">
+            Kuche es un instrumento técnico de apoyo que fortalece las atribuciones legales de los ayuntamientos sin privatizar el servicio ni requerir cambios legislativos.
+          </p>
+        </div>
+
+        <div class="legal-grid">
+          <div class="legal-card">
+            <div class="legal-law-code">ART. 115 CPEUM & ART. 199 LEY ORGÁNICA PUEBLA</div>
+            <h4>Mandato Municipal de Alumbrado</h4>
+            <p>El servicio de alumbrado público es competencia y facultad exclusiva de los municipios. Kuche apoya la labor de Servicios Públicos sin invadir competencias; el control total se mantiene en el ayuntamiento.</p>
+          </div>
+
+          <div class="legal-card">
+            <div class="legal-law-code">NOM-013-ENER-2013 & NOM-031-ENER-2019</div>
+            <h4>Normatividad de Eficiencia CONUEE</h4>
+            <p>Vigila los límites de Densidad de Potencia Eléctrica para Alumbrado (DPEA) y audita que las nuevas lámparas LED cumplan con el estándar de 95 a 105 lúmenes/watt y cinco años de garantía.</p>
+          </div>
+
+          <div class="legal-card">
+            <div class="legal-law-code">LGPDPPSO (INAI)</div>
+            <h4>Privacidad con Borrado de Placas y Caras</h4>
+            <p>La IA pasa un filtro de anonimización para difuminar automáticamente placas de automóviles y rostros antes de almacenar la imagen, requiriendo únicamente correo y coordenadas del poste.</p>
+          </div>
+
+          <div class="legal-card">
+            <div class="legal-law-code">LEY GENERAL DE CAMBIO CLIMÁTICO</div>
+            <h4>Registro Nacional de Emisiones (RENE)</h4>
+            <p>Las más de 128 toneladas de CO2e mitigadas anualmente en Cholula (factor FESEN 0.444 de CRE/SEMARNAT) permiten al municipio reportar indicadores limpios en programas climáticos estatales.</p>
+          </div>
+
+          <div class="legal-card">
+            <div class="legal-law-code">LEY DE LA AGENCIA DE ENERGÍA DE PUEBLA</div>
+            <h4>Fondos Verdes y FOTEASE (Arts. 4 y 38)</h4>
+            <p>Permite celebrar convenios de coordinación intergubernamental y canalizar fondos verdes de transición energética del estado para modernizar calles sin endeudar al municipio.</p>
+          </div>
+
+          <div class="legal-card">
+            <div class="legal-law-code">AGENDA 2030 (ODS)</div>
+            <h4>Impacto en Desarrollo Sostenible</h4>
+            <p>Alineación directa con los Objetivos de Desarrollo Sostenible: ODS 7 (Energía limpia), ODS 9 (Innovación de software), ODS 11 (Ciudades sostenibles) y ODS 17 (Alianzas ciudadanía-gobierno).</p>
           </div>
         </div>
       </div>
@@ -2875,34 +2350,34 @@
 
   <!-- ═══════════════════════════════════════════════════════════════════
        FOOTER INSTITUCIONAL
-       ═════════════════════════════════════════════════════════════════ -->
+       ═══════════════════════════════════════════════════════════════════ -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
           <h3>KUCHE</h3>
           <p>
-            Plataforma inteligente de reporte ciudadano para detectar zonas con deficiencias en el alumbrado público. Proyecto de innovación energética y visión computacional desarrollado por estudiantes de la <strong>BUAP</strong> y la <strong>UTP</strong> con asesoría del <strong>INAOEP</strong> para el concurso universitario <strong>ElectroHack 2026</strong>.
+            Sistema unificado de participación ciudadana y monitoreo de alumbrado público con inteligencia artificial. Proyecto universitario desarrollado por estudiantes de la <strong>BUAP</strong> y la <strong>UTP</strong> con asesoría del <strong>INAOEP</strong> para el concurso <strong>ElectroHack 2026</strong> de la Agencia de Energía del Estado de Puebla.
           </p>
           <div style="margin-top:14px; font-size:11px; color:var(--clr-dorado-arena); font-family:'JetBrains Mono', monospace; line-height:1.5;">
-            Raíz Biocultural: <em>Kuche</em> (Piojo / Parásito) en Popoloca (Ngiigua) de San Marcos Tlacoyalco, Puebla · Erradicación del consumo parásito eléctrico.
+            Raíz Biocultural: <em>Kuche</em> ("Piojo" / Parásito) en Popoloca (Ngiigua) de San Marcos Tlacoyalco, Puebla · Erradicación del consumo parásito en el alumbrado público.
           </div>
         </div>
 
         <div class="footer-col">
-          <h4>Pilares Técnicos Ficha Oficial</h4>
+          <h4>Estructura del Proyecto</h4>
           <ul class="footer-links">
-            <li>Detección de Luminarias en Tiempo Real</li>
-            <li>Ahorro Comprobado: $1.36 MDP/año (Cholula)</li>
-            <li>Erradicación de Consumo Parásito CFE</li>
-            <li>Cumplimiento NOM-013 y NOM-031-ENER</li>
-            <li>Modelo SaaS Municipal: $1.41 MXN/mes</li>
-            <li>Mitigación de 128.7 tCO2e (CRE/SEMARNAT)</li>
+            <li><a href="#inicio">¿Qué es Kuche?</a></li>
+            <li><a href="#origen-nombre">Origen del Nombre ("Piojo")</a></li>
+            <li><a href="#equipo">Integrantes BUAP · UTP</a></li>
+            <li><a href="#proyecto-piloto">Polígono San Pedro Cholula</a></li>
+            <li><a href="#problematica">Problemática y Puebla Brilla</a></li>
+            <li><a href="#pantallas">Pantallas (Demo, Login, Dashboard)</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h4>Instituciones y Convocatoria</h4>
+          <h4>Instituciones y Fuentes</h4>
           <ul class="footer-links">
             <li><a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" style="color:var(--clr-dorado-arena);">Agencia de Energía del Estado de Puebla</a></li>
             <li>Secretaría de Desarrollo Económico y Trabajo</li>
@@ -2919,16 +2394,14 @@
           &copy; 2026 KUCHE · Plataforma Universitaria Poblana de Eficiencia en Alumbrado Público · Concurso Estatal ElectroHack 2026.
         </div>
         <div style="font-size:10.5px; color:#5D4F57; max-width:980px;">
-          Basado en la Ficha Técnica oficial del proyecto KUCHE. Fuentes: CFE Distribución (2026), INEGI ENCIG (2025), CONUEE (NOM-013-ENER / NOM-031-ENER), CRE/SEMARNAT (FESEN), OIT & Murcia (2009).
+          Fuentes oficiales: CFE Distribución (2026), INEGI ENCIG (2025), Plan Municipal de Desarrollo Puebla (2024-2027), CONUEE (NOM-013-ENER / NOM-031-ENER), CRE/SEMARNAT (FESEN), Metodología OIT & Murcia (2009).
         </div>
       </div>
     </div>
   </footer>
 
   <script>
-    // ═════════════════════════════════════════════════════════════════════
-    // LÓGICA INTERACTIVA DEL DEMOSTRADOR DE IA (CASOS OFICIALES DE LA FICHA)
-    // ═════════════════════════════════════════════════════════════════════
+    // Demostrador Interactivo (Pantalla 1 - Modo Demo)
     const escenariosDemo = {
       1: {
         img: './fotos/demo_caso_1.jpg',
@@ -2940,8 +2413,7 @@
         horario: '12:30 hrs (Horario Diurno)',
         statusClass: 'status-badge critical',
         statusText: 'CONSUMO PARÁSITO (FOTOCELDA PEGADA)',
-        potencia: 'Drenando 2.25 kWh diarios sin provecho',
-        modelo: 'Kuche-Vision YOLOv8s Custom'
+        potencia: 'Drenando 2.25 kWh diarios sin provecho'
       },
       2: {
         img: './fotos/demo_caso_2.jpg',
@@ -2953,17 +2425,11 @@
         horario: '12:32 hrs (Horario Diurno)',
         statusClass: 'status-badge optimal',
         statusText: 'APAGADA (OPERACIÓN CORRECTA)',
-        potencia: '0.00 kWh diurnos (Sin desperdicio)',
-        modelo: 'Kuche-Vision YOLOv8s Custom'
+        potencia: '0.00 kWh diurnos (Sin desperdicio)'
       }
     };
 
-    let escenarioActual = 1;
-
     function cargarEscenarioDemo(id) {
-      escenarioActual = id;
-      
-      // Actualizar botones
       document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
       const activeBtn = document.getElementById(`btn-case-${id}`);
       if (activeBtn) activeBtn.classList.add('active');
@@ -2996,9 +2462,6 @@
         potEl.style.color = (id === 1) ? '#EF4444' : '#10B981';
       }
 
-      document.getElementById('rep-modelo').textContent = data.modelo;
-
-      // Disparar animación de escaneo
       ejecutarAnimacionEscaneo();
     }
 
@@ -3024,7 +2487,7 @@
       }, 1600);
     }
 
-    // Navegación Móvil Drawer
+    // Menú Móvil
     function toggleMenuMobile() {
       const menu = document.getElementById('nav-menu');
       if (menu) menu.classList.toggle('open');
@@ -3039,7 +2502,7 @@
       });
     });
 
-    // Conmutador de Tema Visual (Claro / Oscuro)
+    // Tema Visual (Claro / Oscuro)
     function alternarTemaLanding() {
       const esOscuro = document.body.classList.contains('theme-dark');
       const nuevo = esOscuro ? 'light' : 'dark';
