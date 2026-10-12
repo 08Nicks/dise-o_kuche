@@ -2038,33 +2038,401 @@
     }
     .finance-bars-grid {
       display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 28px;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 24px;
       margin-top: 20px;
     }
-    .f-bar-group {
+    .savings-breakdown-card, .capex-contrast-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 18px;
+      box-shadow: var(--shadow-sm);
     }
-    .f-bar-row {
+    .savings-card-header, .capex-card-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+    .savings-kicker, .capex-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--clr-dorado-metalico);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .savings-title, .capex-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin: 0;
+    }
+    
+    /* Donut y Stacked Bar */
+    .savings-donut-strip {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    body.theme-light .savings-donut-strip {
+      background: #FAF6EF;
+    }
+    .savings-donut-wrap {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      flex-shrink: 0;
+    }
+    .savings-donut-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .donut-arc {
+      fill: none;
+      stroke-width: 13;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease;
+    }
+    .arc-cfe { stroke: #10B981; }
+    .arc-crew { stroke: #E6D194; }
+    body.theme-light .arc-crew { stroke: #BC955C; }
+    .arc-crane { stroke: #3B82F6; }
+    .arc-fuel { stroke: #EF4444; }
+    
+    .savings-donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .donut-big-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-main);
+      display: block;
+      line-height: 1;
+    }
+    .donut-sub-lbl {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+      display: block;
+    }
+
+    .stacked-bar-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .stacked-bar-track {
+      width: 100%;
+      height: 14px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+    }
+    .stacked-segment {
+      height: 100%;
+      transition: width 0.8s ease;
+    }
+    .seg-cfe { background: linear-gradient(90deg, #10B981, #059669); }
+    .seg-crew { background: linear-gradient(90deg, #BC955C, #E6D194); }
+    .seg-crane { background: linear-gradient(90deg, #3B82F6, #1D4ED8); }
+    .seg-fuel { background: linear-gradient(90deg, #EF4444, #DC2626); }
+
+    .stacked-legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+    .stacked-key {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .key-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-cfe { background: #10B981; }
+    .dot-crew { background: #BC955C; }
+    .dot-crane { background: #3B82F6; }
+    .dot-fuel { background: #EF4444; }
+
+    /* Grid de Tarjetas Métricas */
+    .savings-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .saving-item-tile {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 4px;
+      transition: transform 0.2s, border-color 0.2s;
     }
-    .f-bar-meta {
+    .saving-item-tile:hover {
+      transform: translateY(-2px);
+      border-color: var(--clr-dorado-metalico);
+    }
+    .tile-top {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .tile-icon-box {
+      font-size: 16px;
+    }
+    .tile-pct-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .item-cfe .tile-pct-badge { color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .item-crew .tile-pct-badge { color: var(--clr-dorado-metalico); border: 1px solid rgba(188, 149, 92, 0.3); }
+    .item-crane .tile-pct-badge { color: #3B82F6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .item-fuel .tile-pct-badge { color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .tile-amount {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 900;
       color: var(--text-main);
     }
-    .f-bar-meta span.amount {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--clr-verde-agave);
+    .tile-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-light);
     }
-    body.theme-dark .f-bar-meta span.amount {
-      color: #34D399;
+    .tile-desc {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    /* CAPEX Duel */
+    .capex-duel-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: stretch;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    body.theme-light .capex-duel-grid {
+      background: #FAF6EF;
+    }
+    .duel-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .duel-legacy {
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+    }
+    .duel-kuche {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1.5px solid rgba(16, 185, 129, 0.4);
+    }
+    .duel-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      align-self: flex-start;
+    }
+    .duel-tag.danger {
+      background: rgba(220, 38, 38, 0.2);
+      color: #EF4444;
+    }
+    .duel-tag.success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10B981;
+    }
+    .duel-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .duel-price.danger { color: #EF4444; }
+    .duel-price.success { color: #10B981; }
+    .duel-concept {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .duel-features {
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .duel-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 4px;
+    }
+    .duel-vs-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1.5px solid var(--clr-dorado-metalico);
+      color: var(--clr-dorado-arena);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px;
+      font-weight: 900;
+    }
+    .multiplier-tag {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 900;
+      color: var(--clr-dorado-metalico);
+      letter-spacing: 0.8px;
+      white-space: nowrap;
+    }
+
+    /* Payback Widget */
+    .payback-hero-widget {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(97, 18, 50, 0.15) 100%);
+      border: 1.5px solid rgba(16, 185, 129, 0.35);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    body.theme-light .payback-hero-widget {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(246, 239, 230, 0.9) 100%);
+    }
+    .payback-ring-box {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+    .payback-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .payback-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.1);
+      stroke-width: 6;
+    }
+    body.theme-light .payback-bg {
+      stroke: rgba(0, 0, 0, 0.1);
+    }
+    .payback-arc {
+      fill: none;
+      stroke: #10B981;
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .payback-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      line-height: 1;
+    }
+    .payback-center-text strong {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 900;
+      color: #10B981;
+      display: block;
+    }
+    .payback-center-text span {
+      font-size: 8px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      display: block;
+      margin-top: 2px;
+    }
+    .payback-info {
+      flex: 1;
+    }
+    .payback-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #10B981;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .payback-info h5 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin: 0 0 4px 0;
+    }
+    .payback-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin: 0;
     }
 
     /* ═════════════════════════════════════════════════════════════════
@@ -2739,6 +3107,12 @@
       .viz-card { padding: 18px 14px; }
       .donut-chart-wrap { flex-direction: column; text-align: center; }
       .solution-badges-grid { grid-template-columns: 1fr; }
+      .savings-donut-strip { flex-direction: column; text-align: center; }
+      .savings-cards-grid { grid-template-columns: 1fr; }
+      .capex-duel-grid { grid-template-columns: 1fr; gap: 12px; }
+      .duel-divider { flex-direction: row; }
+      .multiplier-tag { writing-mode: horizontal-tb; transform: none; }
+      .payback-hero-widget { flex-direction: column; text-align: center; }
       .identity-gallery-grid { grid-template-columns: 1fr; }
       .codice-grid { grid-template-columns: 1fr; }
       .codice-palette-grid { grid-template-columns: 1fr; }
@@ -3920,89 +4294,158 @@
           </p>
 
           <div class="finance-bars-grid">
-            <!-- Gráfica de Proporción de Ahorros -->
-            <div class="f-bar-group">
-              <span style="font-family:'Montserrat', sans-serif; font-size:13px; font-weight:800; color:var(--text-main); text-transform:uppercase; letter-spacing:0.5px;">
-                Distribución Proporcional del Ahorro ($1.36 MDP/año)
-              </span>
+            <!-- Panel Izquierdo: Desglose Proporcional del Ahorro Anual -->
+            <div class="savings-breakdown-card">
+              <div class="savings-card-header">
+                <span class="savings-kicker">DESGLOSE DEL AHORRO ANUAL PROYECTADO</span>
+                <h4 class="savings-title">Distribución del Ahorro ($1,368,684 MXN / año)</h4>
+              </div>
 
-              <!-- CFE Tarifa APBT -->
-              <div class="f-bar-row">
-                <div class="f-bar-meta">
-                  <span>1. Consumo Parásito CFE Evitado (353 luminarias)</span>
-                  <span class="amount">$898,684 MXN (65.7%)</span>
+              <!-- Visualizador: Donut SVG + Barra de Asignación Segmentada -->
+              <div class="savings-donut-strip">
+                <div class="savings-donut-wrap">
+                  <svg class="savings-donut-svg" viewBox="0 0 128 128">
+                    <!-- Segmento 1: CFE Consumo Parásito (65.7%) -->
+                    <circle class="donut-arc arc-cfe" cx="64" cy="64" r="54" stroke-dasharray="222.8 339.3" stroke-dashoffset="0"></circle>
+                    <!-- Segmento 2: Horas-Hombre Cuadrillas (23.0%) -->
+                    <circle class="donut-arc arc-crew" cx="64" cy="64" r="54" stroke-dasharray="78.1 339.3" stroke-dashoffset="-222.8"></circle>
+                    <!-- Segmento 3: Mantenimiento Canastilla (5.8%) -->
+                    <circle class="donut-arc arc-crane" cx="64" cy="64" r="54" stroke-dasharray="19.8 339.3" stroke-dashoffset="-300.9"></circle>
+                    <!-- Segmento 4: Combustible Diésel (5.5%) -->
+                    <circle class="donut-arc arc-fuel" cx="64" cy="64" r="54" stroke-dasharray="18.6 339.3" stroke-dashoffset="-320.7"></circle>
+                  </svg>
+                  <div class="savings-donut-center">
+                    <span class="donut-big-val">$1.37M</span>
+                    <span class="donut-sub-lbl">Ahorro / Año</span>
+                  </div>
                 </div>
-                <div class="bar-track" style="height:12px;">
-                  <div class="bar-fill success" style="width: 65.7%;"></div>
+
+                <!-- Barra de Asignación Segmentada (Stacked Bar) -->
+                <div class="stacked-bar-container">
+                  <div class="stacked-bar-track">
+                    <div class="stacked-segment seg-cfe" style="width: 65.7%;" title="Consumo CFE Evitado: 65.7%"></div>
+                    <div class="stacked-segment seg-crew" style="width: 23.0%;" title="Horas de Cuadrilla: 23.0%"></div>
+                    <div class="stacked-segment seg-crane" style="width: 5.8%;" title="Mantenimiento Canastilla: 5.8%"></div>
+                    <div class="stacked-segment seg-fuel" style="width: 5.5%;" title="Combustible Diésel: 5.5%"></div>
+                  </div>
+                  <div class="stacked-legend-row">
+                    <span class="stacked-key"><i class="key-dot dot-cfe"></i> CFE (65.7%)</span>
+                    <span class="stacked-key"><i class="key-dot dot-crew"></i> Cuadrillas (23.0%)</span>
+                    <span class="stacked-key"><i class="key-dot dot-crane"></i> Grúas (5.8%)</span>
+                    <span class="stacked-key"><i class="key-dot dot-fuel"></i> Diésel (5.5%)</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- Horas-Hombre Cuadrillas -->
-              <div class="f-bar-row">
-                <div class="f-bar-meta">
-                  <span>2. Horas-Hombre de Cuadrillas Recuperadas (900h)</span>
-                  <span class="amount">$315,000 MXN (23.0%)</span>
+              <!-- Tarjetas Métricas de Desglose (Grid 2x2) -->
+              <div class="savings-cards-grid">
+                <!-- Tarjeta 1: CFE Diurno -->
+                <div class="saving-item-tile item-cfe">
+                  <div class="tile-top">
+                    <div class="tile-icon-box">⚡</div>
+                    <span class="tile-pct-badge">65.7%</span>
+                  </div>
+                  <div class="tile-amount">$898,684 MXN</div>
+                  <div class="tile-name">Factura CFE Evitada</div>
+                  <p class="tile-desc">353 luminarias de vapor de sodio apagadas en horario diurno (tarifa APBT CFE).</p>
                 </div>
-                <div class="bar-track" style="height:12px;">
-                  <div class="bar-fill gold" style="width: 23.0%;"></div>
-                </div>
-              </div>
 
-              <!-- Mantenimiento Vehicular -->
-              <div class="f-bar-row">
-                <div class="f-bar-meta">
-                  <span>3. Mantenimiento Canastilla y Desgaste Vehicular</span>
-                  <span class="amount">$80,000 MXN (5.8%)</span>
+                <!-- Tarjeta 2: Horas-Hombre -->
+                <div class="saving-item-tile item-crew">
+                  <div class="tile-top">
+                    <div class="tile-icon-box">⏱️</div>
+                    <span class="tile-pct-badge">23.0%</span>
+                  </div>
+                  <div class="tile-amount">$315,000 MXN</div>
+                  <div class="tile-name">Horas de Cuadrilla</div>
+                  <p class="tile-desc">900 horas-hombre recuperadas al sustituir patrullaje ciego por despacho guiado.</p>
                 </div>
-                <div class="bar-track" style="height:12px;">
-                  <div class="bar-fill warning" style="width: 5.8%;"></div>
-                </div>
-              </div>
 
-              <!-- Diésel de Patrullaje -->
-              <div class="f-bar-row">
-                <div class="f-bar-meta">
-                  <span>4. Combustible Diésel Suprimido (10,500 km)</span>
-                  <span class="amount">$75,000 MXN (5.5%)</span>
+                <!-- Tarjeta 3: Mantenimiento Canastilla -->
+                <div class="saving-item-tile item-crane">
+                  <div class="tile-top">
+                    <div class="tile-icon-box">🔧</div>
+                    <span class="tile-pct-badge">5.8%</span>
+                  </div>
+                  <div class="tile-amount">$80,000 MXN</div>
+                  <div class="tile-name">Desgaste Mecánico</div>
+                  <p class="tile-desc">Menor desgaste en brazos hidráulicos al acudir con el repuesto exacto validado por IA.</p>
                 </div>
-                <div class="bar-track" style="height:12px;">
-                  <div class="bar-fill danger" style="width: 5.5%;"></div>
+
+                <!-- Tarjeta 4: Combustible Diésel -->
+                <div class="saving-item-tile item-fuel">
+                  <div class="tile-top">
+                    <div class="tile-icon-box">⛽</div>
+                    <span class="tile-pct-badge">5.5%</span>
+                  </div>
+                  <div class="tile-amount">$75,000 MXN</div>
+                  <div class="tile-name">Combustible Diésel</div>
+                  <p class="tile-desc">10,500 km suprimidos al año mediante enrutamiento logístico optimizado (Waze/GPS).</p>
                 </div>
               </div>
             </div>
 
-            <!-- Gráfica Comparativa CAPEX -->
-            <div class="f-bar-group" style="background:rgba(0,0,0,0.15); padding:16px; border-radius:10px; border:1px solid var(--border-subtle);">
-              <span style="font-family:'Montserrat', sans-serif; font-size:13px; font-weight:800; color:var(--text-main); text-transform:uppercase; letter-spacing:0.5px;">
-                Comparativa de Inversión Inicial (CAPEX)
-              </span>
-
-              <!-- Sensores IoT Físicos -->
-              <div class="f-bar-row" style="margin-top:6px;">
-                <div class="f-bar-meta">
-                  <span style="color:#DC2626;">Sensores IoT en Postes</span>
-                  <span style="font-family:'JetBrains Mono', monospace; color:#DC2626; font-weight:800;">$23,562,000 MXN (100%)</span>
-                </div>
-                <div class="bar-track" style="height:14px;">
-                  <div class="bar-fill danger" style="width: 100%;"></div>
-                </div>
-                <span style="font-size:10.5px; color:var(--text-muted);">$2,000 MXN c/u en 11,781 postes + riesgo de vandalismo</span>
+            <!-- Panel Derecho: Comparativa de Capital y Retorno de Inversión -->
+            <div class="capex-contrast-card">
+              <div class="capex-card-header">
+                <span class="capex-kicker">EFICIENCIA DE CAPITAL · CAPEX</span>
+                <h4 class="capex-title">Hardware Físico vs Plataforma Kuche</h4>
               </div>
 
-              <!-- Kuche Software IA -->
-              <div class="f-bar-row" style="margin-top:10px;">
-                <div class="f-bar-meta">
-                  <span style="color:var(--clr-verde-agave);">Plataforma Kuche (IA + PWA)</span>
-                  <span style="font-family:'JetBrains Mono', monospace; color:var(--clr-verde-agave); font-weight:800;">$500,000 MXN (2.1%)</span>
+              <!-- Duelo Visual: $23.56 MDP vs $500,000 MXN -->
+              <div class="capex-duel-grid">
+                <!-- Opción Tradicional: Hardware IoT -->
+                <div class="duel-col duel-legacy">
+                  <span class="duel-tag danger">ESQUEMA HARDWARE IoT</span>
+                  <div class="duel-price danger">$23.56 MDP</div>
+                  <div class="duel-concept">$2,000 MXN c/u en 11,781 postes</div>
+                  <ul class="duel-features">
+                    <li>❌ Inversión millonaria prohibitiva</li>
+                    <li>❌ Riesgo de robo y vandalismo</li>
+                    <li>❌ Mantenimiento físico en alturas</li>
+                    <li>❌ Retorno superior a 8 años</li>
+                  </ul>
                 </div>
-                <div class="bar-track" style="height:14px;">
-                  <div class="bar-fill success" style="width: 2.1%; min-width:8px;"></div>
+
+                <!-- Divisor / Multiplicador VS -->
+                <div class="duel-divider">
+                  <span class="duel-vs-circle">VS</span>
+                  <span class="multiplier-tag">47× MENOR COSTO</span>
                 </div>
-                <span style="font-size:10.5px; color:var(--text-muted);">Ahorro de $23.06 MDP (97.9%) sin intervenir físicamente los postes</span>
+
+                <!-- Opción KUCHE: Software Inteligente -->
+                <div class="duel-col duel-kuche">
+                  <span class="duel-tag success">MODELO KUCHE (IA + PWA)</span>
+                  <div class="duel-price success">$500,000 MXN</div>
+                  <div class="duel-concept">Software ágil para 11,781 postes</div>
+                  <ul class="duel-features">
+                    <li>✅ Ahorro de capital de <strong>97.9%</strong></li>
+                    <li>✅ Cero sensores expuestos en postes</li>
+                    <li>✅ Adopción ciudadana inmediata (QR)</li>
+                    <li>✅ Soberanía y escalabilidad estatal</li>
+                  </ul>
+                </div>
               </div>
 
-              <div style="margin-top:14px; padding:10px 12px; background:rgba(46,107,79,0.15); border-radius:6px; border:1px solid rgba(46,107,79,0.3); font-size:11.5px; color:var(--text-main);">
-                <strong>Retorno Acelerado (Payback):</strong> La inversión se amortiza completamente en solo <strong>3.1 a 4.4 meses</strong>, liberando recursos inmediatos para obra pública.
+              <!-- Widget de Retorno Acelerado (Payback en 3.5 meses) -->
+              <div class="payback-hero-widget">
+                <div class="payback-ring-box">
+                  <svg class="payback-svg" viewBox="0 0 64 64">
+                    <circle class="payback-bg" cx="32" cy="32" r="26"></circle>
+                    <circle class="payback-arc" cx="32" cy="32" r="26" stroke-dasharray="163.4 163.4" stroke-dashoffset="116"></circle>
+                  </svg>
+                  <div class="payback-center-text">
+                    <strong>3.5</strong>
+                    <span>meses</span>
+                  </div>
+                </div>
+                <div class="payback-info">
+                  <span class="payback-kicker">RETORNO ACELERADO DE INVERSIÓN</span>
+                  <h5>Amortización Total en solo 105 Días</h5>
+                  <p>
+                    Con un ahorro de <strong>$114,057 MXN al mes</strong> ($1.36 MDP anual), la inversión se liquida por completo en el primer tercio del año, liberando recursos inmediatos para obra pública municipal.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
