@@ -1434,6 +1434,398 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
+       PUEBLA BRILLA SHOWCASE & ANÁLISIS COMPARATIVO
+       ═════════════════════════════════════════════════════════════════ */
+    .puebla-brilla-showcase {
+      margin-top: 36px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 32px;
+      align-items: center;
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .puebla-brilla-showcase:hover {
+      border-color: var(--clr-dorado-metalico);
+      box-shadow: var(--shadow-lg);
+    }
+    .pb-media-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pb-img-frame {
+      position: relative;
+      background: #FFFFFF;
+      border: 2px solid rgba(0, 0, 0, 0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.16);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.theme-dark .pb-img-frame {
+      background: #0E161D;
+      border-color: rgba(227, 180, 72, 0.25);
+    }
+    .pb-img-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .pb-store-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: rgba(97, 18, 50, 0.06);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    body.theme-dark .pb-store-meta {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .pb-meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .pb-rating-badge {
+      background: #FEE2E2;
+      color: #991B1B;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    body.theme-dark .pb-rating-badge {
+      background: rgba(239, 68, 68, 0.2);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .pb-content h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 21px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pb-content p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .pb-contrast-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12.5px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+    .pb-contrast-table th {
+      background: rgba(97, 18, 50, 0.12);
+      color: var(--text-main);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    body.theme-dark .pb-contrast-table th {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .pb-contrast-table td {
+      padding: 9px 12px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      vertical-align: middle;
+    }
+    .pb-contrast-table tr:hover td {
+      background: rgba(227, 180, 72, 0.04);
+    }
+    .pb-fail {
+      color: #DC2626;
+      font-weight: 600;
+    }
+    body.theme-dark .pb-fail { color: #F87171; }
+    .pb-win {
+      color: #059669;
+      font-weight: 700;
+    }
+    body.theme-dark .pb-win { color: #34D399; }
+
+    /* ═════════════════════════════════════════════════════════════════
+       DATA VISUALIZATIONS (GRÁFICAS DE DATOS E INDICADORES)
+       ═════════════════════════════════════════════════════════════════ */
+    .data-viz-strip {
+      margin-top: 40px;
+    }
+    .data-viz-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .viz-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .viz-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--clr-dorado-metalico);
+      box-shadow: var(--shadow-md);
+    }
+    .viz-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--clr-guinda-primario);
+      margin-bottom: 6px;
+      display: block;
+    }
+    body.theme-dark .viz-kicker { color: var(--clr-dorado-arena); }
+    .viz-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.35;
+    }
+    
+    /* Donut Chart SVG Component */
+    .donut-chart-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .donut-svg-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      flex-shrink: 0;
+    }
+    .donut-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .donut-bg {
+      fill: none;
+      stroke: rgba(220, 38, 38, 0.25);
+      stroke-width: 18;
+    }
+    body.theme-dark .donut-bg {
+      stroke: rgba(239, 68, 68, 0.3);
+    }
+    .donut-segment {
+      fill: none;
+      stroke: var(--clr-verde-agave);
+      stroke-width: 18;
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 185.7;
+      transition: stroke-dashoffset 1s ease;
+    }
+    body.theme-dark .donut-segment {
+      stroke: var(--clr-dorado-arena);
+    }
+    .donut-center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .donut-center-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-main);
+      line-height: 1;
+    }
+    .donut-center-lbl {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11.5px;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-dot.green { background: var(--clr-verde-agave); }
+    body.theme-dark .legend-dot.green { background: var(--clr-dorado-arena); }
+    .legend-dot.red { background: #DC2626; }
+    body.theme-dark .legend-dot.red { background: #EF4444; }
+
+    /* Bar Charts Component */
+    .bar-chart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      margin-bottom: 14px;
+    }
+    .bar-item-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 5px;
+    }
+    .bar-val-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--clr-guinda-primario);
+    }
+    body.theme-dark .bar-val-badge { color: var(--clr-dorado-arena); }
+    .bar-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    body.theme-dark .bar-track {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+    .bar-fill.danger {
+      background: linear-gradient(90deg, #DC2626, #EF4444);
+    }
+    .bar-fill.warning {
+      background: linear-gradient(90deg, var(--clr-arcilla-naranja), #F97316);
+    }
+    .bar-fill.gold {
+      background: linear-gradient(90deg, #D97706, var(--clr-dorado-arena));
+    }
+    .bar-fill.success {
+      background: linear-gradient(90deg, var(--clr-verde-agave), #10B981);
+    }
+    .bar-fill.primary {
+      background: linear-gradient(90deg, var(--clr-guinda-primario), var(--clr-guinda-claro));
+    }
+    body.theme-dark .bar-fill.primary {
+      background: linear-gradient(90deg, var(--clr-dorado-metalico), var(--clr-dorado-arena));
+    }
+    .viz-caption {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      border-top: 1px dashed var(--border-subtle);
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    /* Financial Data Viz Bars in #economia */
+    .finance-viz-panel {
+      margin-top: 26px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 26px;
+    }
+    .finance-viz-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .finance-bars-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 28px;
+      margin-top: 20px;
+    }
+    .f-bar-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .f-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .f-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .f-bar-meta span.amount {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--clr-verde-agave);
+    }
+    body.theme-dark .f-bar-meta span.amount {
+      color: #34D399;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
        FOOTER INSTITUCIONAL
        ═════════════════════════════════════════════════════════════════ */
     .site-footer {
@@ -1516,6 +1908,9 @@
       .finance-metrics-strip { grid-template-columns: repeat(2, 1fr); }
       .finance-breakdown-grid { grid-template-columns: 1fr; }
       .legal-grid { grid-template-columns: repeat(2, 1fr); }
+      .puebla-brilla-showcase { grid-template-columns: 1fr; gap: 22px; }
+      .data-viz-grid { grid-template-columns: 1fr; }
+      .finance-bars-grid { grid-template-columns: 1fr; gap: 20px; }
       .footer-top { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
@@ -1533,6 +1928,9 @@
       .mentor-card { padding: 18px 16px; }
       .demo-console-card { padding: 20px 16px; }
       .etymology-card { padding: 24px 18px; }
+      .puebla-brilla-showcase { padding: 18px 14px; }
+      .viz-card { padding: 18px 14px; }
+      .donut-chart-wrap { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
@@ -1928,6 +2326,253 @@
             </p>
           </div>
         </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             SHOWCASE COMPARATIVO: PUEBLA BRILLA (EVIDENCIA PLAY STORE)
+             ═══════════════════════════════════════════════════════════ -->
+        <div class="puebla-brilla-showcase">
+          <div class="pb-media-wrap">
+            <div class="pb-img-frame">
+              <img src="./fotos/puebla_brilla.png" alt="Captura de Puebla Brilla en Google Play Store - IT Citelum México" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
+            </div>
+            <div class="pb-store-meta">
+              <span class="pb-meta-pill">
+                <svg class="icon-svg" style="width:14px; height:14px; color:#E3B448;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Calificación Play Store:</span>
+                <span class="pb-rating-badge">2.9 ★ (31 opiniones)</span>
+              </span>
+              <span class="pb-meta-pill">
+                <svg class="icon-svg" style="width:14px; height:14px; color:#2E6B4F;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Descargas: <strong>5 K+</strong></span>
+              </span>
+              <span class="pb-meta-pill" style="font-size:11px; color:var(--text-muted);">
+                Desarrollador: <strong>IT Citelum México</strong> · Puebla Gobierno de la Ciudad
+              </span>
+            </div>
+          </div>
+
+          <div class="pb-content">
+            <span class="section-kicker" style="margin-bottom:6px;">EVIDENCIA DE ADOPCIÓN Y LIMITACIONES REALES</span>
+            <h3>Puebla Brilla: Un Modelo a Medias que Evidencia la Urgencia de Kuche</h3>
+            <p>
+              La captura real de Google Play Store expone el límite de los esquemas tradicionales de concesión: una aplicación nativa que exige descarga obligatoria, apenas suma 5 mil descargas en una metrópoli de más de 1.7 millones de habitantes, y acumula una <strong>calificación reprobatoria de 2.9 sobre 5</strong> debido a fallas de geolocalización, falta de confirmación técnica y desatención de reportes.
+            </p>
+
+            <table class="pb-contrast-table">
+              <thead>
+                <tr>
+                  <th>Criterio Operativo</th>
+                  <th>App Actual: Puebla Brilla</th>
+                  <th>Plataforma Kuche (IA + PWA)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Formato de Acceso</strong></td>
+                  <td class="pb-fail">Exige instalar app nativa (5K descargas)</td>
+                  <td class="pb-win">Web PWA instantánea (cero descargas, QR o link)</td>
+                </tr>
+                <tr>
+                  <td><strong>Validación con IA</strong></td>
+                  <td class="pb-fail">Sin visión artificial; formulario de texto ciego</td>
+                  <td class="pb-win">Modelo YOLO integrado: detecta fotocelda y cabezal en 2s</td>
+                </tr>
+                <tr>
+                  <td><strong>Georreferenciación</strong></td>
+                  <td class="pb-fail">Imprecisa; cuadrillas no encuentran el poste</td>
+                  <td class="pb-win">GPS submétrico + geocercas municipales y padrón CFE</td>
+                </tr>
+                <tr>
+                  <td><strong>Alcance Territorial</strong></td>
+                  <td class="pb-fail">Exclusiva de Puebla Capital</td>
+                  <td class="pb-win">Estándar unificado para los 217 municipios del Estado</td>
+                </tr>
+                <tr>
+                  <td><strong>Trazabilidad y Folio</strong></td>
+                  <td class="pb-fail">Reportes se pierden; sin auditoría abierta</td>
+                  <td class="pb-win">Folio cívico descargable, auditoría ciudadana y Cédula PDF</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             VISUALIZACIÓN GRÁFICA DE DATOS ESTADÍSTICOS Y PROBLEMÁTICA
+             ═══════════════════════════════════════════════════════════ -->
+        <div class="data-viz-strip">
+          <div class="section-header" style="margin-bottom:24px; text-align:left;">
+            <span class="section-kicker">MÉTRICAS Y EVIDENCIA CUANTITATIVA</span>
+            <h3 style="font-family:'Montserrat', sans-serif; font-size:20px; font-weight:800; color:var(--text-main);">
+              Visualización Gráfica: Datos Duros del Alumbrado en Puebla
+            </h3>
+            <p style="font-size:13.5px; color:var(--text-muted); max-width:750px;">
+              Los propios datos oficiales del INEGI y del Plan Municipal de Desarrollo demuestran gráficamente el colapso de los métodos convencionales y la urgencia de modernización.
+            </p>
+          </div>
+
+          <div class="data-viz-grid">
+            <!-- Gráfica 1: Donut INEGI ENCIG 2025 -->
+            <div class="viz-card">
+              <div>
+                <span class="viz-kicker">INEGI · ENCIG 2025</span>
+                <h4 class="viz-title">Satisfacción Ciudadana con el Alumbrado en Puebla</h4>
+                
+                <div class="donut-chart-wrap">
+                  <div class="donut-svg-container">
+                    <svg class="donut-svg" viewBox="0 0 100 100">
+                      <!-- Fondo completo rojo/insatisfechos (65.7%) -->
+                      <circle class="donut-bg" cx="50" cy="50" r="45"></circle>
+                      <!-- Segmento satisfechos (34.3% -> stroke-dashoffset = 185.7) -->
+                      <circle class="donut-segment" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <div class="donut-center-text">
+                      <div class="donut-center-pct">34.3%</div>
+                      <div class="donut-center-lbl">Satisfechos</div>
+                    </div>
+                  </div>
+
+                  <div class="donut-legend">
+                    <div class="legend-row">
+                      <span class="legend-dot green"></span>
+                      <div>
+                        <strong style="color:var(--text-main);">34.3%</strong>
+                        <span style="color:var(--text-muted); display:block; font-size:10.5px;">Población satisfecha con el alumbrado</span>
+                      </div>
+                    </div>
+                    <div class="legend-row">
+                      <span class="legend-dot red"></span>
+                      <div>
+                        <strong style="color:#DC2626;">65.7%</strong>
+                        <span style="color:var(--text-muted); display:block; font-size:10.5px;">Casi 7 de cada 10 insatisfechos</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="viz-caption">
+                <strong>Fuente:</strong> Encuesta Nacional de Calidad e Impacto Gubernamental (ENCIG 2025, INEGI). Puebla se ubica entre los estados con mayor rezago de percepción del servicio.
+              </div>
+            </div>
+
+            <!-- Gráfica 2: Desatención por Juntas Auxiliares (Plan Municipal 2024-2027) -->
+            <div class="viz-card">
+              <div>
+                <span class="viz-kicker">PLAN MUNICIPAL 2024-2027</span>
+                <h4 class="viz-title">Frentes de Manzana sin Alumbrado en Zonas Críticas</h4>
+
+                <div class="bar-chart-list">
+                  <!-- Santo Tomás Chautla -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Santo Tomás Chautla</span>
+                      <span class="bar-val-badge">66.0% sin luz</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill danger" style="width: 66%;"></div>
+                    </div>
+                  </div>
+
+                  <!-- San Miguel Canoa -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>San Miguel Canoa</span>
+                      <span class="bar-val-badge">60.0% sin luz</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill danger" style="width: 60%;"></div>
+                    </div>
+                  </div>
+
+                  <!-- Promedio Municipal de Puebla -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Promedio Capital Puebla</span>
+                      <span class="bar-val-badge">40.0% (4 de cada 10)</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill warning" style="width: 40%;"></div>
+                    </div>
+                  </div>
+
+                  <!-- San Pedro Cholula (Luminarias diurnas piloto) -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Cholula: Falla Fotocelda</span>
+                      <span class="bar-val-badge">353 encendidas día</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill gold" style="width: 30%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="viz-caption">
+                <strong>Diagnóstico Territorial:</strong> La periferia y juntas auxiliares concentran hasta dos tercios de oscuridad por falta de patrullaje focalizado.
+              </div>
+            </div>
+
+            <!-- Gráfica 3: Embudo de Adopción de Reportes (Puebla Capital) -->
+            <div class="viz-card">
+              <div>
+                <span class="viz-kicker">BRECHA DE DIGITALIZACIÓN</span>
+                <h4 class="viz-title">Embudo de Reportes: Puebla Brilla vs. Demanda Real</h4>
+
+                <div class="bar-chart-list">
+                  <!-- Quejas reales estimadas -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Quejas Ciudadanas Reales</span>
+                      <span class="bar-val-badge" style="color:var(--text-main);">~1,500 / mes (100%)</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill primary" style="width: 100%;"></div>
+                    </div>
+                  </div>
+
+                  <!-- Puebla Brilla -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Captadas por Puebla Brilla</span>
+                      <span class="bar-val-badge" style="color:#DC2626;">~150 / mes (10%)</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill danger" style="width: 10%;"></div>
+                    </div>
+                  </div>
+
+                  <!-- Reportes sin registrar -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Brecha Desatendida / Sin Canal</span>
+                      <span class="bar-val-badge" style="color:var(--clr-arcilla-naranja);">~1,350 / mes (90%)</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill warning" style="width: 90%;"></div>
+                    </div>
+                  </div>
+
+                  <!-- Eficiencia Kuche con IA -->
+                  <div>
+                    <div class="bar-item-info">
+                      <span>Meta Kuche: Trazabilidad Digital</span>
+                      <span class="bar-val-badge" style="color:var(--clr-verde-agave);">100% Cédula en &lt;2 min</span>
+                    </div>
+                    <div class="bar-track">
+                      <div class="bar-fill success" style="width: 100%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="viz-caption">
+                <strong>Efecto Embudo:</strong> 9 de cada 10 quejas se diluyen en llamadas a conmutador sin folio georreferenciado o trámites burocráticos presenciales.
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2278,6 +2923,109 @@
               <div class="val">$1.41 MXN</div>
               <div class="desc">
                 <strong>Modelo SaaS al mes por lámpara:</strong> Costo operativo anual de $200k MXN ÷ 11,781 luminarias = $16.97 MXN al año por punto de luz (vs $60-$120 de firmas internacionales).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             VISUALIZACIÓN GRÁFICA DEL MODELO FINANCIERO Y AHORROS
+             ═══════════════════════════════════════════════════════════ -->
+        <div class="finance-viz-panel">
+          <div class="finance-viz-title">
+            <span>Visualización Gráfica: Desglose del Ahorro Anual y Eficiencia de Capital</span>
+            <span style="font-size:12px; font-weight:700; color:var(--clr-verde-agave); background:rgba(46,107,79,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(46,107,79,0.25);">
+              Polígono Piloto: 11,781 Luminarias (Cholula)
+            </span>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">
+            Representación proporcional de cómo se integra el ahorro anual proyectado de <strong>$1,368,684 MXN</strong> y el contraste de capital inicial frente a la instalación masiva de sensores físicos.
+          </p>
+
+          <div class="finance-bars-grid">
+            <!-- Gráfica de Proporción de Ahorros -->
+            <div class="f-bar-group">
+              <span style="font-family:'Montserrat', sans-serif; font-size:13px; font-weight:800; color:var(--text-main); text-transform:uppercase; letter-spacing:0.5px;">
+                Distribución Proporcional del Ahorro ($1.36 MDP/año)
+              </span>
+
+              <!-- CFE Tarifa APBT -->
+              <div class="f-bar-row">
+                <div class="f-bar-meta">
+                  <span>1. Consumo Parásito CFE Evitado (353 luminarias)</span>
+                  <span class="amount">$898,684 MXN (65.7%)</span>
+                </div>
+                <div class="bar-track" style="height:12px;">
+                  <div class="bar-fill success" style="width: 65.7%;"></div>
+                </div>
+              </div>
+
+              <!-- Horas-Hombre Cuadrillas -->
+              <div class="f-bar-row">
+                <div class="f-bar-meta">
+                  <span>2. Horas-Hombre de Cuadrillas Recuperadas (900h)</span>
+                  <span class="amount">$315,000 MXN (23.0%)</span>
+                </div>
+                <div class="bar-track" style="height:12px;">
+                  <div class="bar-fill gold" style="width: 23.0%;"></div>
+                </div>
+              </div>
+
+              <!-- Mantenimiento Vehicular -->
+              <div class="f-bar-row">
+                <div class="f-bar-meta">
+                  <span>3. Mantenimiento Canastilla y Desgaste Vehicular</span>
+                  <span class="amount">$80,000 MXN (5.8%)</span>
+                </div>
+                <div class="bar-track" style="height:12px;">
+                  <div class="bar-fill warning" style="width: 5.8%;"></div>
+                </div>
+              </div>
+
+              <!-- Diésel de Patrullaje -->
+              <div class="f-bar-row">
+                <div class="f-bar-meta">
+                  <span>4. Combustible Diésel Suprimido (10,500 km)</span>
+                  <span class="amount">$75,000 MXN (5.5%)</span>
+                </div>
+                <div class="bar-track" style="height:12px;">
+                  <div class="bar-fill danger" style="width: 5.5%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gráfica Comparativa CAPEX -->
+            <div class="f-bar-group" style="background:rgba(0,0,0,0.15); padding:16px; border-radius:10px; border:1px solid var(--border-subtle);">
+              <span style="font-family:'Montserrat', sans-serif; font-size:13px; font-weight:800; color:var(--text-main); text-transform:uppercase; letter-spacing:0.5px;">
+                Comparativa de Inversión Inicial (CAPEX)
+              </span>
+
+              <!-- Sensores IoT Físicos -->
+              <div class="f-bar-row" style="margin-top:6px;">
+                <div class="f-bar-meta">
+                  <span style="color:#DC2626;">Sensores IoT en Postes</span>
+                  <span style="font-family:'JetBrains Mono', monospace; color:#DC2626; font-weight:800;">$23,562,000 MXN (100%)</span>
+                </div>
+                <div class="bar-track" style="height:14px;">
+                  <div class="bar-fill danger" style="width: 100%;"></div>
+                </div>
+                <span style="font-size:10.5px; color:var(--text-muted);">$2,000 MXN c/u en 11,781 postes + riesgo de vandalismo</span>
+              </div>
+
+              <!-- Kuche Software IA -->
+              <div class="f-bar-row" style="margin-top:10px;">
+                <div class="f-bar-meta">
+                  <span style="color:var(--clr-verde-agave);">Plataforma Kuche (IA + PWA)</span>
+                  <span style="font-family:'JetBrains Mono', monospace; color:var(--clr-verde-agave); font-weight:800;">$500,000 MXN (2.1%)</span>
+                </div>
+                <div class="bar-track" style="height:14px;">
+                  <div class="bar-fill success" style="width: 2.1%; min-width:8px;"></div>
+                </div>
+                <span style="font-size:10.5px; color:var(--text-muted);">Ahorro de $23.06 MDP (97.9%) sin intervenir físicamente los postes</span>
+              </div>
+
+              <div style="margin-top:14px; padding:10px 12px; background:rgba(46,107,79,0.15); border-radius:6px; border:1px solid rgba(46,107,79,0.3); font-size:11.5px; color:var(--text-main);">
+                <strong>Retorno Acelerado (Payback):</strong> La inversión se amortiza completamente en solo <strong>3.1 a 4.4 meses</strong>, liberando recursos inmediatos para obra pública.
               </div>
             </div>
           </div>
