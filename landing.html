@@ -1951,106 +1951,419 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       GALERÍA DE IDENTIDAD VISUAL Y PATRIMONIO POPOLOCA (#origen-nombre)
+       BANNER DE REFERENCIA A CÓDICES EN #origen-nombre
        ═════════════════════════════════════════════════════════════════ */
-    .visual-identity-showcase {
-      margin-top: 32px;
+    .codice-ref-banner {
+      margin-top: 28px;
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.45) 0%, rgba(13, 9, 12, 0.75) 100%);
+      border: 1.5px solid var(--clr-dorado-metalico);
+      border-radius: 12px;
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    body.theme-light .codice-ref-banner {
+      background: linear-gradient(135deg, #FDF9F3 0%, #F5ECDD 100%);
+      border-color: var(--clr-dorado-metalico);
+    }
+    .codice-ref-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 10px;
+      background: rgba(188, 149, 92, 0.15);
+      border: 1px solid var(--clr-dorado-metalico);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--clr-dorado-arena);
+    }
+    .codice-ref-content {
+      flex: 1;
+    }
+    .codice-ref-content h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 5px;
+    }
+    .codice-ref-content p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .btn-codice-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--clr-guinda-profundo);
+      color: #FFFFFF;
+      border: 1px solid var(--clr-dorado-metalico);
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-codice-ref:hover {
+      background: var(--clr-guinda-primario);
+      transform: translateY(-2px);
+      color: var(--clr-dorado-brillo);
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       SECCIÓN: IDENTIDAD VISUAL DEL PROYECTO (#identidad-visual)
+       Inspiración Directa en los Códices Popolocas de Puebla
+       ═════════════════════════════════════════════════════════════════ */
+    .codice-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+      margin-top: 36px;
+    }
+    .codice-card {
       background: var(--bg-card);
       border: 1.5px solid var(--border-subtle);
       border-radius: 14px;
-      padding: 28px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .codice-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--clr-dorado-metalico);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    }
+    body.theme-light .codice-card:hover {
+      box-shadow: 0 12px 28px rgba(97, 18, 50, 0.12);
+    }
+    .codice-card-media {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: radial-gradient(circle at center, rgba(230, 209, 148, 0.14) 0%, rgba(97, 18, 50, 0.2) 70%, #0E080C 100%);
+      border-bottom: 1.5px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      overflow: hidden;
+    }
+    body.theme-light .codice-card-media {
+      background: radial-gradient(circle at center, #FFFFFF 0%, #F5EDE0 100%);
+    }
+    .codice-card-media img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+      transition: transform 0.35s ease;
+    }
+    .codice-card:hover .codice-card-media img {
+      transform: scale(1.06);
+    }
+    .codice-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(14, 8, 12, 0.88);
+      color: var(--clr-dorado-arena);
+      border: 1px solid var(--clr-dorado-metalico);
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+    .codice-zoom-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      background: rgba(14, 8, 12, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s, border-color 0.2s;
+      z-index: 2;
+    }
+    .codice-zoom-btn:hover {
+      background: var(--clr-guinda-profundo);
+      border-color: var(--clr-dorado-metalico);
+      color: var(--clr-dorado-arena);
+    }
+    .codice-zoom-btn .icon-svg {
+      width: 11px;
+      height: 11px;
+    }
+    .codice-card-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+    .codice-glyph-name {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+    }
+    .codice-subtag {
+      display: block;
+      font-size: 9.5px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--clr-dorado-metalico);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 3px;
+    }
+    .codice-glyph-name h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .codice-detail-block {
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .codice-detail-block h4 {
+      font-size: 10.5px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .codice-detail-block p {
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .codice-detail-block.highlighted {
+      background: rgba(188, 149, 92, 0.08);
+      border-left: 3px solid var(--clr-dorado-metalico);
+      padding: 10px 12px;
+      border-radius: 0 6px 6px 0;
+    }
+    .codice-detail-block.highlighted h4 {
+      color: var(--clr-dorado-metalico);
+    }
+    body.theme-light .codice-detail-block.highlighted {
+      background: rgba(155, 34, 71, 0.05);
+      border-left-color: var(--clr-guinda-primario);
+    }
+    body.theme-light .codice-detail-block.highlighted h4 {
+      color: var(--clr-guinda-primario);
+    }
+    .codice-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: auto;
+      padding-top: 10px;
+    }
+    .codice-pill {
+      font-size: 9.5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    /* Muestrario de Paleta Cromática */
+    .codice-palette-showcase {
+      margin-top: 48px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 32px 28px;
       box-shadow: var(--shadow-sm);
     }
-    .identity-header {
-      margin-bottom: 22px;
+    .palette-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 26px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 20px;
     }
-    .identity-title {
+    .palette-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--clr-dorado-metalico);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .palette-title {
       font-family: 'Montserrat', sans-serif;
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 900;
       color: var(--text-main);
-      margin-bottom: 8px;
+      margin: 0;
     }
-    .identity-desc {
-      font-size: 13.5px;
+    .palette-desc {
+      font-size: 13px;
       color: var(--text-muted);
       line-height: 1.55;
-      max-width: 820px;
+      max-width: 580px;
+      margin: 0;
     }
-    .identity-gallery-grid {
+    .codice-palette-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
-    .identity-card {
-      background: rgba(0, 0, 0, 0.2);
+    .swatch-card {
+      background: var(--bg-card-subtle);
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      transition: transform 0.2s, border-color 0.2s;
     }
-    body.theme-light .identity-card {
-      background: #FFFFFF;
-    }
-    .identity-card:hover {
-      transform: translateY(-3px);
+    .swatch-card:hover {
+      transform: translateY(-2px);
       border-color: var(--clr-dorado-metalico);
-      box-shadow: var(--shadow-md);
     }
-    .identity-img-wrap {
-      position: relative;
+    .swatch-color-box {
+      height: 72px;
       width: 100%;
-      height: 160px;
-      background: #0E161D;
-      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 12px;
     }
-    .identity-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.35s ease;
-    }
-    .identity-card:hover .identity-img-wrap img {
-      transform: scale(1.06);
-    }
-    .identity-tag {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(13, 9, 12, 0.88);
-      color: var(--clr-dorado-arena);
-      border: 1px solid var(--clr-dorado-metalico);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      padding: 3px 7px;
-      border-radius: 4px;
-      text-transform: uppercase;
+    .swatch-hex {
       font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 2px 6px;
+      border-radius: 4px;
       backdrop-filter: blur(4px);
     }
-    .identity-body {
-      padding: 14px;
+    .swatch-info {
+      padding: 14px 14px 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      flex-grow: 1;
     }
-    .identity-body h4 {
+    .swatch-info h4 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--text-main);
       margin: 0;
     }
-    .identity-body p {
-      font-size: 11.5px;
+    .swatch-origin {
+      font-size: 11px;
       color: var(--text-muted);
       line-height: 1.45;
       margin: 0;
+    }
+    .swatch-usage {
+      font-size: 11px;
+      color: var(--text-light);
+      line-height: 1.45;
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-subtle);
+    }
+    .swatch-usage strong {
+      color: var(--clr-dorado-metalico);
+    }
+    body.theme-light .swatch-usage strong {
+      color: var(--clr-guinda-primario);
+    }
+
+    /* Manifiesto de Identidad */
+    .codice-manifesto-card {
+      margin-top: 28px;
+      background: linear-gradient(135deg, rgba(97, 18, 50, 0.45) 0%, rgba(13, 44, 84, 0.35) 100%);
+      border: 1.5px solid var(--clr-dorado-metalico);
+      border-radius: 14px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    body.theme-light .codice-manifesto-card {
+      background: linear-gradient(135deg, #FBF4E8 0%, #F5ECDD 100%);
+      border-color: var(--clr-dorado-metalico);
+    }
+    .manifesto-icon-box {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      border-radius: 12px;
+      background: var(--clr-guinda-profundo);
+      border: 1.5px solid var(--clr-dorado-metalico);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--clr-dorado-arena);
+      box-shadow: var(--shadow-sm);
+    }
+    .manifesto-icon-box .icon-svg {
+      width: 28px;
+      height: 28px;
+    }
+    .manifesto-text {
+      flex: 1;
+    }
+    .manifesto-text h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin: 0 0 8px 0;
+    }
+    .manifesto-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0 0 12px 0;
+    }
+    .manifesto-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--clr-dorado-metalico);
+      font-weight: 700;
     }
 
     /* ═════════════════════════════════════════════════════════════════
@@ -2284,6 +2597,10 @@
       .data-viz-grid { grid-template-columns: 1fr; }
       .finance-bars-grid { grid-template-columns: 1fr; gap: 20px; }
       .identity-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .codice-grid { grid-template-columns: repeat(2, 1fr); }
+      .codice-palette-grid { grid-template-columns: repeat(2, 1fr); }
+      .palette-header { flex-direction: column; }
+      .codice-manifesto-card { flex-direction: column; }
       .footer-top { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
@@ -2305,6 +2622,10 @@
       .viz-card { padding: 18px 14px; }
       .donut-chart-wrap { flex-direction: column; text-align: center; }
       .identity-gallery-grid { grid-template-columns: 1fr; }
+      .codice-grid { grid-template-columns: 1fr; }
+      .codice-palette-grid { grid-template-columns: 1fr; }
+      .codice-card-media { height: 190px; }
+      .codice-ref-banner { flex-direction: column; text-align: center; }
       .mockup-viewport { min-height: 280px; max-height: 330px; padding: 10px; }
       .mockup-viewport img { max-height: 290px; }
     }
@@ -2342,6 +2663,7 @@
               <li class="nav-dropdown-item"><a href="#oportunidades">Oportunidades</a></li>
               <li class="nav-dropdown-item"><a href="#economia">Modelo Económico</a></li>
               <li class="nav-dropdown-item"><a href="#marco-legal">Marco Legal</a></li>
+              <li class="nav-dropdown-item"><a href="#identidad-visual">Identidad Visual</a></li>
             </ul>
           </li>
 
@@ -2349,6 +2671,7 @@
           <li class="mobile-only-link"><a href="#oportunidades" class="nav-link">Oportunidades</a></li>
           <li class="mobile-only-link"><a href="#economia" class="nav-link">Modelo Económico</a></li>
           <li class="mobile-only-link"><a href="#marco-legal" class="nav-link">Marco Legal</a></li>
+          <li class="mobile-only-link"><a href="#identidad-visual" class="nav-link">Identidad Visual</a></li>
           <li class="mobile-only-link"><a href="https://agenciadeenergia.puebla.gob.mx/concurso-electrohack" target="_blank" rel="noopener noreferrer" class="nav-link">Convocatoria ElectroHack 2026</a></li>
         </ul>
       </nav>
@@ -2518,75 +2841,21 @@
           </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════
-             IDENTIDAD VISUAL Y RAÍCES CULTURALES POPOLOCAS (NGIIGUA)
-             ═══════════════════════════════════════════════════════════ -->
-        <div class="visual-identity-showcase">
-          <div class="identity-header">
-            <span class="section-kicker">HERENCIA CULTURAL Y LENGUAJE VISUAL</span>
-            <h3 class="identity-title">Inspiración e Identidad Visual del Proyecto Kuche</h3>
-            <p class="identity-desc">
-              La identidad visual de Kuche no proviene de plantillas genéricas. Honra el patrimonio biocultural de Puebla, extrayendo su paleta cromática del barro bruñido de Los Reyes Metzontla, los telares de cintura y la cosmovisión Ngiigua (popoloca).
+        <!-- Acceso directo a la Identidad Visual en Códices Popolocas -->
+        <div class="codice-ref-banner">
+          <div class="codice-ref-icon">
+            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="codice-ref-content">
+            <h4>Identidad Visual Inspirada en los Códices Popolocas</h4>
+            <p>
+              Toda la arquitectura gráfica de Kuche —desde sus paletas cromáticas (grana cochinilla, oro chalchihuite y añil fluvial) hasta la simbología de nodos y visión artificial— se sustenta en la pictografía ancestral de los códices popolocas del sur de Puebla.
             </p>
           </div>
-
-          <div class="identity-gallery-grid">
-            <!-- Foto 1: Barro Bruñido -->
-            <div class="identity-card">
-              <div class="identity-img-wrap">
-                <img src="./fotos/identidad/barro_brunido.jpg" alt="Alfarería de barro bruñido tradicional de Los Reyes Metzontla, Puebla" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-                <span class="identity-tag">ALFARERÍA MILENARIA</span>
-              </div>
-              <div class="identity-body">
-                <h4>Barro Bruñido de Metzontla</h4>
-                <p>
-                  Piezas moldeadas y pulidas a mano con cuarzo de río. Su acabado mineral y tonos tierra-dorado definen la paleta sobria de nuestra plataforma.
-                </p>
-              </div>
-            </div>
-
-            <!-- Foto 2: Comunidad Popoloca -->
-            <div class="identity-card">
-              <div class="identity-img-wrap">
-                <img src="./fotos/identidad/popoloca_comunidad.jpg" alt="Comunidad Popoloca Ngiigua en San Marcos Tlacoyalco, Puebla" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-                <span class="identity-tag">TERRITORIO Y LENGUA</span>
-              </div>
-              <div class="identity-body">
-                <h4>San Marcos Tlacoyalco</h4>
-                <p>
-                  Comunidad originaria de Puebla cuna de la lengua Ngiigua, de donde tomamos el vocablo 'Kuche' para erradicar el parásito energético.
-                </p>
-              </div>
-            </div>
-
-            <!-- Foto 3: Telares y Grecas -->
-            <div class="identity-card">
-              <div class="identity-img-wrap">
-                <img src="./fotos/identidad/telar_popoloca.png" alt="Patrón geométrico tradicional de telar popoloca" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-                <span class="identity-tag">GEOMETRÍA Y CENEFA</span>
-              </div>
-              <div class="identity-body">
-                <h4>Iconografía de Telares</h4>
-                <p>
-                  Estructuras geométricas ancestrales que enmarcan las divisiones, grecas y cenefas de navegación de todo nuestro ecosistema web.
-                </p>
-              </div>
-            </div>
-
-            <!-- Foto 4: Emblema Kuche -->
-            <div class="identity-card">
-              <div class="identity-img-wrap">
-                <img src="./fotos/identidad/emblema_kuche.png" alt="Emblema gráfico conceptual del proyecto Kuche Alumbrado Inteligente" loading="lazy" onerror="this.src='./static/icons/icon-512.png'">
-                <span class="identity-tag">SÍNTESIS GRÁFICA</span>
-              </div>
-              <div class="identity-body">
-                <h4>Emblema del Proyecto</h4>
-                <p>
-                  Fusión gráfica de la visión artificial moderna con el rigor técnico y la identidad de los pueblos del sur del estado de Puebla.
-                </p>
-              </div>
-            </div>
-          </div>
+          <a href="#identidad-visual" class="btn-codice-ref">
+            <span>Ver Sección de Identidad Visual</span>
+            <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          </a>
         </div>
       </div>
     </section>
@@ -3649,6 +3918,280 @@
         </div>
       </div>
     </section>
+
+    <!-- Cenefa de Greca Popoloca -->
+    <div class="popoloca-fret-line container">
+      <div class="fret-divider"></div>
+      <svg class="fret-glyph" viewBox="0 0 40 16">
+        <path d="M0,16 L0,4 L8,4 L8,10 L16,10 L16,0 L24,0 L24,10 L32,10 L32,4 L40,4 L40,16 Z" />
+      </svg>
+      <div class="fret-divider"></div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         10. IDENTIDAD VISUAL DEL PROYECTO (CÓDICES POPOLOCAS)
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="identidad-visual" class="section-py">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">HERENCIA PICTOGRÁFICA Y MEMORIA BIOCULTURAL DE PUEBLA</span>
+          <h2 class="section-title">Identidad Visual del Proyecto: Inspiración en los Códices Popolocas</h2>
+          <p class="section-desc">
+            La identidad visual de KUCHE no proviene de plantillas corporativas genéricas. Honra y proyecta la memoria histórica de los pueblos originarios del sur de Puebla (región Ngiigua-Popoloca / Mixteca-Poblana). Cada nodo de alumbrado, cada algoritmo de visión computacional y cada ruta territorial encuentra su espejo en la pictografía ancestral de nuestros códices.
+          </p>
+        </div>
+
+        <!-- Galería Principal de Códices: 4 Ejes Simbólicos -->
+        <div class="codice-grid">
+          <!-- Tarjeta 1: Sarta de Cuentas / Red de Luminarias -->
+          <div class="codice-card">
+            <div class="codice-card-media">
+              <span class="codice-badge">CÓDICE · RED VIAL Y NODOS DE LUZ</span>
+              <img src="./fotos/identidad/codice_collar_cuentas.png" alt="Códice Poblano: Sarta de cuentas de jade y coral con atadura ceremonial" loading="lazy">
+              <a href="./fotos/identidad/codice_collar_cuentas.png" target="_blank" rel="noopener noreferrer" class="codice-zoom-btn" title="Ver códice en tamaño original">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Inspeccionar</span>
+              </a>
+            </div>
+            <div class="codice-card-body">
+              <div class="codice-glyph-name">
+                <span class="codice-subtag">PICTOGRAFÍA ANCESTRAL</span>
+                <h3>Sarta de Chalchihuites y Atadura</h3>
+              </div>
+              <div class="codice-detail-block">
+                <h4>Significado en el Códice</h4>
+                <p>
+                  Sarta lineal de cuentas preciosas (chalchihuites de jade y coral) enhebradas en un hilo de vida, unificadas por el glifo de atadura central y coronadas por una pluma ceremonial. Simboliza la continuidad del tiempo, la alianza comunitaria y la unión de elementos dispersos.
+                </p>
+              </div>
+              <div class="codice-detail-block highlighted">
+                <h4>Traducción Técnica en KUCHE</h4>
+                <p>
+                  <strong>El Circuito Lumínico Urbano:</strong> Cada cuenta es una luminaria pública en el tendido eléctrico. KUCHE actúa como la atadura central que enlaza postes aislados en una red inteligente unificada, eliminando pérdidas y apagones en serie.
+                </p>
+              </div>
+              <div class="codice-pills-row">
+                <span class="codice-pill">Topología de Red</span>
+                <span class="codice-pill">Nodos Lumínicos</span>
+                <span class="codice-pill">Líneas de Distribución</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 2: Glifo Calli / Hábitat Seguro -->
+          <div class="codice-card">
+            <div class="codice-card-media">
+              <span class="codice-badge">CÓDICE · HÁBITAT URBANO Y POLÍGONO</span>
+              <img src="./fotos/identidad/codice_glifo_casa.png" alt="Códice Poblano: Glifo arquitectónico Calli recinto urbano protegido" loading="lazy">
+              <a href="./fotos/identidad/codice_glifo_casa.png" target="_blank" rel="noopener noreferrer" class="codice-zoom-btn" title="Ver códice en tamaño original">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Inspeccionar</span>
+              </a>
+            </div>
+            <div class="codice-card-body">
+              <div class="codice-glyph-name">
+                <span class="codice-subtag">PICTOGRAFÍA ANCESTRAL</span>
+                <h3>Glifo Calli (Recinto Protegido)</h3>
+              </div>
+              <div class="codice-detail-block">
+                <h4>Significado en el Códice</h4>
+                <p>
+                  Estructura arquitectónica sólida en piedra roja con dintel reforzado y techumbre protectora. En la pictografía mesoamericana delimita el espacio humano cívico, el hogar familiar y el refugio comunitario frente a la intemperie y la oscuridad exterior.
+                </p>
+              </div>
+              <div class="codice-detail-block highlighted">
+                <h4>Traducción Técnica en KUCHE</h4>
+                <p>
+                  <strong>Seguridad Ciudadana y Polígono Municipal:</strong> Las luminarias no son solo fierro y silicio; son el escudo lumínico que protege el hábitat urbano de las familias poblanas, como en el polígono piloto auditado en San Pedro Cholula.
+                </p>
+              </div>
+              <div class="codice-pills-row">
+                <span class="codice-pill">Polígono Cholula</span>
+                <span class="codice-pill">Espacio Seguro</span>
+                <span class="codice-pill">Soberanía Municipal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 3: Cómputo y Visión Artificial (Ave Avisor) -->
+          <div class="codice-card">
+            <div class="codice-card-media">
+              <span class="codice-badge">CÓDICE · VISIÓN ARTIFICIAL & CÓMPUTO</span>
+              <img src="./fotos/identidad/codice_glifos_calendario.png" alt="Códice Poblano: Glifos de cómputo numérico, flor cardinal y ave con ojo avizor" loading="lazy">
+              <a href="./fotos/identidad/codice_glifos_calendario.png" target="_blank" rel="noopener noreferrer" class="codice-zoom-btn" title="Ver códice en tamaño original">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Inspeccionar</span>
+              </a>
+            </div>
+            <div class="codice-card-body">
+              <div class="codice-glyph-name">
+                <span class="codice-subtag">PICTOGRAFÍA ANCESTRAL</span>
+                <h3>Cómputo Numérico y Ave Avisor</h3>
+              </div>
+              <div class="codice-detail-block">
+                <h4>Significado en el Códice</h4>
+                <p>
+                  Registro numérico sistemático mediante agrupaciones de puntos esféricos, flor de cuatro rumbos (rosa de los vientos) y cabeza de ave con pupila abierta posada en atalaya. Simboliza el rigor del cálculo, la observación astronómica y la vigilancia vigilante del entorno.
+                </p>
+              </div>
+              <div class="codice-detail-block highlighted">
+                <h4>Traducción Técnica en KUCHE</h4>
+                <p>
+                  <strong>El Ojo de la Inteligencia Artificial:</strong> Representa la red neuronal YOLOv8 y los algoritmos de visión computacional que procesan las fotografías de luminarias, clasifican fallas y auditan métricas de lúmenes y tiempos de respuesta.
+                </p>
+              </div>
+              <div class="codice-pills-row">
+                <span class="codice-pill">IA YOLOv8</span>
+                <span class="codice-pill">Telemetría Urbana</span>
+                <span class="codice-pill">Analítica en Tiempo Real</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 4: El Río Territorial / Flujo GIS -->
+          <div class="codice-card">
+            <div class="codice-card-media">
+              <span class="codice-badge">CÓDICE · FLUJO GIS & TERRITORIO</span>
+              <img src="./fotos/identidad/codice_rio_territorio.jpg" alt="Códice Poblano: Gran meandro de río azul turquesa con marcadores territoriales" loading="lazy">
+              <a href="./fotos/identidad/codice_rio_territorio.jpg" target="_blank" rel="noopener noreferrer" class="codice-zoom-btn" title="Ver códice en tamaño original">
+                <svg class="icon-svg" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <span>Inspeccionar</span>
+              </a>
+            </div>
+            <div class="codice-card-body">
+              <div class="codice-glyph-name">
+                <span class="codice-subtag">PICTOGRAFÍA ANCESTRAL</span>
+                <h3>El Río Añil y Dinámica Territorial</h3>
+              </div>
+              <div class="codice-detail-block">
+                <h4>Significado en el Códice</h4>
+                <p>
+                  Caudal diagonal de agua en pigmento azul añil/turquesa con crestas de olas entintadas en negro carbón, conectando asentamientos humanos y límites comarcales. En la cartografía poblana prehispánica, el río es la vía viva de comunicación y cohesión regional.
+                </p>
+              </div>
+              <div class="codice-detail-block highlighted">
+                <h4>Traducción Técnica en KUCHE</h4>
+                <p>
+                  <strong>Logística de Cuadrillas y Cobertura GIS:</strong> El meandro fluvial inspira las capas cartográficas georreferenciadas (Leaflet GIS) y el enrutamiento dinámico de cuadrillas de Servicios Públicos que atienden incidencias en los 217 municipios.
+                </p>
+              </div>
+              <div class="codice-pills-row">
+                <span class="codice-pill">Cartografía GIS</span>
+                <span class="codice-pill">Rutas de Cuadrillas</span>
+                <span class="codice-pill">217 Municipios de Puebla</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paleta Cromática Extraída Directamente de los Códices -->
+        <div class="codice-palette-showcase">
+          <div class="palette-header">
+            <div>
+              <span class="palette-kicker">CROMATISMO PREHISPÁNICO Y DISEÑO DIGITAL</span>
+              <h3 class="palette-title">Paleta Cromática Ancestral Extraída de los Códices</h3>
+            </div>
+            <p class="palette-desc">
+              Cada color de la interfaz de KUCHE fue muestreado directamente de los pigmentos minerales y botánicos de estos documentos históricos, traduciéndolos a tokens de diseño web moderno de alto contraste y legibilidad.
+            </p>
+          </div>
+
+          <div class="codice-palette-grid">
+            <!-- Color 1: Grana Cochinilla -->
+            <div class="swatch-card">
+              <div class="swatch-color-box" style="background: linear-gradient(135deg, #611232, #9B2247);">
+                <span class="swatch-hex">#611232 · #9B2247</span>
+              </div>
+              <div class="swatch-info">
+                <h4>Grana Cochinilla (Nocheztli)</h4>
+                <p class="swatch-origin">Pigmento rojo carmín obtenido del insecto nopalero de los valles de Puebla.</p>
+                <div class="swatch-usage"><strong>Uso en KUCHE:</strong> Cabecera institucional, estado crítico y botones principales.</div>
+              </div>
+            </div>
+
+            <!-- Color 2: Oro Chalchihuite -->
+            <div class="swatch-card">
+              <div class="swatch-color-box" style="background: linear-gradient(135deg, #BC955C, #E6D194);">
+                <span class="swatch-hex" style="color:#1C1518;">#BC955C · #E6D194</span>
+              </div>
+              <div class="swatch-info">
+                <h4>Oro y Ocre Mineral (Teocuitlatl)</h4>
+                <p class="swatch-origin">Pigmento de óxidos de hierro y tierras doradas usado para cuentas solares.</p>
+                <div class="swatch-usage"><strong>Uso en KUCHE:</strong> Acentos de luz encendida, cenefas, bordes activos e indicadores de ahorro.</div>
+              </div>
+            </div>
+
+            <!-- Color 3: Azul Añil / Turquesa Códice -->
+            <div class="swatch-card">
+              <div class="swatch-color-box" style="background: linear-gradient(135deg, #0D2C54, #2563EB);">
+                <span class="swatch-hex">#0D2C54 · #2563EB</span>
+              </div>
+              <div class="swatch-info">
+                <h4>Azul Añil y Turquesa (Xiuhquilitl)</h4>
+                <p class="swatch-origin">Pigmento vegetal extraído del río pictográfico y vestimentas ceremoniales.</p>
+                <div class="swatch-usage"><strong>Uso en KUCHE:</strong> Polígonos cartográficos GIS, mapas satelitales y cuadrillas en tránsito.</div>
+              </div>
+            </div>
+
+            <!-- Color 4: Verde Jade Popoloca -->
+            <div class="swatch-card">
+              <div class="swatch-color-box" style="background: linear-gradient(135deg, #10B981, #059669);">
+                <span class="swatch-hex">#10B981 · #059669</span>
+              </div>
+              <div class="swatch-info">
+                <h4>Verde Jade (Chalchíhuitl)</h4>
+                <p class="swatch-origin">El color de la abundancia, la gema vegetal y la salud del territorio.</p>
+                <div class="swatch-usage"><strong>Uso en KUCHE:</strong> Luminarias 100% operativas, indicadores NOM de eficiencia y mitigación de CO2.</div>
+              </div>
+            </div>
+
+            <!-- Color 5: Tinta Carbón Ancestral -->
+            <div class="swatch-card">
+              <div class="swatch-color-box" style="background: linear-gradient(135deg, #1C1518, #0D090C); border:1px solid rgba(255,255,255,0.15);">
+                <span class="swatch-hex">#1C1518 · #0D090C</span>
+              </div>
+              <div class="swatch-info">
+                <h4>Tinta Carbón de Tlacuilo</h4>
+                <p class="swatch-origin">Hollín de pino purificado con aglutinante vegetal para trazos caligráficos.</p>
+                <div class="swatch-usage"><strong>Uso en KUCHE:</strong> Tipografía principal, modo nocturno profundo y marcos de alto contraste.</div>
+              </div>
+            </div>
+
+            <!-- Color 6: Base Amate / Pergamino -->
+            <div class="swatch-card">
+              <div class="swatch-color-box" style="background: linear-gradient(135deg, #FAF8F5, #F0E6D8); border:1px solid #D6C8B6;">
+                <span class="swatch-hex" style="color:#1C1518;">#FAF8F5 · #F0E6D8</span>
+              </div>
+              <div class="swatch-info">
+                <h4>Papel Amate y Piel Adobada</h4>
+                <p class="swatch-origin">Soporte orgánico de corteza machacada donde cobraban vida las crónicas poblanas.</p>
+                <div class="swatch-usage"><strong>Uso en KUCHE:</strong> Fondo orgánico en modo diurno y superficies limpias de lectura cívica.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manifiesto de Identidad y Rigor Universitario -->
+        <div class="codice-manifesto-card">
+          <div class="manifesto-icon-box">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div class="manifesto-text">
+            <h3>Soberanía Tecnológica con Raíz Biocultural Poblana</h3>
+            <p>
+              En KUCHE creemos firmemente que la innovación pública de vanguardia no debe prescindir de su historia. Frente a soluciones comerciales enlatadas y despersonalizadas, nuestro sistema demuestra que la ingeniería poblana (<strong>BUAP</strong> y <strong>UTP</strong> con asesoría del <strong>INAOEP</strong>) puede combinar la más moderna Inteligencia Artificial con el orgullo por los saberes y la estética de los códices originarios de Puebla.
+            </p>
+            <div class="manifesto-meta">
+              <span>Propuesta Universitaria Poblana</span>
+              <span>·</span>
+              <span>Concurso Estatal ElectroHack 2026</span>
+              <span>·</span>
+              <span>Agencia de Energía del Estado de Puebla</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ═══════════════════════════════════════════════════════════════════
@@ -3676,6 +4219,7 @@
             <li><a href="#proyecto-piloto">Polígono San Pedro Cholula</a></li>
             <li><a href="#problematica">Problemática y Puebla Brilla</a></li>
             <li><a href="#pantallas">Pantallas (Demo, Login, Dashboard)</a></li>
+            <li><a href="#identidad-visual">Identidad Visual (Códices)</a></li>
           </ul>
         </div>
 
