@@ -3051,6 +3051,107 @@
       transition: opacity 0.2s ease;
     }
     .footer-contact a:hover { opacity: 0.8; text-decoration: underline; }
+    /* ── Sección Nosotros y Contacto ── */
+    .ns-section { background: var(--bg-body); }
+    .ns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .ns-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-top: 3px solid var(--clr-dorado-metalico);
+      border-radius: 14px;
+      padding: 26px 26px 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ns-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(155, 34, 71, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: var(--clr-guinda-primario);
+    }
+    body.theme-dark .ns-icon {
+      background: rgba(230, 209, 148, 0.08);
+      color: var(--clr-dorado-arena);
+    }
+    .ns-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+    .ns-card p { font-size: 13.5px; color: var(--text-muted); line-height: 1.65; }
+    .ns-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .ns-list li::before {
+      content: '•';
+      color: var(--clr-dorado-metalico);
+      font-weight: 900;
+      margin-right: 7px;
+    }
+    .ns-links { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
+    .ns-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--clr-guinda-profundo);
+      text-decoration: none;
+      word-break: break-all;
+    }
+    body.theme-dark .ns-link { color: var(--clr-dorado-arena); }
+    .ns-link:hover { text-decoration: underline; }
+    .ns-btn {
+      align-self: flex-start;
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 10px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .ns-btn-solid {
+      background: var(--clr-guinda-primario);
+      color: #FFFFFF;
+      border: 1px solid var(--clr-guinda-profundo);
+    }
+    .ns-btn-solid:hover { background: var(--clr-guinda-profundo); transform: translateY(-1px); }
+    .ns-btn-ghost {
+      background: transparent;
+      color: var(--clr-guinda-primario);
+      border: 1px solid var(--border-gold);
+    }
+    body.theme-dark .ns-btn-ghost { color: var(--clr-dorado-arena); }
+    .ns-btn-ghost:hover { background: rgba(188, 149, 92, 0.12); }
+    @media (max-width: 760px) {
+      .ns-grid { grid-template-columns: 1fr; }
+      .ns-card { padding: 22px 20px; }
+    }
+
     .footer-bottom {
       border-top: 1px solid #241A21;
       padding-top: 24px;
@@ -3406,6 +3507,7 @@
           <li><a href="#proyecto-piloto" class="nav-link">Proyecto Piloto</a></li>
           <li><a href="#problematica" class="nav-link">Problemática</a></li>
           <li><a href="#pantallas" class="nav-link">Pantallas</a></li>
+          <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
 
           <!-- Menú desplegable Más para modelos complementarios -->
           <li class="nav-dropdown">
@@ -5193,6 +5295,68 @@
         </div>
       </div>
     </section>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+         11. NOSOTROS Y CONTACTO
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="nosotros" class="section-py ns-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">NOSOTROS · CONTACTO</span>
+          <h2 class="section-title">Quiénes somos y cómo contactarnos</h2>
+          <p class="section-desc">
+            Kuche es un proyecto universitario poblano creado por estudiantes de la <strong>BUAP</strong> y la <strong>UTP</strong>, con mentoría científica del <strong>INAOE</strong>.
+            ¿Tienes dudas, quieres probar la app o sumar tu colonia al pilotaje? Estamos a un mensaje de distancia.
+          </p>
+        </div>
+
+        <div class="ns-grid">
+          <!-- Quiénes somos -->
+          <article class="ns-card">
+            <div class="ns-icon" aria-hidden="true">
+              <svg class="icon-svg" style="width:22px; height:22px;" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3>Nosotros</h3>
+            <p>
+              Somos un equipo multidisciplinario de ingeniería, diseño y negocios que desarrolla tecnología de monitoreo
+              de alumbrado público con inteligencia artificial, pensada para servir a la ciudadanía y a los municipios de Puebla.
+            </p>
+            <ul class="ns-list">
+              <li>Benemérita Universidad Autónoma de Puebla (BUAP)</li>
+              <li>Universidad Tecnológica de Puebla (UTP)</li>
+              <li>Mentoría científica del INAOE</li>
+            </ul>
+            <a href="#equipo" class="ns-btn ns-btn-ghost">
+              Conoce al equipo
+              <svg class="icon-svg" style="width:13px; height:13px;" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </article>
+
+          <!-- Contacto -->
+          <article class="ns-card">
+            <div class="ns-icon" aria-hidden="true">
+              <svg class="icon-svg" style="width:22px; height:22px;" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h3>Contacto</h3>
+            <p>
+              Respondemos dudas, invitaciones y solicitudes de pilotaje para tu colonia o municipio.
+              También puedes seguirnos y escribirnos por Instagram.
+            </p>
+            <div class="ns-links">
+              <a class="ns-link" href="mailto:kuchereporteciudadano@gmail.com">
+                <svg class="icon-svg" style="width:16px; height:16px;" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+                <span>kuchereporteciudadano@gmail.com</span>
+              </a>
+              <a class="ns-link" href="https://www.instagram.com/kuchereporteciudadano" target="_blank" rel="noopener noreferrer">
+                <svg class="icon-svg" style="width:16px; height:16px;" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+                <span>@kuchereporteciudadano</span>
+              </a>
+            </div>
+            <a href="mailto:kuchereporteciudadano@gmail.com" class="ns-btn ns-btn-solid">Escríbenos</a>
+          </article>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ═══════════════════════════════════════════════════════════════════
@@ -5233,6 +5397,7 @@
             <li><a href="#problematica">Problemática y Puebla Brilla</a></li>
             <li><a href="#pantallas">Pantallas (Demo, Login, Dashboard)</a></li>
             <li><a href="#identidad-visual">Identidad Visual (Códices)</a></li>
+            <li><a href="#nosotros">Nosotros y Contacto</a></li>
           </ul>
         </div>
 
