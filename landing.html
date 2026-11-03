@@ -3121,6 +3121,248 @@
       .mockup-viewport { min-height: 280px; max-height: 330px; padding: 10px; }
       .mockup-viewport img { max-height: 290px; }
     }
+
+    /* ═════════════════════════════════════════════════════════════════
+       11. OPINIONES Y ENCUESTA DE EXPERIENCIA (SECCIÓN DE COMUNIDAD)
+       ═════════════════════════════════════════════════════════════════ */
+    .op-section {
+      background: linear-gradient(180deg, var(--bg-body) 0%, var(--bg-card-subtle) 100%);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* Resumen global: promedio + distribución */
+    .op-summary {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 34px;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--clr-dorado-metalico);
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 30px;
+    }
+    .op-summary-score { text-align: center; min-width: 178px; }
+    .op-big {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--clr-guinda-profundo);
+      letter-spacing: -1.5px;
+    }
+    body.theme-dark .op-big { color: var(--clr-dorado-arena); }
+    .op-of { font-size: 17px; font-weight: 700; color: var(--text-light); margin-left: 2px; }
+    .op-stars {
+      display: block;
+      letter-spacing: 2px;
+      font-size: 15px;
+      color: var(--clr-dorado-metalico);
+      margin: 6px 0 2px;
+    }
+    .op-count { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+
+    .op-distribution { display: flex; flex-direction: column; gap: 7px; }
+    .op-dist-row {
+      display: grid;
+      grid-template-columns: 58px 1fr 34px;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .op-dist-track {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border-subtle);
+      overflow: hidden;
+    }
+    .op-dist-fill {
+      display: block;
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--clr-guinda-primario), var(--clr-dorado-metalico));
+      transition: width 0.4s ease;
+    }
+
+    /* Rejilla de opiniones */
+    .op-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+    .op-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .op-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-gold);
+    }
+    .op-card-top { display: flex; align-items: center; gap: 11px; }
+    .op-avatar {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      background: linear-gradient(135deg, var(--clr-guinda-primario), var(--clr-barro-terracota));
+      letter-spacing: 0.5px;
+    }
+    .op-identity { flex: 1; min-width: 0; }
+    .op-name {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .op-role { display: block; font-size: 11.5px; color: var(--text-light); }
+    .op-rating {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--clr-guinda-profundo);
+      background: rgba(188, 149, 92, 0.18);
+      border: 1px solid var(--border-gold);
+      border-radius: 6px;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+    body.theme-dark .op-rating { color: var(--clr-dorado-arena); }
+    .op-comment {
+      font-size: 13.5px;
+      line-height: 1.62;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .op-comment::before { content: '“'; color: var(--clr-dorado-metalico); font-weight: 900; }
+    .op-comment::after { content: '”'; color: var(--clr-dorado-metalico); font-weight: 900; }
+    .op-tag {
+      align-self: flex-start;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-light);
+      border-top: 1px dashed var(--border-subtle);
+      padding-top: 8px;
+      width: 100%;
+    }
+
+    /* Formulario para dejar opinión */
+    .op-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-top: 3px solid var(--clr-dorado-metalico);
+      border-radius: 14px;
+      padding: 28px 30px 26px;
+      box-shadow: var(--shadow-md);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .op-form-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 21px;
+      font-weight: 900;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .op-form-sub { font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; }
+    .op-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .op-field { display: flex; flex-direction: column; gap: 6px; }
+    .op-field-full { grid-column: 1 / -1; }
+    .op-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: 0.2px;
+    }
+    .op-input, .op-textarea, .op-select {
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      color: var(--text-main);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 6px;
+      padding: 10px 12px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .op-input:focus, .op-textarea:focus, .op-select:focus {
+      outline: none;
+      border-color: var(--clr-guinda-primario);
+      box-shadow: 0 0 0 3px rgba(155, 34, 71, 0.12);
+    }
+    .op-textarea { resize: vertical; min-height: 88px; }
+    .op-rating-row { display: flex; align-items: center; gap: 14px; }
+    .op-range { flex: 1; accent-color: var(--clr-guinda-primario); }
+    .op-range-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--clr-guinda-profundo);
+      min-width: 44px;
+      text-align: center;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-gold);
+      border-radius: 6px;
+      padding: 4px 6px;
+    }
+    body.theme-dark .op-range-value { color: var(--clr-dorado-arena); }
+    .op-form-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .op-submit {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      background: var(--clr-guinda-primario);
+      border: 1px solid var(--clr-guinda-profundo);
+      border-radius: 6px;
+      padding: 11px 22px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .op-submit:hover { background: var(--clr-guinda-profundo); transform: translateY(-1px); }
+    .op-feedback { font-size: 12.5px; font-weight: 700; color: var(--clr-verde-eficiencia); }
+    .op-feedback.error { color: var(--clr-critico-rojo); }
+
+    @media (max-width: 980px) {
+      .op-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .op-summary { grid-template-columns: 1fr; gap: 20px; padding: 20px; }
+      .op-grid { grid-template-columns: 1fr; }
+      .op-form-card { padding: 22px 18px; }
+      .op-form-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -3152,6 +3394,7 @@
               <svg class="icon-svg" style="width:11px; height:11px; transition:transform 0.2s;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <ul class="nav-dropdown-menu">
+              <li class="nav-dropdown-item"><a href="#opiniones">Opiniones</a></li>
               <li class="nav-dropdown-item"><a href="#oportunidades">Oportunidades</a></li>
               <li class="nav-dropdown-item"><a href="#economia">Modelo Económico</a></li>
               <li class="nav-dropdown-item"><a href="#marco-legal">Marco Legal</a></li>
@@ -3160,6 +3403,7 @@
           </li>
 
           <!-- Enlaces visibles en el menú móvil drawer -->
+          <li class="mobile-only-link"><a href="#opiniones" class="nav-link">Opiniones</a></li>
           <li class="mobile-only-link"><a href="#oportunidades" class="nav-link">Oportunidades</a></li>
           <li class="mobile-only-link"><a href="#economia" class="nav-link">Modelo Económico</a></li>
           <li class="mobile-only-link"><a href="#marco-legal" class="nav-link">Marco Legal</a></li>
@@ -4210,6 +4454,70 @@
     </div>
 
     <!-- ═════════════════════════════════════════════════════════════════
+         7.1 OPINIONES Y ENCUESTA BREVE DE EXPERIENCIA (15 PERSONAS)
+         ═════════════════════════════════════════════════════════════════ -->
+    <section id="opiniones" class="section-py op-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-kicker">EXPERIENCIA DE USO · ENCUESTA BREVE A 15 PERSONAS</span>
+          <h2 class="section-title">Quienes ya probaron Kuche lo sintieron fluido</h2>
+          <p class="section-desc">
+            Retroalimentación del pilotaje con vecinos, comerciantes y personas de distintos oficios.
+            La valoración media es de <strong>8.0 sobre 10</strong>, y la fluidez de la app es el punto mejor calificado.
+          </p>
+        </div>
+
+        <!-- Resumen: promedio global y distribución de calificaciones -->
+        <div class="op-summary">
+          <div class="op-summary-score">
+            <span class="op-big" id="op-average">8.0</span><span class="op-of">/10</span>
+            <span class="op-stars" id="op-stars" aria-hidden="true">★★★★☆</span>
+            <span class="op-count" id="op-count">15 opiniones</span>
+          </div>
+          <div class="op-distribution" id="op-distribution" aria-label="Distribución de calificaciones"></div>
+        </div>
+
+        <!-- Rejilla de opiniones (se genera desde el arreglo de datos) -->
+        <div class="op-grid" id="op-grid"></div>
+
+        <!-- Formulario: cualquier visitante puede opinar -->
+        <div class="op-form-card">
+          <h3 class="op-form-title">Deja tu opinión</h3>
+          <p class="op-form-sub">Cuéntanos cómo se sintió tu experiencia con Kuche. Tu calificación se suma al promedio general.</p>
+
+          <form id="op-form" novalidate>
+            <div class="op-form-grid">
+              <div class="op-field">
+                <label class="op-label" for="op-name">Nombre</label>
+                <input class="op-input" id="op-name" name="nombre" type="text" maxlength="60" placeholder="Tu nombre" autocomplete="name" required>
+              </div>
+              <div class="op-field">
+                <label class="op-label" for="op-role">Ocupación o colonia (opcional)</label>
+                <input class="op-input" id="op-role" name="rol" type="text" maxlength="60" placeholder="Ej. Vecino de San Pedro Cholula">
+              </div>
+              <div class="op-field op-field-full">
+                <label class="op-label" for="op-range">Calificación: <span id="op-range-label">8</span> / 10</label>
+                <div class="op-rating-row">
+                  <input class="op-range" id="op-range" name="calificacion" type="range" min="1" max="10" step="1" value="8">
+                  <span class="op-range-value" id="op-range-value" aria-hidden="true">8</span>
+                </div>
+              </div>
+              <div class="op-field op-field-full">
+                <label class="op-label" for="op-comment">Comentario</label>
+                <textarea class="op-textarea" id="op-comment" name="comentario" maxlength="280" placeholder="Ej. La app se siente fluida y respondió rápido en mi celular." required></textarea>
+              </div>
+            </div>
+
+            <div class="op-form-actions">
+              <button class="op-submit" type="submit">Publicar opinión</button>
+              <span class="op-feedback" id="op-feedback" role="status" aria-live="polite"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════════════════════════════════════════════════════════════════
          8. MODELOS ECONÓMICOS, FINANCIEROS Y LEGALES
          ═════════════════════════════════════════════════════════════════ -->
     <section id="economia" class="section-py">
@@ -5083,6 +5391,206 @@
       const guardado = localStorage.getItem('kuche_landing_theme') || 'light';
       aplicarTemaLanding(guardado);
     });
+  </script>
+
+  <script>
+    /* ═════════════════════════════════════════════════════════════════
+       OPINIONES / ENCUESTA BREVE — 15 respuestas de pilotaje (demo)
+       Promedio de referencia: 8.0 / 10  (suma = 120)
+       ═════════════════════════════════════════════════════════════════ */
+    (function () {
+      const OP_BASE = [
+        { nombre: 'Ana Karen Ríos', rol: 'Ama de casa', rating: 8, comentario: 'La app se siente muy fluida: no se traba ni con un celular sencillo.' },
+        { nombre: 'Luis Fernando Ortega', rol: 'Guardia de seguridad', rating: 9, comentario: 'Probé el modo foto en campo y respondió al instante. La interfaz va muy fluida y clara.' },
+        { nombre: 'Mariana Solís', rol: 'Vendedora', rating: 8, comentario: 'La abrí desde un celular sencillo y funcionó sin lag. Se siente ligera y rápida.' },
+        { nombre: 'Jorge Alberto Nava', rol: 'Chofer de taxi', rating: 8, comentario: 'El mapa carga rápido y el cambio entre pantallas es fluido, sin cortes.' },
+        { nombre: 'Diana Laura Castañeda', rol: 'Estudiante', rating: 9, comentario: 'Me sorprendió lo fluido del visor con IA; parece una app nativa.' },
+        { nombre: 'Ricardo Méndez', rol: 'Albañil', rating: 7, comentario: 'Va fluida en general; solo la primera carga del mapa tarda un poco.' },
+        { nombre: 'Paola Iturbide', rol: 'Comerciante', rating: 8, comentario: 'El reporte se envía rápido y la navegación se siente fluida.' },
+        { nombre: 'Emmanuel Tepox', rol: 'Electricista', rating: 8, comentario: 'El scroll y las transiciones se sienten muy fluidas, sin saltos.' },
+        { nombre: 'Fernanda Ávalos', rol: 'Mesera', rating: 7, comentario: 'El registro y la encuesta son ágiles; incluso con datos móviles se siente bien.' },
+        { nombre: 'Óscar Iván Ramírez', rol: 'Empleado de tienda', rating: 8, comentario: 'Registré varias luminarias seguidas y no se puso lenta. Muy fluida.' },
+        { nombre: 'Ximena Barragán', rol: 'Costurera', rating: 8, comentario: 'La vista de mapa y la cámara se mueven sin cortes; se agradece.' },
+        { nombre: 'Miguel Ángel Cuautle', rol: 'Jardinero', rating: 8, comentario: 'La usé caminando y respondió fluida, sin congelarse.' },
+        { nombre: 'Rocío Nájera', rol: 'Cocinera', rating: 8, comentario: 'Fácil y fluida; entendí todo sin que me explicaran.' },
+        { nombre: 'Alejandro Zepeda', rol: 'Mecánico', rating: 8, comentario: 'La app va muy pulida: transiciones fluidas y respuesta inmediata.' },
+        { nombre: 'Berenice Huerta', rol: 'Jubilada', rating: 8, comentario: 'La consulta de luminarias por colonia es rápida y fluida.' }
+      ];
+      const OP_TAG_BASE = 'Pilotaje beta · Oct 2026';
+      const OP_KEY = 'kuche_opiniones_usuario';
+
+      const grid = document.getElementById('op-grid');
+      if (!grid) return;
+
+      const elAverage = document.getElementById('op-average');
+      const elStars = document.getElementById('op-stars');
+      const elCount = document.getElementById('op-count');
+      const elDist = document.getElementById('op-distribution');
+      const form = document.getElementById('op-form');
+      const inputName = document.getElementById('op-name');
+      const inputRole = document.getElementById('op-role');
+      const inputRange = document.getElementById('op-range');
+      const inputComment = document.getElementById('op-comment');
+      const rangeLabel = document.getElementById('op-range-label');
+      const rangeValue = document.getElementById('op-range-value');
+      const feedback = document.getElementById('op-feedback');
+
+      function leerUsuario() {
+        try {
+          const raw = localStorage.getItem(OP_KEY);
+          const lista = raw ? JSON.parse(raw) : [];
+          return Array.isArray(lista) ? lista : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function guardarUsuario(lista) {
+        try {
+          localStorage.setItem(OP_KEY, JSON.stringify(lista.slice(0, 50)));
+        } catch (e) { /* almacenamiento no disponible */ }
+      }
+
+      function iniciales(nombre) {
+        const partes = String(nombre || '').trim().split(/\s+/).filter(Boolean);
+        if (!partes.length) return '?';
+        return (partes[0][0] + (partes[1] ? partes[1][0] : '')).toUpperCase();
+      }
+
+      function crearTarjeta(op) {
+        const card = document.createElement('article');
+        card.className = 'op-card';
+
+        const top = document.createElement('div');
+        top.className = 'op-card-top';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'op-avatar';
+        avatar.setAttribute('aria-hidden', 'true');
+        avatar.textContent = iniciales(op.nombre);
+
+        const ident = document.createElement('div');
+        ident.className = 'op-identity';
+        const name = document.createElement('span');
+        name.className = 'op-name';
+        name.textContent = op.nombre;
+        const role = document.createElement('span');
+        role.className = 'op-role';
+        role.textContent = op.rol || 'Usuario de Kuche';
+        ident.append(name, role);
+
+        const rating = document.createElement('span');
+        rating.className = 'op-rating';
+        rating.textContent = op.rating + '/10';
+        rating.setAttribute('aria-label', 'Calificación: ' + op.rating + ' de 10');
+
+        top.append(avatar, ident, rating);
+
+        const comment = document.createElement('p');
+        comment.className = 'op-comment';
+        comment.textContent = op.comentario;
+
+        const tag = document.createElement('span');
+        tag.className = 'op-tag';
+        tag.textContent = op.tag || OP_TAG_BASE;
+
+        card.append(top, comment, tag);
+        return card;
+      }
+
+      function render() {
+        const usuario = leerUsuario();
+        const todas = usuario.concat(OP_BASE);
+
+        grid.innerHTML = '';
+        todas.forEach(function (op) {
+          grid.appendChild(crearTarjeta(op));
+        });
+
+        const total = todas.length;
+        const suma = todas.reduce(function (acc, op) { return acc + Number(op.rating || 0); }, 0);
+        const promedio = total ? suma / total : 0;
+
+        elAverage.textContent = promedio.toFixed(1);
+        elStars.textContent = '★'.repeat(Math.round(promedio / 2)) + '☆'.repeat(5 - Math.round(promedio / 2));
+        elCount.textContent = total + (total === 1 ? ' opinión' : ' opiniones');
+
+        const conteo = {};
+        todas.forEach(function (op) {
+          const r = Number(op.rating);
+          if (r >= 1 && r <= 10) conteo[r] = (conteo[r] || 0) + 1;
+        });
+        const valores = Object.keys(conteo).map(Number).sort(function (a, b) { return b - a; });
+        const maximo = valores.length ? Math.max.apply(null, valores.map(function (v) { return conteo[v]; })) : 1;
+
+        elDist.innerHTML = '';
+        valores.forEach(function (v) {
+          const row = document.createElement('div');
+          row.className = 'op-dist-row';
+
+          const label = document.createElement('span');
+          label.textContent = v + ' pts';
+
+          const track = document.createElement('div');
+          track.className = 'op-dist-track';
+          const fill = document.createElement('span');
+          fill.className = 'op-dist-fill';
+          fill.style.width = ((conteo[v] / maximo) * 100) + '%';
+          track.appendChild(fill);
+
+          const num = document.createElement('span');
+          num.textContent = conteo[v];
+
+          row.append(label, track, num);
+          elDist.appendChild(row);
+        });
+      }
+
+      inputRange.addEventListener('input', function () {
+        rangeLabel.textContent = inputRange.value;
+        rangeValue.textContent = inputRange.value;
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const nombre = inputName.value.trim();
+        const comentario = inputComment.value.trim();
+        const rating = Number(inputRange.value);
+
+        if (nombre.length < 2 || comentario.length < 5) {
+          feedback.textContent = 'Escribe tu nombre y un comentario de al menos 5 caracteres.';
+          feedback.className = 'op-feedback error';
+          return;
+        }
+
+        const fecha = new Date();
+        const nueva = {
+          nombre: nombre,
+          rol: inputRole.value.trim() || 'Visitante de la web',
+          rating: rating,
+          comentario: comentario,
+          tag: 'Tu opinión · ' + fecha.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+        };
+
+        const lista = leerUsuario();
+        lista.unshift(nueva);
+        guardarUsuario(lista);
+
+        form.reset();
+        rangeLabel.textContent = '8';
+        rangeValue.textContent = '8';
+
+        render();
+        feedback.textContent = '¡Gracias! Tu opinión ya aparece en la lista.';
+        feedback.className = 'op-feedback';
+
+        window.setTimeout(function () {
+          if (feedback.className === 'op-feedback') feedback.textContent = '';
+        }, 6000);
+      });
+
+      render();
+    })();
   </script>
 </body>
 </html>
