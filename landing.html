@@ -3031,6 +3031,26 @@
     .footer-links li { font-size: 12.5px; color: #94868F; }
     .footer-links a { color: #94868F; text-decoration: none; font-size: 12.5px; transition: color 0.2s; }
     .footer-links a:hover { color: var(--clr-dorado-arena); }
+    .footer-contact { margin-top: 18px; display: flex; flex-direction: column; gap: 7px; }
+    .footer-contact-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--clr-dorado-metalico);
+    }
+    .footer-contact a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--clr-dorado-arena);
+      text-decoration: none;
+      word-break: break-all;
+      transition: opacity 0.2s ease;
+    }
+    .footer-contact a:hover { opacity: 0.8; text-decoration: underline; }
     .footer-bottom {
       border-top: 1px solid #241A21;
       padding-top: 24px;
@@ -5188,6 +5208,18 @@
           </p>
           <div style="margin-top:14px; font-size:11px; color:var(--clr-dorado-arena); font-family:'JetBrains Mono', monospace; line-height:1.5;">
             Raíz Biocultural: <em>Kuche</em> ("Piojo" / Parásito) en Popoloca (Ngiigua) de San Marcos Tlacoyalco, Puebla · Erradicación del consumo parásito en el alumbrado público.
+          </div>
+
+          <div class="footer-contact">
+            <span class="footer-contact-label">Contacto</span>
+            <a href="mailto:kuchereporteciudadano@gmail.com">
+              <svg class="icon-svg" style="width:14px; height:14px;" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>kuchereporteciudadano@gmail.com</span>
+            </a>
+            <a href="https://www.instagram.com/kuchereporteciudadano" target="_blank" rel="noopener noreferrer">
+              <svg class="icon-svg" style="width:14px; height:14px;" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
+              <span>@kuchereporteciudadano</span>
+            </a>
           </div>
         </div>
 
