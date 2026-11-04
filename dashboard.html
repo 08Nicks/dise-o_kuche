@@ -577,50 +577,57 @@
       font-weight: 500;
     }
     /* La atribución de Leaflet/OpenStreetMap se sustituye por el crédito
-       visible dentro del recuadro del QR (esquina inferior derecha). */
+       visible dentro del recuadro del QR (panel lateral izquierdo). */
     .leaflet-control-attribution { display: none !important; }
 
-    /* ── Recuadro QR de acceso a la App ── */
+    /* ── Recuadro QR de acceso a la App (panel lateral) ── */
     .map-qr-badge {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      z-index: 900;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      padding: 6px 6px 5px;
+      gap: 5px;
+      margin: 12px 12px 0 12px;
+      padding: 12px 12px 9px;
       background: #FFFFFF;
-      border: 1px solid #BC955C;
-      border-radius: 8px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      border: 2px solid #BC955C;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
       text-decoration: none;
-      line-height: 1.1;
+      line-height: 1.15;
+      flex-shrink: 0;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .map-qr-badge:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
     }
     .map-qr-badge img {
-      width: 82px;
-      height: 82px;
+      width: 190px;
+      height: 190px;
       display: block;
-      image-rendering: pixelated;
+      image-rendering: auto;
     }
     .map-qr-badge .qr-title {
       font-family: 'Montserrat', sans-serif;
-      font-size: 8.5px;
+      font-size: 14px;
       font-weight: 900;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       color: #611232;
       white-space: nowrap;
     }
+    .map-qr-badge .qr-sub {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #4B5563;
+      text-align: center;
+      line-height: 1.3;
+    }
     .map-qr-badge .qr-credit {
-      font-size: 7px;
-      color: #6B7280;
+      font-size: 8.5px;
+      color: #9CA3AF;
       white-space: nowrap;
     }
 
@@ -999,6 +1006,14 @@
 
 <main>
   <aside>
+    <!-- QR DE ACCESO A LA APP · bajo el título KUCHE, sobre las métricas -->
+    <a class="map-qr-badge" href="./app.html" target="_blank" rel="noopener noreferrer" title="Escanea o haz clic para abrir la app Kuche">
+      <img src="./fotos/qr_app.png" alt="Código QR para abrir la app Kuche">
+      <span class="qr-title">Escanea y reporta</span>
+      <span class="qr-sub">Abre la app y reporta una luminaria</span>
+      <span class="qr-credit">© OpenStreetMap</span>
+    </a>
+
     <!-- Métricas Generales -->
     <div class="stats-bar">
       <div class="stat-box">
@@ -1043,13 +1058,6 @@
   <!-- MAPA INTERACTIVO -->
   <div id="map-wrapper">
     <div id="map"></div>
-
-    <!-- QR DE ACCESO A LA APP · cubre la esquina inferior derecha del mapa -->
-    <a class="map-qr-badge" href="./app.html" target="_blank" rel="noopener noreferrer" title="Escanea o haz clic para abrir la app Kuche">
-      <img src="./fotos/qr_app.png" alt="Código QR para abrir la app Kuche">
-      <span class="qr-title">Escanea y reporta</span>
-      <span class="qr-credit">© OpenStreetMap</span>
-    </a>
 
     <!-- HUD NAVEGADOR WAZE DE LUMINARIAS (CUADRILLA VIRTUAL) -->
     <div id="hud-cuadrilla" class="hud-cuadrilla" style="display:none;">
